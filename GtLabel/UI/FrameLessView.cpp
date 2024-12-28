@@ -1,11 +1,11 @@
 ﻿#include "FrameLessView.h"
-#include <qdebug.h>
 
 FrameLessView::FrameLessView(QWindow *parent):QQuickView(parent)
 {
     setFlags(Qt::CustomizeWindowHint | Qt::Window | Qt::FramelessWindowHint |
              Qt::WindowMinMaxButtonsHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint);
     setResizeMode(SizeRootObjectToView);
+    setColor(Qt::transparent);        // 背景透明
 }
 
 void FrameLessView::mousePressEvent(QMouseEvent *event)

@@ -1,6 +1,6 @@
-import QtQuick
+﻿import QtQuick
 
 Rectangle {
     id: name
-    color:"#6c00a5ff"
+    color:"#00a5ff"
 }
