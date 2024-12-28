@@ -22,7 +22,6 @@ public:
         LeftBottomEdge = TopEdge << 6,
         RightBottomEdge = TopEdge << 7,
     };
-    Q_ENUM(Edge);
     Q_DECLARE_FLAGS(Edges,Edge)
     Q_FLAGS(Edges);
 protected:

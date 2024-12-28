@@ -51,8 +51,6 @@ void FrameLessView::mouseMoveEvent(QMouseEvent *event)
     QPoint delta = event->globalPosition().toPoint() - m_dragStartPos;
     if (m_resizing) {
         QRect newGeometry = m_windowStartGeometry;
-
-        qDebug() << m_resizeEdge;
         // 根据拖拽方向调整窗口大小
         if (m_resizeEdge & Edge::TopEdge) {
             newGeometry.setTop(newGeometry.top() + delta.y());
