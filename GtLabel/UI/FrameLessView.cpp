@@ -1,15 +1,62 @@
 ﻿#include "FrameLessView.h"
 
+#include <QTimer>
+#include <QCursor>
+
+
 FrameLessView::FrameLessView(QWindow *parent):QQuickView(parent)
 {
     setFlags(Qt::CustomizeWindowHint | Qt::Window | Qt::FramelessWindowHint |
              Qt::WindowMinMaxButtonsHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint);
     setResizeMode(SizeRootObjectToView);
     setColor(Qt::transparent);        // 背景透明
+    qApp->installEventFilter(this);
+}
+
+void FrameLessView::moveing(QPoint start,QPoint end)
+{
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
+    QNativeInterface::QX11Application *x11App = qApp->nativeInterface<QNativeInterface::QX11Application>();
+    Display *dpy = x11App->display();
+    QQuickItem* rootobj = rootObject();
+    if(rootobj) {
+        QObject* obj = rootobj->findChild<QObject*>("titleBar");
+        QQuickItem* titleBarItem = qobject_cast<QQuickItem*>(obj);
+        // if(obj && titleBarItem) {
+            // 检查鼠标是否在 titleBar 区域内
+            QPoint mousePos = QCursor::pos();
+            QPoint titleBarGlobalPos = titleBarItem->mapToGlobal(QPointF(0, 0)).toPoint();
+            QRect titleBarRect(titleBarGlobalPos, QSize(titleBarItem->width(), titleBarItem->height()));
+
+            if (!titleBarRect.contains(mousePos)) {
+                return; // 如果不在 titleBar 区域内，不处理移动
+            }
+            XEvent even={};
+            even.xclient.type=ClientMessage;
+            even.xclient.display=dpy;
+            even.xclient.message_type=XInternAtom(dpy,"_NET_WM_MOVERESIZE",False);
+            even.xclient.window=qobject_cast<QQuickItem*>(obj)->window()->winId();
+            even.xclient.format=32;
+            even.xclient.data.l[0]=QCursor::pos().x();
+            even.xclient.data.l[1]=QCursor::pos().y();
+            even.xclient.data.l[2]=8;
+            even.xclient.data.l[3]=Button1;
+            even.xclient.data.l[4]=1;
+
+            XUngrabPointer(dpy,CurrentTime);
+            XSendEvent(dpy, DefaultRootWindow(dpy), False,
+                       SubstructureNotifyMask | SubstructureRedirectMask, &even);
+            XFlush(dpy);
+        }
+#elif
+    QPoint topLeft = end-start;
+    setGeometry({topLeft.x(),topLeft.y(),width(),height()});
+#endif
 }
 
 void FrameLessView::mousePressEvent(QMouseEvent *event)
 {
+    event->ignore();
     if (event->button() == Qt::LeftButton) {
         m_resizing = false;
         m_windowStartGeometry = geometry();
@@ -24,6 +71,7 @@ void FrameLessView::mousePressEvent(QMouseEvent *event)
 
 void FrameLessView::mouseMoveEvent(QMouseEvent *event)
 {
+    event->ignore();
     setCursor(Qt::ArrowCursor);
     // 判断是否在窗口边缘
     if (isInEdge(event->pos()).has_value()) {
@@ -48,8 +96,10 @@ void FrameLessView::mouseMoveEvent(QMouseEvent *event)
             break;
         }
     }
+
     QPoint delta = event->globalPosition().toPoint() - m_dragStartPos;
     if (m_resizing) {
+        // qDebug() << "mouseMoveEvent"<<QDateTime::currentDateTime();
         QRect newGeometry = m_windowStartGeometry;
         // 根据拖拽方向调整窗口大小
         if (m_resizeEdge & Edge::TopEdge) {
@@ -85,18 +135,40 @@ void FrameLessView::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-void FrameLessView::mouseReleaseEvent(QMouseEvent *event)
+// void FrameLessView::mouseReleaseEvent(QMouseEvent *event)
+// {
+//     event->ignore();
+//     if (event->button() == Qt::LeftButton) {
+//         m_resizing = false;
+//         m_resizeEdge=unknow;
+//     }
+// }
+
+bool FrameLessView::eventFilter(QObject *watched, QEvent *event)
 {
-    if (event->button() == Qt::LeftButton) {
-        m_resizing = false;
-        m_resizeEdge=unknow;
+    if (m_resizing) {
+        if (event->type() == QEvent::MouseMove) {
+            QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+            mouseMoveEvent(mouseEvent);
+            return true;
+        }
+        else if (event->type() == QEvent::MouseButtonRelease) {
+            QMouseEvent *mouseEvent = static_cast<QMouseEvent*>(event);
+            mouseEvent->ignore();
+            if (mouseEvent->button() == Qt::LeftButton) {
+                m_resizing = false;
+                m_resizeEdge = unknow;
+                return true;
+            }
+        }
     }
+    return QQuickView::eventFilter(watched, event);
 }
 
 std::optional<FrameLessView::Edge> FrameLessView::isInEdge(const QPoint &pos) const
 {
-    const int edgeThickness = 10; // 边缘宽度
-    const int edgeroud = 10; // 周围
+    const int edgeThickness = 6; // 边缘宽度
+    const int edgeroud = 6; // 周围
     QRect rects[8]  = {QRect(0+edgeroud, 0, width()-2*edgeroud, edgeThickness),                       // Top
                       QRect(0+edgeroud, height() - edgeThickness, width()-2*edgeroud, edgeThickness), // Bottom
                       QRect(0, 0+edgeroud, edgeThickness, height()-2*edgeroud),                       // Left

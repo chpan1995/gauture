@@ -5,6 +5,7 @@ project(GtLabel VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick)
+find_package(X11 REQUIRED)
 
 add_subdirectory(UI)
 
@@ -22,7 +23,7 @@ set_target_properties(appGtLabel PROPERTIES
 )
 
 target_link_libraries(appGtLabel
-    PRIVATE Qt6::Quick
+	PRIVATE Qt6::Quick X11::X11
     ui_mainplugin
 )
 

@@ -4,6 +4,13 @@
 #include <QObject>
 #include <QQuickView>
 #include <optional>
+#include <QQuickItem>
+
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
+#include <X11/Xlib.h>
+#include <X11/Xatom.h>
+#include <xcb/xcb.h>
+#endif
 
 class FrameLessView : public QQuickView
 {
@@ -24,10 +31,18 @@ public:
     };
     Q_DECLARE_FLAGS(Edges,Edge)
     Q_FLAGS(Edges);
+
+    Q_INVOKABLE inline QPoint moveStart() { return geometry().topLeft(); }
+    Q_INVOKABLE void moveing(QPoint start,QPoint end);
+    Q_INVOKABLE inline void moveEnd() {
+        m_resizing = false;
+        m_resizeEdge=unknow;
+    }
 protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
-    void mouseReleaseEvent(QMouseEvent *event) override;
+    // void mouseReleaseEvent(QMouseEvent *event) override;
+    bool eventFilter(QObject *watched, QEvent *event) override;
 private:
     std::optional<Edge> isInEdge(const QPoint &pos) const;
 private:
@@ -35,6 +50,7 @@ private:
     QRect m_windowStartGeometry;
     Edge m_resizeEdge;
     QPoint m_dragStartPos;
+    bool m_borderSelecte { true };
 };
 
 #endif // FRAMELESSVIEW_H

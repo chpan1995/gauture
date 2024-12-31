@@ -10,7 +10,10 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick)
+find_package(Qt6 REQUIRED COMPONENTS Quick Gui)
+find_package(Threads REQUIRED)
+
+add_subdirectory(DataAnnotation)
 
 add_library(ui_main)
 
@@ -19,11 +22,27 @@ qt_add_qml_module(ui_main
     VERSION 1.0
     QML_FILES
         Main.qml
+        Titlebar.qml
+        common/ButtonImg.qml
+		common/ButtonImgText.qml
     OUTPUT_DIRECTORY
         ui_main
     SOURCES
     FrameLessView.h
     FrameLessView.cpp
+    # RESOURCES
+    # images/logo.png
+)
+
+qt_add_resources(${PROJECT_NAME}
+    "resource"
+    FILES
+    images/logo.png
+    images/connect.png
+    images/quit.png
+    images/user.png
+	images/dataBz.png
+	images/dataSelectBz.png
 )
 
 target_include_directories(ui_main
@@ -36,5 +55,5 @@ target_include_directories(ui_main
 )
 
 target_link_libraries(ui_main
-    PRIVATE Qt6::Quick
+	PRIVATE Qt6::Quick Qt6::Gui X11::X11 Threads::Threads ui_dataAnnotation
 )
