@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
     view->engine()->addImportPath(":/");
     view->rootContext()->setContextProperty("view", view);
     view->loadFromModule("ui_main","Main");
-    view->setWidth(1000);
+    view->setWidth(1294);
     view->setHeight(800);
     view->showNormal();
     QObject::connect(view->engine(), &QQmlEngine::quit, qApp, &QCoreApplication::quit);

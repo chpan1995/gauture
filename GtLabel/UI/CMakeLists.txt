@@ -24,7 +24,7 @@ qt_add_qml_module(ui_main
         Main.qml
         Titlebar.qml
         common/ButtonImg.qml
-		common/ButtonImgText.qml
+        common/ButtonImgText.qml
     OUTPUT_DIRECTORY
         ui_main
     SOURCES
@@ -41,8 +41,9 @@ qt_add_resources(${PROJECT_NAME}
     images/connect.png
     images/quit.png
     images/user.png
-	images/dataBz.png
-	images/dataSelectBz.png
+    images/dataBz.png
+    images/dataSelectBz.png
+    images/upload.png
 )
 
 target_include_directories(ui_main
@@ -55,5 +56,6 @@ target_include_directories(ui_main
 )
 
 target_link_libraries(ui_main
-	PRIVATE Qt6::Quick Qt6::Gui X11::X11 Threads::Threads ui_dataAnnotation
+    PRIVATE Qt6::Quick Qt6::Gui X11::X11 Threads::Threads
+    ui_dataAnnotation ui_dataAnnotationplugin
 )

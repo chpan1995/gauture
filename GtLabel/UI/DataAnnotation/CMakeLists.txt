@@ -15,12 +15,13 @@ find_package(Qt6 REQUIRED COMPONENTS Quick Gui)
 add_library(ui_dataAnnotation)
 
 qt_add_qml_module(ui_dataAnnotation
-	URI ui_dataAnnotation
+    URI ui_dataAnnotation
     VERSION 1.0
     QML_FILES
-		DataAnnotation.qml
+        DataAnnotation.qml
+        ImgView.qml
     OUTPUT_DIRECTORY
-		ui_dataAnnotation
+        ui_dataAnnotation
     SOURCES
 
 )
@@ -40,5 +41,5 @@ target_include_directories(ui_dataAnnotation
 )
 
 target_link_libraries(ui_dataAnnotation
-	PRIVATE Qt6::Quick
+    PRIVATE Qt6::Quick
 )

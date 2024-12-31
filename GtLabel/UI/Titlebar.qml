@@ -51,7 +51,7 @@ Item {
     }
     Row {
         anchors.right:parent.right
-        anchors.rightMargin:24
+        anchors.rightMargin:20
         height:parent.height
         width:implicitWidth
         spacing:32

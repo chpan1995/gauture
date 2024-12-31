@@ -24,7 +24,7 @@ set_target_properties(appGtLabel PROPERTIES
 
 target_link_libraries(appGtLabel
 	PRIVATE Qt6::Quick X11::X11
-    ui_mainplugin
+	ui_mainplugin
 )
 
 include(GNUInstallDirs)
