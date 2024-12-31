@@ -44,6 +44,13 @@ qt_add_resources(${PROJECT_NAME}
     images/dataBz.png
     images/dataSelectBz.png
     images/upload.png
+    images/requireData.png
+    images/tail.png
+    images/front10.png
+    images/front.png
+    images/next.png
+    images/next10.png
+    images/end.png
 )
 
 target_include_directories(ui_main

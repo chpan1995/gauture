@@ -3,6 +3,7 @@ import QtQuick.Controls
 
 Button {
     id:btn
+    antialiasing:true
     property string urlSelected
     required property string urlNormal
     required property string txtNormalColor
@@ -17,8 +18,11 @@ Button {
     property bool selected: false
     property int radius:0
     property int space: 8
+    property var pBorder: {"width":0,"color":"transpant"}
+
     hoverEnabled : true
     background: Rectangle {
+        antialiasing:true
         color:{
             if(btn.hovered){
                 return btn.hovercolor;
@@ -26,6 +30,11 @@ Button {
                 return btn.normalcolor;
             }
         }
+        border{
+            width:btn.pBorder.width
+            color:btn.pBorder.color
+        }
+
         radius:btn.radius
     }
     contentItem:Item {
