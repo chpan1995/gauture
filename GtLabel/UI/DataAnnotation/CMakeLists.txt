@@ -20,6 +20,7 @@ qt_add_qml_module(ui_dataAnnotation
     QML_FILES
         DataAnnotation.qml
         ImgView.qml
+        RightPane.qml
     OUTPUT_DIRECTORY
         ui_dataAnnotation
     SOURCES

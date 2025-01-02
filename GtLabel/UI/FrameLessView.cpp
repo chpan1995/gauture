@@ -129,8 +129,7 @@ void FrameLessView::mouseMoveEvent(QMouseEvent *event)
             newGeometry.setLeft(newGeometry.left() + delta.x());
             newGeometry.setBottom(newGeometry.bottom() + delta.y());
         }
-
-
+        if(newGeometry.width()<=890||newGeometry.height()<=600) return;
         setGeometry(newGeometry);
     }
 }

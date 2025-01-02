@@ -1,4 +1,4 @@
-﻿cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.16)
 
 project(ui_main VERSION 0.1 LANGUAGES CXX)
 
@@ -25,6 +25,8 @@ qt_add_qml_module(ui_main
         Titlebar.qml
         common/ButtonImg.qml
         common/ButtonImgText.qml
+        common/GCombox.qml
+        common/ButtonText.qml
     OUTPUT_DIRECTORY
         ui_main
     SOURCES
@@ -51,6 +53,7 @@ qt_add_resources(${PROJECT_NAME}
     images/next.png
     images/next10.png
     images/end.png
+    images/down.png
 )
 
 target_include_directories(ui_main
@@ -63,13 +66,6 @@ target_include_directories(ui_main
 )
 
 target_link_libraries(ui_main
-    PRIVATE Qt6::Quick Qt6::Gui Threads::Threads
+    PRIVATE Qt6::Quick Qt6::Gui X11::X11 Threads::Threads
     ui_dataAnnotation ui_dataAnnotationplugin
 )
-
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    target_link_libraries(ui_main
-        PRIVATE
-        X11::X11)
-endif()
-
