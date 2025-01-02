@@ -48,7 +48,7 @@ void FrameLessView::moveing(QPoint start,QPoint end)
                        SubstructureNotifyMask | SubstructureRedirectMask, &even);
             XFlush(dpy);
         }
-#elif
+#else
     QPoint topLeft = end-start;
     setGeometry({topLeft.x(),topLeft.y(),width(),height()});
 #endif

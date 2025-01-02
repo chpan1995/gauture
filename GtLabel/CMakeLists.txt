@@ -1,11 +1,14 @@
-cmake_minimum_required(VERSION 3.16)
+﻿cmake_minimum_required(VERSION 3.16)
 
 project(GtLabel VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick)
-find_package(X11 REQUIRED)
+find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2)
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    find_package(X11 REQUIRED)
+endif()
 
 add_subdirectory(UI)
 
@@ -23,7 +26,7 @@ set_target_properties(appGtLabel PROPERTIES
 )
 
 target_link_libraries(appGtLabel
-	PRIVATE Qt6::Quick X11::X11
+        PRIVATE Qt6::Quick Qt6::QuickControls2
 	ui_mainplugin
 )
 

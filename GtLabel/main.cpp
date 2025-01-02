@@ -1,12 +1,15 @@
 ﻿#include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QQuickStyle>
 
 #include "UI/FrameLessView.h"
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
+    // 设置 QML 控件样式为 Basic
+    QQuickStyle::setStyle("Basic");
     FrameLessView *view = new FrameLessView;
     view->engine()->addImportPath(":/");
     view->rootContext()->setContextProperty("view", view);
