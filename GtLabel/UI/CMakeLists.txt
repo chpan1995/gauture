@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+﻿cmake_minimum_required(VERSION 3.16)
 
 project(ui_main VERSION 0.1 LANGUAGES CXX)
 
@@ -66,6 +66,10 @@ target_include_directories(ui_main
 )
 
 target_link_libraries(ui_main
-    PRIVATE Qt6::Quick Qt6::Gui X11::X11 Threads::Threads
+    PRIVATE Qt6::Quick Qt6::Gui Threads::Threads
     ui_dataAnnotation ui_dataAnnotationplugin
 )
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    target_link_libraries(ui_main PRIVATE  X11::X11)
+endif()
