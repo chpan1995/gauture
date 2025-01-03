@@ -63,6 +63,10 @@ Item {
         }
     }
 
+    DatatypeModel {
+        id:dataTypeModel
+
+    }
 
     Rectangle{
         y:topLeft.childrenRect.height+12
@@ -70,6 +74,19 @@ Item {
         width:root.width
         height:parent.height-y
         color:"#E5E5E5"
+        Row{
+            anchors.fill:parent
+            Repeater{
+                model:dataTypeModel.treeNodes
+                Text{
+                    required property string tagName
+                    required property var inheritsName
+                    text:inheritsName
+                    width:50
+                    height:implicitHeight
+                }
+            }
+        }
     }
 
 }

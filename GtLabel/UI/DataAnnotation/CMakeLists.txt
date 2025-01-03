@@ -24,6 +24,8 @@ qt_add_qml_module(ui_dataAnnotation
     OUTPUT_DIRECTORY
         ui_dataAnnotation
     SOURCES
+    SOURCES DatatypeModel.h
+    DatatypeModel.cpp
 
 )
 
