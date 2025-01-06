@@ -27,6 +27,7 @@ public:
 
     void setInheritsName();
 
+    int getDeep();
 signals:
     void tagNameChanged();
     void deepChanged();
@@ -43,6 +44,7 @@ class DatatypeModelPrivate;
 class DatatypeModel : public QObject
 {
     Q_OBJECT
+    QML_ANONYMOUS
     Q_PROPERTY(QQmlListProperty<DataNode> treeNodes READ treeNodes NOTIFY treeNodesChanged FINAL)
 public:
     explicit DatatypeModel(boost::json::value&& data,QObject *parent = nullptr);
@@ -50,7 +52,6 @@ public:
 
     QQmlListProperty<DataNode> treeNodes();
 
-    // test
     void updateData(boost::json::value& v);
 
 signals:
@@ -66,7 +67,7 @@ Q_DECLARE_METATYPE(DatatypeModel)
 class AllDatatypeModel : public QObject
 {
     Q_OBJECT
-    QML_ELEMENT
+    QML_NAMED_ELEMENT(AnnotationIndexModel)
 
     Q_PROPERTY(QVariantList allDatas MEMBER m_allDatas NOTIFY allDatasChanged FINAL)
 public:

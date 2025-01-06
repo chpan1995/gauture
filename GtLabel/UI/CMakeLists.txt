@@ -27,6 +27,7 @@ qt_add_qml_module(ui_main
         common/ButtonImgText.qml
         common/GCombox.qml
         common/ButtonText.qml
+        common/ButtonComplex.qml
     OUTPUT_DIRECTORY
         ui_main
     SOURCES
@@ -54,6 +55,8 @@ qt_add_resources(${PROJECT_NAME}
     images/next10.png
     images/end.png
     images/down.png
+    images/selected.png
+    images/fold.png
 )
 
 target_include_directories(ui_main

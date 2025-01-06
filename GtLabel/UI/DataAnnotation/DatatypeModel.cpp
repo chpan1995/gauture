@@ -2,12 +2,6 @@
 
 DataNode::DataNode(DataNode *parent):m_parent(parent)
 {
-    std::uint8_t deep=0;
-    while(m_parent) {
-        deep++;
-        m_parent=m_parent->m_parent;
-    }
-    setDeep(deep);
 }
 
 QString DataNode::tagName()
@@ -55,6 +49,18 @@ void DataNode::setInheritsName()
     v.append(m_tagName);
     getAllTagname(m_parent,v);
     setInheritsName(v);
+}
+
+int DataNode::getDeep()
+{
+    std::uint8_t deep=0;
+    DataNode* parent = m_parent;
+    while(parent) {
+        deep++;
+        parent = parent->m_parent;
+    }
+    setDeep(deep);
+    return deep;
 }
 
 ////////////////////////////////////////////////////////
@@ -110,7 +116,6 @@ QQmlListProperty<DataNode> DatatypeModel::treeNodes()
 }
 
 void recursionData(DatatypeModel* model,boost::json::value& v,DataNode* parent=nullptr) {
-    qDebug() << boost::json::serialize(v);
     boost::system::error_code ec;
     auto obj = v.find_pointer("/value",ec);
     DataNode* node=nullptr;
@@ -118,6 +123,7 @@ void recursionData(DatatypeModel* model,boost::json::value& v,DataNode* parent=n
         node=new DataNode(parent);
         node->setTagName(obj->as_string().c_str());
         node->setInheritsName();
+        node->getDeep();
         model->d_ptr->m_data.append(node);
     }
 
@@ -133,21 +139,6 @@ void recursionData(DatatypeModel* model,boost::json::value& v,DataNode* parent=n
 void DatatypeModel::updateData(boost::json::value& v)
 {
     recursionData(this,v);
-    // DataNode* root=new DataNode();
-    // root->setTagName("颗粒类型");
-    // root->setDeep(0);
-    // d_ptr->m_data.append(root);
-    // DataNode* bws=new DataNode(root);
-    // bws->setTagName("病斑");
-    // bws->setDeep(1);
-    // bws->setInheritsName();
-    // d_ptr->m_data.append(bws);
-    // DataNode* bwsty=new DataNode(bws);
-    // bwsty->setTagName("赤霉");
-    // bwsty->setDeep(2);
-    // bwsty->setInheritsName();
-    // d_ptr->m_data.append(bwsty);
-
     emit treeNodesChanged();
 }
 
@@ -167,6 +158,46 @@ AllDatatypeModel::AllDatatypeModel(QObject *parent):QObject(parent)
                         "items": [
                             {
                                 "value": "赤霉",
+                                "items": []
+                            },
+                            {
+                                "value": "黑胚",
+                                "items": []
+                            }
+                        ]
+                    },
+                    {
+                        "value": "生芽",
+                        "items": [
+                            {
+                                "value": "胡须",
+                                "items": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "value": "自定义类型",
+                "items": [
+                    {
+                        "value": "破损",
+                        "items": [
+                            {
+                                "value": "二分之一",
+                                "items": []
+                            },
+                            {
+                                "value": "四分之三",
+                                "items": []
+                            }
+                        ]
+                    },
+                    {
+                        "value": "热损伤",
+                        "items": [
+                            {
+                                "value": "自然",
                                 "items": []
                             }
                         ]
