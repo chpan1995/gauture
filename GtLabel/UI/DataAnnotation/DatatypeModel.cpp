@@ -1,4 +1,4 @@
-#include "DatatypeModel.h"
+﻿#include "DatatypeModel.h"
 
 DataNode::DataNode(DataNode *parent):m_parent(parent)
 {
@@ -110,6 +110,7 @@ QQmlListProperty<DataNode> DatatypeModel::treeNodes()
 }
 
 void recursionData(DatatypeModel* model,boost::json::value& v,DataNode* parent=nullptr) {
+    qDebug() << boost::json::serialize(v);
     boost::system::error_code ec;
     auto obj = v.find_pointer("/value",ec);
     DataNode* node=nullptr;
@@ -120,7 +121,7 @@ void recursionData(DatatypeModel* model,boost::json::value& v,DataNode* parent=n
         model->d_ptr->m_data.append(node);
     }
 
-    auto chrid = obj->find_pointer("/items",ec);
+    auto chrid = v.find_pointer("/items",ec);
     if(ec) return;
     if(!chrid->if_array() || chrid->as_array().size()==0)
         return;
@@ -147,7 +148,6 @@ void DatatypeModel::updateData(boost::json::value& v)
     // bwsty->setInheritsName();
     // d_ptr->m_data.append(bwsty);
 
-    qDebug()<< d_ptr->m_data.size();
     emit treeNodesChanged();
 }
 
