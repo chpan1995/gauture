@@ -83,7 +83,8 @@ Item {
                         model:modelData.treeNodes
                         Text{
                             required property string tagName
-                            text:tagName
+                            required property string deep
+                            text:tagName+deep
                             width:100
                             height:implicitHeight
                         }
