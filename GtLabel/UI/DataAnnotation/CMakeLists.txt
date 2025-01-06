@@ -11,6 +11,7 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick Gui)
+find_package(Boost REQUIRED json)
 
 add_library(ui_dataAnnotation)
 
@@ -44,5 +45,5 @@ target_include_directories(ui_dataAnnotation
 )
 
 target_link_libraries(ui_dataAnnotation
-    PRIVATE Qt6::Quick
+    PRIVATE Qt6::Quick Boost::json
 )

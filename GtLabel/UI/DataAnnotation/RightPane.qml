@@ -63,9 +63,8 @@ Item {
         }
     }
 
-    DatatypeModel {
+    AllDatatypeModel {
         id:dataTypeModel
-
     }
 
     Rectangle{
@@ -74,19 +73,26 @@ Item {
         width:root.width
         height:parent.height-y
         color:"#E5E5E5"
-        Row{
+        Column {
             anchors.fill:parent
-            Repeater{
-                model:dataTypeModel.treeNodes
-                Text{
-                    required property string tagName
-                    required property var inheritsName
-                    text:inheritsName
-                    width:50
-                    height:implicitHeight
+            Repeater {
+                model:dataTypeModel.allDatas
+                Row{
+                    required property var modelData
+                    Repeater{
+                        model:modelData.treeNodes
+                        Text{
+                            required property string tagName
+                            text:tagName
+                            width:100
+                            height:implicitHeight
+                        }
+                    }
                 }
             }
         }
+
+
     }
 
 }

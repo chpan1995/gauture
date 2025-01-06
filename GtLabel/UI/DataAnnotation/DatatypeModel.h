@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QQmlEngine>
 #include <QQmlListProperty>
+#include <boost/json.hpp>
 
 class DataNode : public QObject
 {
@@ -42,25 +43,39 @@ class DatatypeModelPrivate;
 class DatatypeModel : public QObject
 {
     Q_OBJECT
-    QML_ELEMENT
-
     Q_PROPERTY(QQmlListProperty<DataNode> treeNodes READ treeNodes NOTIFY treeNodesChanged FINAL)
 public:
-    explicit DatatypeModel(/*DatatypeModelPrivate* ptr,*/QObject *parent = nullptr);
+    explicit DatatypeModel(boost::json::value&& data,QObject *parent = nullptr);
     ~DatatypeModel();
 
     QQmlListProperty<DataNode> treeNodes();
 
-
     // test
-    void updateData();
+    void updateData(boost::json::value& v);
 
 signals:
     void treeNodesChanged();
-private:
-
+public:
     DatatypeModelPrivate* d_ptr;
+    std::uint8_t m_index {0};
     // Q_DECLARE_PRIVATE(DatatypeModel)
+};
+
+Q_DECLARE_METATYPE(DatatypeModel)
+
+class AllDatatypeModel : public QObject
+{
+    Q_OBJECT
+    QML_ELEMENT
+
+    Q_PROPERTY(QVariantList allDatas MEMBER m_allDatas NOTIFY allDatasChanged FINAL)
+public:
+    explicit AllDatatypeModel(QObject* parent=nullptr);
+    void praseData(boost::json::value&& v);
+signals:
+    void allDatasChanged();
+private:
+    QVariantList m_allDatas;
 };
 
 #endif // DATATYPEMODEL_H

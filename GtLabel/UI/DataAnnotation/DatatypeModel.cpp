@@ -2,7 +2,12 @@
 
 DataNode::DataNode(DataNode *parent):m_parent(parent)
 {
-
+    std::uint8_t deep=0;
+    while(m_parent) {
+        deep++;
+        m_parent=m_parent->m_parent;
+    }
+    setDeep(deep);
 }
 
 QString DataNode::tagName()
@@ -85,12 +90,12 @@ static void nodeClear(QQmlListProperty<DataNode> *prop)
 }
 
 
-DatatypeModel::DatatypeModel(QObject *parent)
+DatatypeModel::DatatypeModel(boost::json::value&& data,QObject *parent)
     : QObject{parent},d_ptr{new DatatypeModelPrivate}
 {
     d_ptr->m_treeNodes=new QQmlListProperty<DataNode>(this,d_ptr,
         nodeAppend,nodeCount,nodeAt,nodeClear);
-    updateData();
+    updateData(data);
 }
 
 DatatypeModel::~DatatypeModel()
@@ -104,18 +109,85 @@ QQmlListProperty<DataNode> DatatypeModel::treeNodes()
     return *d_ptr->m_treeNodes;
 }
 
-void DatatypeModel::updateData()
-{
-    DataNode* root=new DataNode();
-    root->setTagName("颗粒类型");
-    root->setDeep(0);
-    DataNode* bws=new DataNode(root);
-    bws->setTagName("病斑");
-    bws->setDeep(1);
-    bws->setInheritsName();
-    d_ptr->m_data.append(bws);
+void recursionData(DatatypeModel* model,boost::json::value& v,DataNode* parent=nullptr) {
+    boost::system::error_code ec;
+    auto obj = v.find_pointer("/value",ec);
+    DataNode* node=nullptr;
+    if(!ec && obj->if_string()) {
+        node=new DataNode(parent);
+        node->setTagName(obj->as_string().c_str());
+        node->setInheritsName();
+        model->d_ptr->m_data.append(node);
+    }
 
+    auto chrid = obj->find_pointer("/items",ec);
+    if(ec) return;
+    if(!chrid->if_array() || chrid->as_array().size()==0)
+        return;
+    for(auto& it : chrid->as_array()) {
+        recursionData(model,it,node);
+    }
+}
+
+void DatatypeModel::updateData(boost::json::value& v)
+{
+    recursionData(this,v);
+    // DataNode* root=new DataNode();
+    // root->setTagName("颗粒类型");
+    // root->setDeep(0);
+    // d_ptr->m_data.append(root);
+    // DataNode* bws=new DataNode(root);
+    // bws->setTagName("病斑");
+    // bws->setDeep(1);
+    // bws->setInheritsName();
+    // d_ptr->m_data.append(bws);
+    // DataNode* bwsty=new DataNode(bws);
+    // bwsty->setTagName("赤霉");
+    // bwsty->setDeep(2);
+    // bwsty->setInheritsName();
+    // d_ptr->m_data.append(bwsty);
+
+    qDebug()<< d_ptr->m_data.size();
     emit treeNodesChanged();
 }
 
 
+
+AllDatatypeModel::AllDatatypeModel(QObject *parent):QObject(parent)
+{
+    // test code
+    std::string json_str = R"({
+        "graintype": "wheat",
+        "items": [
+            {
+                "value": "颗粒类型",
+                "items": [
+                    {
+                        "value": "病斑",
+                        "items": [
+                            {
+                                "value": "赤霉",
+                                "items": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    })";
+    praseData(boost::json::parse(json_str));
+}
+
+void AllDatatypeModel::praseData(boost::json::value &&v)
+{
+    boost::system::error_code ec;
+    auto obj = v.find_pointer("/items",ec);
+    if(!ec && obj->if_array()) {
+        for(auto& it : obj->as_array()) {
+            DatatypeModel* node =new DatatypeModel(std::move(it));
+            m_allDatas.append(QVariant::fromValue(node));
+        }
+    }
+
+    emit allDatasChanged();
+}
