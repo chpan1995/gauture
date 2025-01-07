@@ -2,6 +2,8 @@
 
 DataNode::DataNode(DataNode *parent):m_parent(parent)
 {
+    if(parent)
+        parent->addChild(this);
 }
 
 QString DataNode::tagName()
@@ -136,10 +138,32 @@ void recursionData(DatatypeModel* model,boost::json::value& v,DataNode* parent=n
     }
 }
 
+void tagNames(DataNode* node,QStringList& data){
+    data.append(node->tagName());
+    if(node->m_child.size() <= 0) return;
+    for(auto& it:node->m_child) {
+        tagNames(it,data);
+    }
+}
+
 void DatatypeModel::updateData(boost::json::value& v)
 {
     recursionData(this,v);
     emit treeNodesChanged();
+
+    if(d_ptr->m_data.size()>0) {
+        auto root = d_ptr->m_data[0];
+        m_title=root->tagName();
+        emit titleChanged();
+        QVariantList data1;
+        for(auto& it:root->m_child) {
+            QStringList data2;
+            tagNames(it,data2);
+            data1.append(data2);
+        }
+        m_sortNodes = data1;
+        emit sortNodesChanged();
+    }
 }
 
 
@@ -211,6 +235,12 @@ AllDatatypeModel::AllDatatypeModel(QObject *parent):QObject(parent)
 
 void AllDatatypeModel::praseData(boost::json::value &&v)
 {
+    for(auto it:m_allDatas){
+        auto ptr = it.value<DatatypeModel*>();
+        ptr->deleteLater();
+    }
+    m_allDatas.clear();
+
     boost::system::error_code ec;
     auto obj = v.find_pointer("/items",ec);
     if(!ec && obj->if_array()) {

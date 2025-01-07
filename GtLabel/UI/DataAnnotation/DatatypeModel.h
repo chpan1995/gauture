@@ -28,12 +28,21 @@ public:
     void setInheritsName();
 
     int getDeep();
+
+    inline void addChild(DataNode* node) { m_child.append(node); }
+
+    inline DataNode* child(std::uint32_t index) {
+        if(index>=m_child.size()) return nullptr;
+        return m_child[index];
+}
+
 signals:
     void tagNameChanged();
     void deepChanged();
     void inheritsNameChanged();
 public:
     DataNode* m_parent;
+    QList<DataNode*> m_child;
 private:
     QString m_tagName;
     int m_deep;
@@ -46,6 +55,8 @@ class DatatypeModel : public QObject
     Q_OBJECT
     QML_ANONYMOUS
     Q_PROPERTY(QQmlListProperty<DataNode> treeNodes READ treeNodes NOTIFY treeNodesChanged FINAL)
+    Q_PROPERTY(QVariantList sortNodes MEMBER m_sortNodes NOTIFY sortNodesChanged FINAL)
+    Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged FINAL)
 public:
     explicit DatatypeModel(boost::json::value&& data,QObject *parent = nullptr);
     ~DatatypeModel();
@@ -56,9 +67,13 @@ public:
 
 signals:
     void treeNodesChanged();
+    void sortNodesChanged();
+    void titleChanged();
 public:
     DatatypeModelPrivate* d_ptr;
     std::uint8_t m_index {0};
+    QVariantList m_sortNodes {};
+    QString m_title;
     // Q_DECLARE_PRIVATE(DatatypeModel)
 };
 
@@ -77,6 +92,14 @@ signals:
     void allDatasChanged();
 private:
     QVariantList m_allDatas;
+};
+
+class AllSingleDatatypeModel:public AllDatatypeModel
+{
+    Q_OBJECT
+    QML_NAMED_ELEMENT(AnnotationSingleIndexModel)
+public:
+    // explicit AllSingleDatatypeModel(QObject* parent=nullptr);
 };
 
 #endif // DATATYPEMODEL_H

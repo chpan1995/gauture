@@ -100,8 +100,7 @@ Button {
         btn.hovered? bck.state="hovered" : bck.state=bck.forntState
     }
     onClicked:{
-        selected=true;
-
+        selected=!selected;
     }
     onSelectedChanged:{
         if(btn.selected){

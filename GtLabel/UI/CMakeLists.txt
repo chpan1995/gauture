@@ -57,6 +57,7 @@ qt_add_resources(${PROJECT_NAME}
     images/down.png
     images/selected.png
     images/fold.png
+    images/dashedline.png
 )
 
 target_include_directories(ui_main
