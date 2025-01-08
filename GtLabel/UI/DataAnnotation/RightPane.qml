@@ -1,10 +1,11 @@
+pragma ComponentBehavior: Bound
 import QtQuick
 import ui_main 1.0
 import QtQuick.Controls
 import QtQuick.Layouts
-pragma ComponentBehavior: Bound
+import QtQuick.Effects
 
-                          Item {
+Item {
     id:root
     Flow {
         id:topLeft
@@ -94,30 +95,52 @@ pragma ComponentBehavior: Bound
                         id: topNode
                         required property var modelData
                         property ButtonComplex forntBtn
+                        property bool fold: modelData.title.fold
                         width:parent.width
                         spacing:12
                         RowLayout {
                             width:topData.width
                             height:20
                             Text{
-                                text:modelData.title
+                                text:modelData.title.title
                                 font.pixelSize:16
                                 color:"#333333"
                                 Layout.fillWidth:true
                                 Layout.fillHeight:true
                             }
                             Button {
-                                Layout.preferredWidth:12
+                                id:tpbtn
+                                Layout.preferredWidth:20
                                 Layout.fillHeight:true
                                 background:Image {
                                     anchors.centerIn:parent
                                     width:sourceSize.width
                                     height:sourceSize.height
                                     source: "qrc:/images/fold.png"
+                                    rotation:topNode.fold ? 0 : 180
+                                    layer.enabled: true
+                                    layer.effect:MultiEffect {
+                                        colorization:1
+                                        brightness: 1.0
+                                        colorizationColor: {
+                                            if(tpbtn.hovered){
+                                                return "#1C76E0";
+                                            }else {
+                                                return "#666666";
+                                            }
+                                        }
+                                    }
+                                    Behavior on rotation {
+                                        NumberAnimation { duration:200 }
+                                    }
+                                }
+                                onClicked:{
+                                    modelData.fold(!modelData.title.fold);
                                 }
                             }
                         }
                         Repeater{
+                            id:topTagbtns
                             model:modelData.sortNodes
                             Column {
                                 required property var modelData
@@ -133,9 +156,19 @@ pragma ComponentBehavior: Bound
                                             id:secBtn
                                             required property var modelData
                                             required property int index
-                                            width:88
-                                            height:32
-                                            text:modelData
+                                            visible:topNode.fold
+                                            width: topNode.fold ? 88:0
+                                            height: topNode.fold ? 32:0
+                                            selected: {
+                                                if(modelData.split(",").map(item => item.trim())[2]==="true"){
+                                                    topNode.forntBtn=secBtn;
+                                                    return true;
+                                                }else {
+                                                    return false;
+                                                }
+                                            }
+                                            text:modelData.split(",").map(item => item.trim())[0]
+                                            inheritsName:modelData.split(",").map(item => item.trim())[1]
                                             font.pixelSize:14
                                             deep:index===0 ? 1 :2
                                             onClicked:{
@@ -143,6 +176,11 @@ pragma ComponentBehavior: Bound
                                                     topNode.forntBtn.selected=false
                                                 }
                                                 topNode.forntBtn=secBtn;
+                                                // console.log(inheritsName);
+
+                                            }
+                                            onSelectedChanged:{
+                                                topNode.modelData.setSelected(parent.index,index,selected);
                                             }
                                         }
                                     }
@@ -183,12 +221,19 @@ pragma ComponentBehavior: Bound
                         spacing:12
                         property int forntSelect: -1
                         property ButtonComplex fornt
+                        property Repeater repeater:btmTags
+                        property bool selected: false
                         Repeater{
+                            id:btmTags
                             model:modelData.treeNodes
                             Loader{
+                                required property var modelData
                                 required property int index
                                 required property string tagName
                                 required property int deep
+                                required property var inheritsName
+                                required property bool selected
+                                required property bool visiable
                                 sourceComponent:{
                                     index===0 ? foldBtn : tagBtn
                                 }
@@ -229,13 +274,42 @@ pragma ComponentBehavior: Bound
                 }
 
                 Button {
-                    Layout.preferredWidth:12
+                    id:btbtn
+                    Layout.preferredWidth:20
                     Layout.fillHeight:true
                     background:Image {
+                        id:btimg
                         anchors.centerIn:parent
                         width:sourceSize.width
                         height:sourceSize.height
                         source: "qrc:/images/fold.png"
+                        layer.enabled: true
+                        layer.effect:MultiEffect {
+                            colorization:1
+                            brightness: 1.0
+                            colorizationColor: {
+                                if(btbtn.hovered){
+                                    return "#1C76E0";
+                                }else {
+                                    return "#666666";
+                                }
+                            }
+                        }
+                        Behavior on rotation {
+                            NumberAnimation { duration:200 }
+                        }
+                    }
+                    onClicked:{
+                        // qml Repeater下的item 父类不是Repeater，他仅仅代表数据
+                        // console.log(parent.parent);
+                        parent.parent.parent.selected=!parent.parent.parent.selected;
+                        if(parent.parent.parent.selected){
+                            btimg.rotation=180
+                            parent.parent.parent.modelData.fold(false);
+                        }else {
+                            parent.parent.parent.modelData.fold(true);
+                            btimg.rotation=0
+                        }
                     }
                 }
             }
@@ -245,15 +319,36 @@ pragma ComponentBehavior: Bound
     Component {
         id:tagBtn
         ButtonComplex {
+            visible:parent.visiable
             id:btncpx
-            width:88
-            height:32
+            width:parent.visiable ? 88:0
+            height:parent.visiable ? 32:0
+            selected: {
+                if(parent.selected) {
+                    parent.parent.fornt=btncpx;
+                    return true;
+                }else {
+                    return false;
+                }
+            }
             text:parent.tagName
+            inheritsName: {
+                let tmp="";
+                for (let i = parent.inheritsName.length-1; i >=0 ; i--) {
+                    tmp += parent.inheritsName[i];
+                    if(i!==0) tmp+="-";
+                }
+                return tmp;
+            }
             font.pixelSize:14
             deep:parent.deep
             onClicked:{
                 if(parent.parent.fornt&&parent.parent.fornt!==btncpx) parent.parent.fornt.selected=false
                 parent.parent.fornt=btncpx;
+                // console.log(inheritsName);
+            }
+            onSelectedChanged:{
+                parent.modelData.qmlSelected(selected);
             }
         }
     }

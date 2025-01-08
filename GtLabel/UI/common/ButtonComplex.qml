@@ -6,6 +6,7 @@ Button {
     hoverEnabled:true
     required property int deep
     property bool selected: false
+    property string inheritsName:""
     background : Rectangle {
         id:bck
         property string forntState: "normal"

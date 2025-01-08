@@ -13,6 +13,8 @@ class DataNode : public QObject
     Q_PROPERTY(QString tagName READ tagName WRITE setTagName NOTIFY tagNameChanged FINAL)
     Q_PROPERTY(int deep READ deep WRITE setDeep NOTIFY deepChanged FINAL)
     Q_PROPERTY(QVariantList inheritsName READ inheritsName WRITE setInheritsName NOTIFY inheritsNameChanged FINAL)
+    Q_PROPERTY(bool selected READ selected WRITE setSelected NOTIFY selectedChanged FINAL)
+    Q_PROPERTY(bool visiable READ visiable WRITE setVisiable NOTIFY visiableChanged FINAL)
 public:
     explicit DataNode(DataNode* parent=nullptr);
 
@@ -29,17 +31,26 @@ public:
 
     int getDeep();
 
+    bool selected();
+    void setSelected(bool v);
+
+    bool visiable();
+    void setVisiable(bool v);
+
     inline void addChild(DataNode* node) { m_child.append(node); }
 
     inline DataNode* child(std::uint32_t index) {
         if(index>=m_child.size()) return nullptr;
         return m_child[index];
-}
+    }
+    Q_INVOKABLE void qmlSelected(bool v);
 
 signals:
     void tagNameChanged();
     void deepChanged();
     void inheritsNameChanged();
+    void selectedChanged();
+    void visiableChanged();
 public:
     DataNode* m_parent;
     QList<DataNode*> m_child;
@@ -47,6 +58,8 @@ private:
     QString m_tagName;
     int m_deep;
     QVariantList m_inheritsName;
+    bool m_selected {false};
+    bool m_visiable {true};
 };
 
 class DatatypeModelPrivate;
@@ -56,7 +69,8 @@ class DatatypeModel : public QObject
     QML_ANONYMOUS
     Q_PROPERTY(QQmlListProperty<DataNode> treeNodes READ treeNodes NOTIFY treeNodesChanged FINAL)
     Q_PROPERTY(QVariantList sortNodes MEMBER m_sortNodes NOTIFY sortNodesChanged FINAL)
-    Q_PROPERTY(QString title MEMBER m_title NOTIFY titleChanged FINAL)
+    Q_PROPERTY(QVariantMap title MEMBER m_title NOTIFY titleChanged FINAL)
+
 public:
     explicit DatatypeModel(boost::json::value&& data,QObject *parent = nullptr);
     ~DatatypeModel();
@@ -65,6 +79,10 @@ public:
 
     void updateData(boost::json::value& v);
 
+    // 多级菜单设置选中状态
+    Q_INVOKABLE void setSelected(int parentIndex,int index, QString v);
+
+    Q_INVOKABLE void fold(bool v);
 signals:
     void treeNodesChanged();
     void sortNodesChanged();
@@ -73,7 +91,7 @@ public:
     DatatypeModelPrivate* d_ptr;
     std::uint8_t m_index {0};
     QVariantList m_sortNodes {};
-    QString m_title;
+    QVariantMap m_title;
     // Q_DECLARE_PRIVATE(DatatypeModel)
 };
 

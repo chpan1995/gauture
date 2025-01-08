@@ -1,5 +1,7 @@
 ﻿#include "DatatypeModel.h"
 
+#include <QRegularExpression>
+
 DataNode::DataNode(DataNode *parent):m_parent(parent)
 {
     if(parent)
@@ -63,6 +65,33 @@ int DataNode::getDeep()
     }
     setDeep(deep);
     return deep;
+}
+
+bool DataNode::selected()
+{
+    return m_selected;
+}
+
+void DataNode::setSelected(bool v)
+{
+    m_selected=v;
+    emit selectedChanged();
+}
+
+bool DataNode::visiable()
+{
+    return m_visiable;
+}
+
+void DataNode::setVisiable(bool v)
+{
+    m_visiable=v;
+    emit visiableChanged();
+}
+
+void DataNode::qmlSelected(bool v)
+{
+    setSelected(v);
 }
 
 ////////////////////////////////////////////////////////
@@ -139,7 +168,12 @@ void recursionData(DatatypeModel* model,boost::json::value& v,DataNode* parent=n
 }
 
 void tagNames(DataNode* node,QStringList& data){
-    data.append(node->tagName());
+    QString inheritsName= {};
+    for(int i=node->inheritsName().size()-1;i>=0;i--) {
+        inheritsName.append(node->inheritsName().at(i).toString());
+        if(i!=0) inheritsName.append("-");
+    }
+    data.append(node->tagName()+","+inheritsName+",false"); // false 记录选中状态
     if(node->m_child.size() <= 0) return;
     for(auto& it:node->m_child) {
         tagNames(it,data);
@@ -153,7 +187,8 @@ void DatatypeModel::updateData(boost::json::value& v)
 
     if(d_ptr->m_data.size()>0) {
         auto root = d_ptr->m_data[0];
-        m_title=root->tagName();
+        m_title.insert("title",root->tagName());
+        m_title.insert("fold",true);
         emit titleChanged();
         QVariantList data1;
         for(auto& it:root->m_child) {
@@ -166,7 +201,39 @@ void DatatypeModel::updateData(boost::json::value& v)
     }
 }
 
+void DatatypeModel::setSelected(int parentIndexint,int index,QString v)
+{
+    if(m_sortNodes.size()>parentIndexint) {
+        QStringList node = m_sortNodes.at(parentIndexint).toStringList();
+        QString originalStr = node.at(index);
+        // 正则表达式：匹配第二个逗号及其后面的内容
+        QRegularExpression regex("(,[^,]*),.*");
+        // 替换匹配的部分
+        QString resultStr = originalStr.replace(regex, "\\1," + v );
+        node.replace(index,resultStr);
+        m_sortNodes.replace(parentIndexint,node);
+    }
+}
 
+void nodeVisiable(DataNode* node,bool visiable) {
+    if(!node) return;
+    node->setVisiable(visiable);
+    for(auto& it:node->m_child) {
+        nodeVisiable(it,visiable);
+    }
+}
+
+void DatatypeModel::fold(bool v)
+{
+    if(d_ptr->m_data.size()>0) {
+        auto root = d_ptr->m_data[0];
+        for(auto& it:root->m_child) {
+            nodeVisiable(it,v);
+        }
+    }
+    m_title["fold"]=v;
+    emit titleChanged();
+}
 
 AllDatatypeModel::AllDatatypeModel(QObject *parent):QObject(parent)
 {
