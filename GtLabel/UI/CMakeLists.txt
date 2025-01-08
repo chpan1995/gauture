@@ -6,9 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
+qt_standard_project_setup(REQUIRES 6.5)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick Gui)
 find_package(Threads REQUIRED)
@@ -16,6 +14,11 @@ find_package(Threads REQUIRED)
 add_subdirectory(DataAnnotation)
 
 add_library(ui_main)
+
+# 添加这行来设置 QML 策略 common 也会生成qmldir
+# 此策略的新行为是，对于模块中包含 QML 文件的每个目录
+# 都会生成一个单独的 qmldir 文件
+qt_policy(SET QTP0004 NEW)
 
 qt_add_qml_module(ui_main
     URI ui_main
@@ -33,12 +36,11 @@ qt_add_qml_module(ui_main
     SOURCES
     FrameLessView.h
     FrameLessView.cpp
-    # RESOURCES
-    # images/logo.png
+ 
 )
 
 qt_add_resources(${PROJECT_NAME}
-    "resource"
+    "images"
     FILES
     images/logo.png
     images/connect.png
@@ -71,7 +73,7 @@ target_include_directories(ui_main
 
 target_link_libraries(ui_main
     PRIVATE Qt6::Quick Qt6::Gui Threads::Threads
-    ui_dataAnnotation ui_dataAnnotationplugin
+    ui_dataAnnotation ui_dataAnnotationplugin Boost::json
 )
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")

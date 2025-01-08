@@ -61,6 +61,10 @@ Item {
                     Layout.verticalStretchFactor:1000
                     color:"#000000"
                     Layout.minimumHeight: 50
+                    // clip:true
+                    ImgView {
+                        anchors.fill:parent
+                    }
                 }
                 Rectangle {
                     Layout.fillWidth:true

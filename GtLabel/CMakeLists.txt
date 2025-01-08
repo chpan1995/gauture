@@ -3,8 +3,12 @@
 project(GtLabel VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick QuickControls2)
+
+find_package(Boost REQUIRED json)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     find_package(X11 REQUIRED)

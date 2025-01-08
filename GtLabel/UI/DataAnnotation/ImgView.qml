@@ -3,6 +3,7 @@ Flickable {
     id: imgview
     contentWidth: width
     contentHeight: height
+    clip:true
     property var currentscale: {"scaleX":1,"scaleY":1,"oldWidth":-1,"oldHeight":-1}
     // onWidthChanged : {
     //     currentscale.scaleX=width/640;
@@ -15,7 +16,7 @@ Flickable {
         id: imgname
         width: parent.width
         height: parent.height
-        color: "red"
+        color: "#000000"
         property real currentScale: 1.0
         property real scaleStep: 0.12
         property real mouseX: width/2
@@ -36,7 +37,7 @@ Flickable {
             width: parent.width
             height: parent.height
             fillMode: Image.PreserveAspectFit
-            source: "file:///home/chpan/pig.png"
+            source: "http://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"
 
             // 添加所有可能的尺寸变化监听
             onWidthChanged: updateDisplayRect();
@@ -91,7 +92,7 @@ Flickable {
                 anchors.fill: parent
                 hoverEnabled: true
 
-                acceptedButtons: Qt.LeftButton | Qt.RightButton/* Qt.NoButton*/
+                acceptedButtons: /*Qt.LeftButton | Qt.RightButton*/ Qt.NoButton
                 onPositionChanged: {
                     imgname.mouseX = mouseX / imgname.currentScale
                     imgname.mouseY = mouseY / imgname.currentScale
@@ -231,11 +232,11 @@ Flickable {
                         imgname.currentScale = Math.max(0.1, imgname.currentScale - imgname.scaleStep)
                     }
 
-                    let newContentWidth = Math.max(/*imgview.width*/640 * imgname.currentScale, /*imgview.width*/640)
-                    let newContentHeight = Math.max(/*imgview.height*/480 * imgname.currentScale, /*imgview.height*/480)
+                    let newContentWidth = Math.max(imgview.width * imgname.currentScale, imgview.width)
+                    let newContentHeight = Math.max(imgview.height * imgname.currentScale,imgview.height)
 
-                    imgname.width = /*imgview.width*/640 * imgname.currentScale
-                    imgname.height = /*imgview.height*/480 * imgname.currentScale
+                    imgname.width = imgview.width * imgname.currentScale
+                    imgname.height = imgview.height * imgname.currentScale
 
                     if (imgname.currentScale >= 1) {
                         let newMouseContentX = newContentWidth * ratioX
@@ -245,8 +246,8 @@ Flickable {
                         imgname.x = 0
                         imgname.y = 0
                     } else {
-                        imgname.x = (/*imgview.width*/640 - imgname.width) / 2
-                        imgname.y = (/*imgview.height*/480 - imgname.height) / 2
+                        imgname.x = (imgview.width - imgname.width) / 2
+                        imgname.y = (imgview.height - imgname.height) / 2
                         imgview.contentX = 0
                         imgview.contentY = 0
                     }
