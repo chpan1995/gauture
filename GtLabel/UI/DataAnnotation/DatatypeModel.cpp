@@ -2,9 +2,9 @@
 
 #include <QRegularExpression>
 
-DataNode::DataNode(DataNode *parent):m_parent(parent)
+DataNode::DataNode(DataNode *parent) : m_parent(parent)
 {
-    if(parent)
+    if (parent)
         parent->addChild(this);
 }
 
@@ -41,25 +41,28 @@ void DataNode::setInheritsName(QVariantList v)
     emit inheritsNameChanged();
 }
 
-void getAllTagname(DataNode* node,QVariantList& v){
-    if(!node) return;
+void getAllTagname(DataNode *node, QVariantList &v)
+{
+    if (!node)
+        return;
     v.append(node->tagName());
-    return getAllTagname(node->m_parent,v);
+    return getAllTagname(node->m_parent, v);
 }
 
 void DataNode::setInheritsName()
 {
-    QVariantList v {};
+    QVariantList v{};
     v.append(m_tagName);
-    getAllTagname(m_parent,v);
+    getAllTagname(m_parent, v);
     setInheritsName(v);
 }
 
 int DataNode::getDeep()
 {
-    std::uint8_t deep=0;
-    DataNode* parent = m_parent;
-    while(parent) {
+    std::uint8_t deep = 0;
+    DataNode *parent = m_parent;
+    while (parent)
+    {
         deep++;
         parent = parent->m_parent;
     }
@@ -74,7 +77,7 @@ bool DataNode::selected()
 
 void DataNode::setSelected(bool v)
 {
-    m_selected=v;
+    m_selected = v;
     emit selectedChanged();
 }
 
@@ -85,7 +88,7 @@ bool DataNode::visiable()
 
 void DataNode::setVisiable(bool v)
 {
-    m_visiable=v;
+    m_visiable = v;
     emit visiableChanged();
 }
 
@@ -96,12 +99,12 @@ void DataNode::qmlSelected(bool v)
 
 ////////////////////////////////////////////////////////
 
-class DatatypeModelPrivate{
+class DatatypeModelPrivate
+{
 public:
-    QList<DataNode*> m_data;
-    QQmlListProperty<DataNode>* m_treeNodes;
+    QList<DataNode *> m_data;
+    QQmlListProperty<DataNode> *m_treeNodes;
 };
-
 
 static void nodeAppend(QQmlListProperty<DataNode> *prop, DataNode *val)
 {
@@ -109,35 +112,35 @@ static void nodeAppend(QQmlListProperty<DataNode> *prop, DataNode *val)
     Q_UNUSED(prop);
 }
 
-static DataNode* nodeAt(QQmlListProperty<DataNode> *prop, qsizetype index)
+static DataNode *nodeAt(QQmlListProperty<DataNode> *prop, qsizetype index)
 {
-    DatatypeModelPrivate *d = static_cast<DatatypeModelPrivate*>(prop->data);
+    DatatypeModelPrivate *d = static_cast<DatatypeModelPrivate *>(prop->data);
     return d->m_data.at(index);
 }
 
 static qsizetype nodeCount(QQmlListProperty<DataNode> *prop)
 {
-    DatatypeModelPrivate *d = static_cast<DatatypeModelPrivate*>(prop->data);
+    DatatypeModelPrivate *d = static_cast<DatatypeModelPrivate *>(prop->data);
     return d->m_data.size();
 }
 
 static void nodeClear(QQmlListProperty<DataNode> *prop)
 {
-    static_cast<DatatypeModelPrivate*>(prop->data)->m_data.clear();
+    static_cast<DatatypeModelPrivate *>(prop->data)->m_data.clear();
 }
 
-
-DatatypeModel::DatatypeModel(boost::json::value&& data,QObject *parent)
-    : QObject{parent},d_ptr{new DatatypeModelPrivate}
+DatatypeModel::DatatypeModel(boost::json::value &&data, QObject *parent)
+    : QObject{parent}, d_ptr{new DatatypeModelPrivate}
 {
-    d_ptr->m_treeNodes=new QQmlListProperty<DataNode>(this,d_ptr,
-        nodeAppend,nodeCount,nodeAt,nodeClear);
+    d_ptr->m_treeNodes = new QQmlListProperty<DataNode>(this, d_ptr,
+                                                        nodeAppend, nodeCount, nodeAt, nodeClear);
     updateData(data);
 }
 
 DatatypeModel::~DatatypeModel()
 {
-    if(d_ptr->m_treeNodes) delete d_ptr->m_treeNodes;
+    if (d_ptr->m_treeNodes)
+        delete d_ptr->m_treeNodes;
     qDeleteAll(d_ptr->m_data);
 }
 
@@ -146,54 +149,65 @@ QQmlListProperty<DataNode> DatatypeModel::treeNodes()
     return *d_ptr->m_treeNodes;
 }
 
-void recursionData(DatatypeModel* model,boost::json::value& v,DataNode* parent=nullptr) {
+void recursionData(DatatypeModel *model, boost::json::value &v, DataNode *parent = nullptr)
+{
     boost::system::error_code ec;
-    auto obj = v.find_pointer("/value",ec);
-    DataNode* node=nullptr;
-    if(!ec && obj->if_string()) {
-        node=new DataNode(parent);
+    auto obj = v.find_pointer("/value", ec);
+    DataNode *node = nullptr;
+    if (!ec && obj->if_string())
+    {
+        node = new DataNode(parent);
         node->setTagName(obj->as_string().c_str());
         node->setInheritsName();
         node->getDeep();
         model->d_ptr->m_data.append(node);
     }
 
-    auto chrid = v.find_pointer("/items",ec);
-    if(ec) return;
-    if(!chrid->if_array() || chrid->as_array().size()==0)
+    auto chrid = v.find_pointer("/items", ec);
+    if (ec)
         return;
-    for(auto& it : chrid->as_array()) {
-        recursionData(model,it,node);
+    if (!chrid->if_array() || chrid->as_array().size() == 0)
+        return;
+    for (auto &it : chrid->as_array())
+    {
+        recursionData(model, it, node);
     }
 }
 
-void tagNames(DataNode* node,QStringList& data){
-    QString inheritsName= {};
-    for(int i=node->inheritsName().size()-1;i>=0;i--) {
-        inheritsName.append(node->inheritsName().at(i).toString());
-        if(i!=0) inheritsName.append("-");
-    }
-    data.append(node->tagName()+","+inheritsName+",false"); // false 记录选中状态
-    if(node->m_child.size() <= 0) return;
-    for(auto& it:node->m_child) {
-        tagNames(it,data);
-    }
-}
-
-void DatatypeModel::updateData(boost::json::value& v)
+void tagNames(DataNode *node, QStringList &data)
 {
-    recursionData(this,v);
+    QString inheritsName = {};
+    for (int i = node->inheritsName().size() - 1; i >= 0; i--)
+    {
+        inheritsName.append(node->inheritsName().at(i).toString());
+        if (i != 0)
+            inheritsName.append("-");
+    }
+    data.append(node->tagName() + "," + inheritsName + ",false"); // false 记录选中状态
+    if (node->m_child.size() <= 0)
+        return;
+    for (auto &it : node->m_child)
+    {
+        tagNames(it, data);
+    }
+}
+
+void DatatypeModel::updateData(boost::json::value &v)
+{
+    recursionData(this, v);
     emit treeNodesChanged();
 
-    if(d_ptr->m_data.size()>0) {
+    if (d_ptr->m_data.size() > 0)
+    {
         auto root = d_ptr->m_data[0];
-        m_title.insert("title",root->tagName());
-        m_title.insert("fold",true);
+        m_title.insert("title", root->tagName());
+        m_title.insert("fold", true);
         emit titleChanged();
         QVariantList data1;
-        for(auto& it:root->m_child) {
+        for (auto &it : root->m_child)
+        {
             QStringList data2;
-            tagNames(it,data2);
+            tagNames(it, data2);
             data1.append(data2);
         }
         m_sortNodes = data1;
@@ -201,41 +215,47 @@ void DatatypeModel::updateData(boost::json::value& v)
     }
 }
 
-void DatatypeModel::setSelected(int parentIndexint,int index,QString v)
+void DatatypeModel::setSelected(int parentIndexint, int index, QString v)
 {
-    if(m_sortNodes.size()>parentIndexint) {
+    if (m_sortNodes.size() > parentIndexint)
+    {
         QStringList node = m_sortNodes.at(parentIndexint).toStringList();
         QString originalStr = node.at(index);
         // 正则表达式：匹配第二个逗号及其后面的内容
         QRegularExpression regex("(,[^,]*),.*");
         // 替换匹配的部分
-        QString resultStr = originalStr.replace(regex, "\\1," + v );
-        node.replace(index,resultStr);
-        m_sortNodes.replace(parentIndexint,node);
+        QString resultStr = originalStr.replace(regex, "\\1," + v);
+        node.replace(index, resultStr);
+        m_sortNodes.replace(parentIndexint, node);
     }
 }
 
-void nodeVisiable(DataNode* node,bool visiable) {
-    if(!node) return;
+void nodeVisiable(DataNode *node, bool visiable)
+{
+    if (!node)
+        return;
     node->setVisiable(visiable);
-    for(auto& it:node->m_child) {
-        nodeVisiable(it,visiable);
+    for (auto &it : node->m_child)
+    {
+        nodeVisiable(it, visiable);
     }
 }
 
 void DatatypeModel::fold(bool v)
 {
-    if(d_ptr->m_data.size()>0) {
+    if (d_ptr->m_data.size() > 0)
+    {
         auto root = d_ptr->m_data[0];
-        for(auto& it:root->m_child) {
-            nodeVisiable(it,v);
+        for (auto &it : root->m_child)
+        {
+            nodeVisiable(it, v);
         }
     }
-    m_title["fold"]=v;
+    m_title["fold"] = v;
     emit titleChanged();
 }
 
-AllDatatypeModel::AllDatatypeModel(QObject *parent):QObject(parent)
+AllDatatypeModel::AllDatatypeModel(QObject *parent) : QObject(parent)
 {
     // test code
     std::string json_str = R"({
@@ -302,17 +322,20 @@ AllDatatypeModel::AllDatatypeModel(QObject *parent):QObject(parent)
 
 void AllDatatypeModel::praseData(boost::json::value &&v)
 {
-    for(auto it:m_allDatas){
-        auto ptr = it.value<DatatypeModel*>();
+    for (auto it : m_allDatas)
+    {
+        auto ptr = it.value<DatatypeModel *>();
         ptr->deleteLater();
     }
     m_allDatas.clear();
 
     boost::system::error_code ec;
-    auto obj = v.find_pointer("/items",ec);
-    if(!ec && obj->if_array()) {
-        for(auto& it : obj->as_array()) {
-            DatatypeModel* node =new DatatypeModel(std::move(it));
+    auto obj = v.find_pointer("/items", ec);
+    if (!ec && obj->if_array())
+    {
+        for (auto &it : obj->as_array())
+        {
+            DatatypeModel *node = new DatatypeModel(std::move(it));
             m_allDatas.append(QVariant::fromValue(node));
         }
     }

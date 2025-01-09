@@ -6,181 +6,222 @@ import QtQuick.Layouts
 import QtQuick.Effects
 
 Item {
-    id:root
+    id: root
+
     Flow {
-        id:topLeft
-        spacing:12
-        clip:false
-        width:parent.width*0.53
+        id: topLeft
+
+        clip: false
+        spacing: 12
+        width: parent.width * 0.53
+
         Text {
-            id:graintype
-            y:(parent.height-implicitHeight)/2
-            width:implicitWidth
-            height:40
-            verticalAlignment:Text.AlignVCenter
-            text:"谷物种类"
+            id: graintype
+
+            height: 40
+            text: "谷物种类"
+            verticalAlignment: Text.AlignVCenter
+            width: implicitWidth
+            y: (parent.height - implicitHeight) / 2
         }
         GCombox {
-            id:cbxgraintype
+            id: cbxgraintype
+
+            height: 40
+            leftPadding: 12
+            model: [
+                {
+                    text: "小麦",
+                    value: "wheat"
+                },
+                {
+                    text: "玉米",
+                    value: "corn"
+                }
+            ]
             textRole: "text"
             valueRole: "value"
-            leftPadding:12
-            width:144
-            height:40
-            model:[{text:"小麦",value:"wheat"},{text:"玉米",value:"corn"}]
+            width: 144
         }
-        Rectangle{
-            width:root.width
-            height:1
-            color:"#E5E5E5"
+        Rectangle {
+            color: "#E5E5E5"
+            height: 1
+            width: root.width
         }
     }
     Row {
-        height:40
-        spacing:16
-        anchors.right:parent.right
-        clip:true
-        ButtonText{
-            txtNormalColor:"#FFFFFF"
-            txtSelectedColor:"#FFFFFF"
-            normalcolor:"#1C76E0"
-            hovercolor:"#DD1C76E0"
-            text:"标注"
-            font.pixelSize:16
-            width:88
-            height:40
-            radius:4
+        anchors.right: parent.right
+        clip: true
+        height: 40
+        spacing: 16
+
+        ButtonText {
+            font.pixelSize: 16
+            height: 40
+            hovercolor: "#DD1C76E0"
+            normalcolor: "#1C76E0"
+            radius: 4
+            text: "标注"
+            txtNormalColor: "#FFFFFF"
+            txtSelectedColor: "#FFFFFF"
+            width: 88
         }
-        ButtonText{
-            txtNormalColor:"#1C76E0"
-            txtSelectedColor:"#1C76E0"
-            normalcolor:"#FFFFFF"
-            hovercolor:"#F0F0F0"
-            text:"重置"
-            font.pixelSize:16
-            width:88
-            height:40
-            radius:4
-            pBorder:{
-                "width":1,"color":"#1C76E0"
+        ButtonText {
+            font.pixelSize: 16
+            height: 40
+            hovercolor: "#F0F0F0"
+            normalcolor: "#FFFFFF"
+            pBorder: {
+                "width": 1,
+                "color": "#1C76E0"
             }
+            radius: 4
+            text: "重置"
+            txtNormalColor: "#1C76E0"
+            txtSelectedColor: "#1C76E0"
+            width: 88
         }
     }
+    Flickable {
+        id: cont
 
-    Flickable{
-        id:cont
-        y:topLeft.childrenRect.height+12
-        anchors.left:parent.left
-        width:root.width+10
-        height:parent.height-y
-        clip:true
-        contentHeight:topData.childrenRect.height+bottoData.childrenRect.height+12
-        rightMargin:12
+        anchors.left: parent.left
+        clip: true
+        contentHeight: topData.childrenRect.height + bottoData.childrenRect.height + 12
+        height: parent.height - y
+        rightMargin: 12
+        width: root.width + 10
+        y: topLeft.childrenRect.height + 12
+
         ScrollBar.vertical: ScrollBar {
-            policy:cont.contentHeight>cont.height ? ScrollBar.AlwaysOn : ScrollBar.AsNeeded
+            policy: cont.contentHeight > cont.height ? ScrollBar.AlwaysOn : ScrollBar.AsNeeded
         }
 
-        Item{
-            width:parent.width
-            height:topData.childrenRect.height+bottoData.childrenRect.height+12
+        Item {
+            height: topData.childrenRect.height + bottoData.childrenRect.height + 12
+            width: parent.width
+
             Column {
-                id:topData // 二级结构
-                anchors.left:parent.left
-                anchors.top:parent.top
-                width:parent.width
-                spacing:12
+                id: topData
+
+                // 二级结构
+                anchors.left: parent.left
+                anchors.top: parent.top
+                spacing: 12
+                width: parent.width
+
                 Repeater {
-                    model:dataTypeModel.allDatas
-                    Column{
+                    model: dataTypeModel.allDatas
+
+                    Column {
                         id: topNode
-                        required property var modelData
-                        property ButtonComplex forntBtn
+
                         property bool fold: modelData.title.fold
-                        width:parent.width
-                        spacing:12
+                        property ButtonComplex forntBtn
+                        required property var modelData
+
+                        spacing: 12
+                        width: parent.width
+
                         RowLayout {
-                            width:topData.width
-                            height:20
-                            Text{
-                                text:modelData.title.title
-                                font.pixelSize:16
-                                color:"#333333"
-                                Layout.fillWidth:true
-                                Layout.fillHeight:true
+                            height: 20
+                            width: topData.width
+
+                            Text {
+                                Layout.fillHeight: true
+                                Layout.fillWidth: true
+                                color: "#333333"
+                                font.pixelSize: 16
+                                text: modelData.title.title
                             }
                             Button {
-                                id:tpbtn
-                                Layout.preferredWidth:20
-                                Layout.fillHeight:true
-                                background:Image {
-                                    anchors.centerIn:parent
-                                    width:sourceSize.width
-                                    height:sourceSize.height
-                                    source: "qrc:/images/fold.png"
-                                    rotation:topNode.fold ? 0 : 180
+                                id: tpbtn
+
+                                Layout.fillHeight: true
+                                Layout.preferredWidth: 20
+
+                                background: Image {
+                                    anchors.centerIn: parent
+                                    height: sourceSize.height
                                     layer.enabled: true
-                                    layer.effect:MultiEffect {
-                                        colorization:1
+                                    rotation: topNode.fold ? 0 : 180
+                                    source: "qrc:/images/fold.png"
+                                    width: sourceSize.width
+
+                                    layer.effect: MultiEffect {
                                         brightness: 1.0
+                                        colorization: 1
                                         colorizationColor: {
-                                            if(tpbtn.hovered){
+                                            if (tpbtn.hovered) {
                                                 return "#1C76E0";
-                                            }else {
+                                            } else {
                                                 return "#666666";
                                             }
                                         }
                                     }
                                     Behavior on rotation {
-                                        NumberAnimation { duration:200 }
+                                        NumberAnimation {
+                                            duration: 200
+                                        }
                                     }
                                 }
-                                onClicked:{
+
+                                onClicked: {
                                     modelData.fold(!modelData.title.fold);
                                 }
                             }
                         }
-                        Repeater{
-                            id:topTagbtns
-                            model:modelData.sortNodes
+                        Repeater {
+                            id: topTagbtns
+
+                            model: modelData.sortNodes
+
                             Column {
-                                required property var modelData
                                 required property int index
-                                width:topData.width
-                                spacing:12
-                                Flow{
-                                    width:topData.width
-                                    spacing:12
-                                    Repeater{
-                                        model:modelData
+                                required property var modelData
+
+                                spacing: 12
+                                width: topData.width
+
+                                Flow {
+                                    spacing: 12
+                                    width: topData.width
+
+                                    Repeater {
+                                        model: modelData
+
                                         ButtonComplex {
-                                            id:secBtn
-                                            required property var modelData
+                                            id: secBtn
+
                                             required property int index
-                                            visible:topNode.fold
-                                            width: topNode.fold ? 88:0
-                                            height: topNode.fold ? 32:0
+                                            required property var modelData
+
+                                            deep: index === 0 ? 1 : 2
+                                            font.pixelSize: 14
+                                            height: topNode.fold ? 32 : 0
+                                            inheritsName: modelData.split(",").map(item => item.trim())[1]
                                             selected: {
-                                                if(modelData.split(",").map(item => item.trim())[2]==="true"){
-                                                    topNode.forntBtn=secBtn;
+                                                if (modelData.split(",").map(item => item.trim())[2] === "true") {
+                                                    topNode.forntBtn = secBtn;
                                                     return true;
-                                                }else {
+                                                } else {
                                                     return false;
                                                 }
                                             }
-                                            text:modelData.split(",").map(item => item.trim())[0]
-                                            inheritsName:modelData.split(",").map(item => item.trim())[1]
-                                            font.pixelSize:14
-                                            deep:index===0 ? 1 :2
-                                            onClicked:{
-                                                if(topNode.forntBtn && topNode.forntBtn!==secBtn){
-                                                    topNode.forntBtn.selected=false
+                                            text: modelData.split(",").map(item => item.trim())[0]
+                                            visible: topNode.fold
+                                            width: topNode.fold ? 88 : 0
+
+                                            onClicked: {
+                                                if (topNode.forntBtn && topNode.forntBtn !== secBtn) {
+                                                    topNode.forntBtn.selected = false;
                                                 }
-                                                topNode.forntBtn=secBtn;
+                                                topNode.forntBtn = secBtn;
                                                 // console.log(inheritsName);
 
                                             }
-                                            onSelectedChanged:{
-                                                topNode.modelData.setSelected(parent.index,index,selected);
+                                            onSelectedChanged: {
+                                                topNode.modelData.setSelected(parent.index, index, selected);
                                             }
                                         }
                                     }
@@ -188,8 +229,9 @@ Item {
                             }
                         }
                         Canvas {
-                            width: topNode.width
                             height: 2
+                            width: topNode.width
+
                             onPaint: {
                                 var ctx = getContext("2d");
                                 ctx.strokeStyle = "#D5D5D5"; // 线条颜色
@@ -205,45 +247,56 @@ Item {
                 }
             }
             Column {
-                id:bottoData // // 一级结构
-                anchors.left:parent.left
-                anchors.top:topData.bottom
-                anchors.topMargin:12
-                width:parent.width
-                spacing:12
+                id: bottoData
+
+                // // 一级结构
+                anchors.left: parent.left
+                anchors.top: topData.bottom
+                anchors.topMargin: 12
+                spacing: 12
+                width: parent.width
+
                 Repeater {
-                    model:dataSingleTypeModel.allDatas
-                    width:parent.width
-                    Flow{
-                        required property var modelData
-                        required property int index
-                        width:parent.width
-                        spacing:12
-                        property int forntSelect: -1
+                    model: dataSingleTypeModel.allDatas
+                    width: parent.width
+
+                    Flow {
                         property ButtonComplex fornt
-                        property Repeater repeater:btmTags
+                        property int forntSelect: -1
+                        required property int index
+                        required property var modelData
+                        property Repeater repeater: btmTags
                         property bool selected: false
-                        Repeater{
-                            id:btmTags
-                            model:modelData.treeNodes
-                            Loader{
-                                required property var modelData
-                                required property int index
-                                required property string tagName
+
+                        spacing: 12
+                        width: parent.width
+
+                        Repeater {
+                            id: btmTags
+
+                            model: modelData.treeNodes
+
+                            Loader {
                                 required property int deep
+                                required property int index
                                 required property var inheritsName
+                                required property var modelData
                                 required property bool selected
+                                required property string tagName
                                 required property bool visiable
-                                sourceComponent:{
-                                    index===0 ? foldBtn : tagBtn
+
+                                sourceComponent: {
+                                    index === 0 ? foldBtn : tagBtn;
                                 }
                             }
                         }
                         Canvas {
-                            width: parent.width
                             height: 2
+                            width: parent.width
+
                             onPaint: {
-                                if(parent.index===dataSingleTypeModel.allDatas.length-1) return
+                                if (parent.index === dataSingleTypeModel.allDatas.length - 1)
+                                    return;
                                 var ctx = getContext("2d");
                                 ctx.strokeStyle = "#D5D5D5"; // 线条颜色
                                 ctx.lineWidth = 1; // 线条宽度
@@ -258,108 +311,118 @@ Item {
                 }
             }
         }
-
         Component {
-            id:foldBtn
-            RowLayout {
-                property string tagName:parent.tagName
-                width:topData.width
-                height:20
-                Text{
-                    text:parent.tagName
-                    font.pixelSize:16
-                    color:"#333333"
-                    Layout.fillWidth:true
-                    Layout.fillHeight:true
-                }
+            id: foldBtn
 
+            RowLayout {
+                property string tagName: parent.tagName
+
+                height: 20
+                width: topData.width
+
+                Text {
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    color: "#333333"
+                    font.pixelSize: 16
+                    text: parent.tagName
+                }
                 Button {
-                    id:btbtn
-                    Layout.preferredWidth:20
-                    Layout.fillHeight:true
-                    background:Image {
-                        id:btimg
-                        anchors.centerIn:parent
-                        width:sourceSize.width
-                        height:sourceSize.height
-                        source: "qrc:/images/fold.png"
+                    id: btbtn
+
+                    Layout.fillHeight: true
+                    Layout.preferredWidth: 20
+
+                    background: Image {
+                        id: btimg
+
+                        anchors.centerIn: parent
+                        height: sourceSize.height
                         layer.enabled: true
-                        layer.effect:MultiEffect {
-                            colorization:1
+                        source: "qrc:/images/fold.png"
+                        width: sourceSize.width
+
+                        layer.effect: MultiEffect {
                             brightness: 1.0
+                            colorization: 1
                             colorizationColor: {
-                                if(btbtn.hovered){
+                                if (btbtn.hovered) {
                                     return "#1C76E0";
-                                }else {
+                                } else {
                                     return "#666666";
                                 }
                             }
                         }
                         Behavior on rotation {
-                            NumberAnimation { duration:200 }
+                            NumberAnimation {
+                                duration: 200
+                            }
                         }
                     }
-                    onClicked:{
+
+                    onClicked: {
                         // qml Repeater下的item 父类不是Repeater，他仅仅代表数据
                         // console.log(parent.parent);
-                        parent.parent.parent.selected=!parent.parent.parent.selected;
-                        if(parent.parent.parent.selected){
-                            btimg.rotation=180
+                        parent.parent.parent.selected = !parent.parent.parent.selected;
+                        if (parent.parent.parent.selected) {
+                            btimg.rotation = 180;
                             parent.parent.parent.modelData.fold(false);
-                        }else {
+                        } else {
                             parent.parent.parent.modelData.fold(true);
-                            btimg.rotation=0
+                            btimg.rotation = 0;
                         }
                     }
                 }
             }
         }
     }
-
     Component {
-        id:tagBtn
+        id: tagBtn
+
         ButtonComplex {
-            visible:parent.visiable
-            id:btncpx
-            width:parent.visiable ? 88:0
-            height:parent.visiable ? 32:0
-            selected: {
-                if(parent.selected) {
-                    parent.parent.fornt=btncpx;
-                    return true;
-                }else {
-                    return false;
-                }
-            }
-            text:parent.tagName
+            id: btncpx
+
+            deep: parent.deep
+            font.pixelSize: 14
+            height: parent.visiable ? 32 : 0
             inheritsName: {
-                let tmp="";
-                for (let i = parent.inheritsName.length-1; i >=0 ; i--) {
+                let tmp = "";
+                for (let i = parent.inheritsName.length - 1; i >= 0; i--) {
                     tmp += parent.inheritsName[i];
-                    if(i!==0) tmp+="-";
+                    if (i !== 0)
+                        tmp += "-";
                 }
                 return tmp;
             }
-            font.pixelSize:14
-            deep:parent.deep
-            onClicked:{
-                if(parent.parent.fornt&&parent.parent.fornt!==btncpx) parent.parent.fornt.selected=false
-                parent.parent.fornt=btncpx;
+            selected: {
+                if (parent.selected) {
+                    parent.parent.fornt = btncpx;
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            text: parent.tagName
+            visible: parent.visiable
+            width: parent.visiable ? 88 : 0
+
+            onClicked: {
+                if (parent.parent.fornt && parent.parent.fornt !== btncpx)
+                    parent.parent.fornt.selected = false;
+                parent.parent.fornt = btncpx;
                 // console.log(inheritsName);
             }
-            onSelectedChanged:{
+            onSelectedChanged: {
                 parent.modelData.qmlSelected(selected);
             }
         }
     }
-
-
     AnnotationIndexModel {
-        id:dataTypeModel
-    }
+        id: dataTypeModel
 
-    AnnotationSingleIndexModel{
-        id:dataSingleTypeModel
+    }
+    AnnotationSingleIndexModel {
+        id: dataSingleTypeModel
+
     }
 }
-
