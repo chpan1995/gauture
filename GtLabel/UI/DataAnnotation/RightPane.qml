@@ -22,7 +22,7 @@ Item {
             text: "谷物种类"
             verticalAlignment: Text.AlignVCenter
             width: implicitWidth
-            y: (parent.height - implicitHeight) / 2
+            font.pixelSize:16
         }
         GCombox {
             id: cbxgraintype
