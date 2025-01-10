@@ -27,6 +27,8 @@ qt_add_qml_module(ui_dataAnnotation
     SOURCES
     DatatypeModel.h
     DatatypeModel.cpp
+    LabelImgData.h
+    LabelImgData.cpp
 )
 
 qt_add_resources(${PROJECT_NAME}
@@ -45,4 +47,5 @@ target_include_directories(ui_dataAnnotation
 
 target_link_libraries(ui_dataAnnotation
     PRIVATE Qt6::Quick Boost::json
+    protocl
 )

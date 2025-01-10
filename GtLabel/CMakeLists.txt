@@ -14,6 +14,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     find_package(X11 REQUIRED)
 endif()
 
+add_subdirectory(core)
 add_subdirectory(UI)
 
 qt_standard_project_setup(REQUIRES 6.5)
@@ -32,6 +33,7 @@ set_target_properties(appGtLabel PROPERTIES
 target_link_libraries(appGtLabel
         PRIVATE Qt6::Quick Qt6::QuickControls2
 	ui_mainplugin
+    protocl
 )
 
 include(GNUInstallDirs)

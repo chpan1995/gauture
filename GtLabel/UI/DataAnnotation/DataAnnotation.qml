@@ -109,6 +109,9 @@ Item {
                             "width":1,
                             "color":"#1C76E0"
                         }
+                        onClicked:{
+                            qmlLabelImgData.requestImgName("p600_paddy_1736403186");
+                        }
                     }
                     Rectangle{
                         height:parent.height
@@ -186,5 +189,9 @@ Item {
             anchors.bottom:parent.bottom
             anchors.bottomMargin:24
         }
+    }
+
+    QmlLabelImgData {
+        id:qmlLabelImgData
     }
 }
