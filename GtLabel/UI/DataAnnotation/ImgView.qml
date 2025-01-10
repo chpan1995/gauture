@@ -90,6 +90,14 @@ Flickable {
             onStatusChanged: {
                 if (status === Image.Ready) {
                     imgname.currentScale=1.0
+                    imgview.contentHeight=imgview.height
+                    imgview.contentWidth=imgview.width
+                    imgname.width=imgview.width;
+                    imgname.height=imgview.height;
+
+                    imgname.x = 0;
+                    imgname.y = 0;
+
                     imgname.originalImageWidth = sourceImage.sourceSize.width;
                     imgname.originalImageHeight = sourceImage.sourceSize.height;
                     updateDisplayRect();
