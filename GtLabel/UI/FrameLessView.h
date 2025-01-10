@@ -38,6 +38,9 @@ public:
         m_resizing = false;
         m_resizeEdge=unknow;
     }
+    // Q_INVOKABLE void showMin();
+    Q_INVOKABLE void showNor();
+    Q_INVOKABLE void showMax();
 protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
@@ -51,6 +54,7 @@ private:
     Edge m_resizeEdge;
     QPoint m_dragStartPos;
     bool m_borderSelecte { true };
+    bool m_ShowMax {true};
 };
 
 #endif // FRAMELESSVIEW_H

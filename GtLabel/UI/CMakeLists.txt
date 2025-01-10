@@ -63,6 +63,7 @@ qt_add_resources(${PROJECT_NAME}
     images/dashedline.png
     images/max.png
     images/min.png
+    images/normal.png
 )
 
 target_include_directories(ui_main

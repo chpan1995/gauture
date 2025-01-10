@@ -9,6 +9,11 @@ FrameLessView::FrameLessView(QWindow *parent) : QQuickView(parent)
              Qt::WindowMinMaxButtonsHint | Qt::WindowTitleHint | Qt::WindowSystemMenuHint);
     setResizeMode(SizeRootObjectToView);
     setColor(Qt::transparent); // 背景透明
+    connect(this,&FrameLessView::windowStateChanged,this,[this](Qt::WindowState windowState){
+        if(windowState==Qt::WindowNoState && m_ShowMax) {
+            showMaximized();
+        }
+    });
     qApp->installEventFilter(this);
 }
 
@@ -53,6 +58,16 @@ void FrameLessView::moveing(QPoint start, QPoint end)
     QPoint topLeft = end - start;
     setGeometry({topLeft.x(), topLeft.y(), width(), height()});
 #endif
+}
+
+void FrameLessView::showNor() {
+    m_ShowMax=false;
+    showNormal();
+}
+
+void FrameLessView::showMax() {
+    m_ShowMax=true;
+    showMaximized();
 }
 
 void FrameLessView::mousePressEvent(QMouseEvent *event)
