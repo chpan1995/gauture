@@ -2,7 +2,9 @@ import QtQuick
 
 Flickable {
     id: imgview
-
+    property alias source: sourceImage.source
+    property alias status: sourceImage.status
+    property alias progress: sourceImage.progress
     property var currentscale: {
         "scaleX": 1,
         "scaleY": 1,
@@ -21,7 +23,7 @@ Flickable {
     //     currentscale.scaleY=height/480;
     // }
 
-    Rectangle {
+    Item {
         id: imgname
 
         property var currentPath: []
@@ -38,13 +40,12 @@ Flickable {
         property real originalImageWidth: 0
         property real scaleStep: 0.12
 
-        color: "#000000"
         height: parent.height
         width: parent.width
 
         Image {
             id: sourceImage
-
+            asynchronous:true
             // 转换显示坐标到原始图片坐标
             function displayToImageCoordinates(displayX, displayY) {
                 console.log(imgname.displayRect);
@@ -80,7 +81,7 @@ Flickable {
 
             fillMode: Image.PreserveAspectFit
             height: parent.height
-            source: "http://www.baidu.com/img/PCtm_d9c8750bed0b3c7d089fa7d55720d6cf.png"
+            // source: ""
             width: parent.width
 
             onHeightChanged: updateDisplayRect()
@@ -88,6 +89,7 @@ Flickable {
             // 图片加载完成后获取原始尺寸
             onStatusChanged: {
                 if (status === Image.Ready) {
+                    imgname.currentScale=1.0
                     imgname.originalImageWidth = sourceImage.sourceSize.width;
                     imgname.originalImageHeight = sourceImage.sourceSize.height;
                     updateDisplayRect();

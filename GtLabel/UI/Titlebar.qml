@@ -60,12 +60,40 @@ Item {
         anchors.right: parent.right
         anchors.rightMargin: 20
         height: parent.height
-        spacing: 32
+        spacing: 24
         width: implicitWidth
 
         ButtonImg {
-            id: contstate
+            id: min
 
+            anchors.verticalCenter: parent.verticalCenter
+            height: 40
+            hovercolor: "#55FFFFFF"
+            radius: 8
+            url: "qrc:/images/min.png"
+            width: 40
+            onClicked:{
+                view.showMinimized();
+            }
+        }
+
+        ButtonImg {
+            id: max
+
+            anchors.verticalCenter: parent.verticalCenter
+            height: 40
+            hovercolor: "#55FFFFFF"
+            radius: 8
+            url: "qrc:/images/max.png"
+            width: 40
+            onClicked:{
+                view.showMaximized();
+            }
+        }
+
+        ButtonImg {
+            id: contstate
+            visible:false
             anchors.verticalCenter: parent.verticalCenter
             height: 40
             hovercolor: "#55FFFFFF"
@@ -75,7 +103,6 @@ Item {
         }
         ButtonImg {
             id: quit
-
             anchors.verticalCenter: parent.verticalCenter
             height: 40
             hovercolor: "#55FFFFFF"

@@ -31,6 +31,7 @@ qt_add_qml_module(ui_main
         common/GCombox.qml
         common/ButtonText.qml
         common/ButtonComplex.qml
+        common/GProgressBar.qml
     OUTPUT_DIRECTORY
         ui_main
     SOURCES
@@ -60,6 +61,8 @@ qt_add_resources(${PROJECT_NAME}
     images/selected.png
     images/fold.png
     images/dashedline.png
+    images/max.png
+    images/min.png
 )
 
 target_include_directories(ui_main

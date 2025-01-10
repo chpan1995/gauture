@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
     // view->engine()->addImportPath(":/");
     view->engine()->addImportPath(":/qt/qml/");
     view->rootContext()->setContextProperty("view", view);
-    view->loadFromModule("ui_main","Main");
+    view->loadFromModule("ui_main", "Main");
     view->setWidth(1294);
     view->setHeight(800);
     view->showNormal();
