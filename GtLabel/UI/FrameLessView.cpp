@@ -3,6 +3,11 @@
 #include <QTimer>
 #include <QCursor>
 
+#ifdef Q_OS_WIN
+#include <windows.h>
+#include <dwmapi.h>
+#endif
+
 FrameLessView::FrameLessView(QWindow *parent) : QQuickView(parent)
 {
     setFlags(Qt::CustomizeWindowHint | Qt::Window | Qt::FramelessWindowHint |
@@ -197,7 +202,36 @@ bool FrameLessView::eventFilter(QObject *watched, QEvent *event)
             }
         }
     }
+#ifdef Q_OS_WIN
+    if (event->type() == QEvent::WinIdChange) {
+        initializeWindow();
+        return false;
+    }
+
+    if (event->type() == QEvent::Show) {
+        initializeWindow();
+        return false;
+    }
+#endif
     return QQuickView::eventFilter(watched, event);
+}
+
+void FrameLessView::initializeWindow() {
+#ifdef Q_OS_WIN
+    // 获取窗口句柄
+    HWND hwnd = (HWND)winId();
+
+    // 启用 Snap Layout
+    BOOL enable = TRUE;
+    DwmSetWindowAttribute(hwnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &enable, sizeof(enable));
+
+    // 设置圆角和 Mica 效果
+    DWM_SYSTEMBACKDROP_TYPE backdropType = DWMSBT_MAINWINDOW;
+    DwmSetWindowAttribute(hwnd, DWMWA_SYSTEMBACKDROP_TYPE, &backdropType, sizeof(backdropType));
+
+    // 安装原生事件过滤器
+    installEventFilter(this);
+#endif
 }
 
 std::optional<FrameLessView::Edge> FrameLessView::isInEdge(const QPoint &pos) const
