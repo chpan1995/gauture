@@ -1,4 +1,4 @@
-#ifndef LABELIMGDATA_H
+﻿#ifndef LABELIMGDATA_H
 #define LABELIMGDATA_H
 
 #include <QObject>

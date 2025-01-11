@@ -1,11 +1,12 @@
-#include "LabelImgData.h"
+﻿#include "LabelImgData.h"
+#include <boost/asio.hpp>
 
 LabelImgData::LabelImgData(QObject *parent)
     : QObject(parent)
 {
     m_HttpClient = std::make_shared<HttpClient>(m_ioc);
     m_thd = std::thread([this] {
-        boost::asio::io_context::work work(m_ioc);
+        boost::asio::executor_work_guard<boost::asio::io_context::executor_type> work(boost::asio::make_work_guard(m_ioc));
         m_ioc.run();
     });
 }

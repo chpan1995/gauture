@@ -1,4 +1,4 @@
-pragma ComponentBehavior: Bound
+﻿pragma ComponentBehavior: Bound
 import QtQuick
 import ui_main 1.0
 import QtQuick.Layouts
@@ -110,7 +110,7 @@ Item {
                             "color":"#1C76E0"
                         }
                         onClicked:{
-                            qmlLabelImgData.requestImgName("p600_paddy_1736403186");
+                            qmlLabelImgData.requestImgInfo();
                         }
                     }
                     Rectangle{

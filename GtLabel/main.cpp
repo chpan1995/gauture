@@ -2,6 +2,7 @@
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickStyle>
+#include <QTimer>
 
 #include "UI/FrameLessView.h"
 
@@ -17,7 +18,8 @@ int main(int argc, char *argv[])
     view->loadFromModule("ui_main", "Main");
     view->setWidth(1294);
     view->setHeight(800);
-    view->showMaximized();
+    view->showNormal();
+    QTimer::singleShot(0,[&]{view->showMaximized();});
     QObject::connect(view->engine(), &QQmlEngine::quit, qApp, &QCoreApplication::quit);
     return app.exec();
 }

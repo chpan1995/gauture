@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+﻿cmake_minimum_required(VERSION 3.16)
 
 project(protocl VERSION 0.1 LANGUAGES CXX)
 
@@ -8,6 +8,10 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_package(Boost REQUIRED json)
 find_package(Threads REQUIRED)
+
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  find_library(WS2_32_LIBRARY ws2_32)
+endif()
 
 add_subdirectory(demo)
 
@@ -30,3 +34,8 @@ target_link_libraries(${PROJECT_NAME}
         PRIVATE Boost::json Threads::Threads
 )
 
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+  target_link_libraries(${PROJECT_NAME}
+      PRIVATE ${WS2_32_LIBRARY}
+  )
+endif()
