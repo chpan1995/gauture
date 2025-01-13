@@ -111,6 +111,9 @@ Item {
                         }
                         onClicked:{
                             qmlLabelImgData.requestImgInfo();
+                            taskInfoPop.open();
+                            tm.start();
+
                         }
                     }
                     Rectangle{
@@ -191,6 +194,20 @@ Item {
         }
     }
 
+    TaskInfo{
+        id:taskInfoPop
+        taskmodel:qmlLabelImgData.taskInfoModel // C++ to qml 必须为指针才能取他的属性
+        width:690
+        height:680
+    }
+
+    Timer {
+        id:tm
+        interval:1000
+        onTriggered:{
+            console.log(qmlLabelImgData);
+        }
+    }
     QmlLabelImgData {
         id:qmlLabelImgData
     }

@@ -22,6 +22,7 @@ qt_add_qml_module(ui_dataAnnotation
         DataAnnotation.qml
         ImgView.qml
         RightPane.qml
+        TaskInfo.qml
     OUTPUT_DIRECTORY
         ui_dataAnnotation
     SOURCES
@@ -29,6 +30,11 @@ qt_add_qml_module(ui_dataAnnotation
     DatatypeModel.cpp
     LabelImgData.h
     LabelImgData.cpp
+    TaskInfoModel.h
+    TaskInfoModel.cpp
+    TaskInfoItem.h
+    TaskInfoItem.cpp
+    SOURCES
 )
 
 qt_add_resources(${PROJECT_NAME}

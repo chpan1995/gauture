@@ -2,11 +2,11 @@
 #include <boost/asio.hpp>
 
 LabelImgData::LabelImgData(QObject *parent)
-    : QObject(parent)
+    : QObject(parent),m_taskInfoModel(new TaskInfoModel(this))
 {
     m_HttpClient = std::make_shared<HttpClient>(m_ioc);
     m_thd = std::thread([this] {
-        boost::asio::executor_work_guard<boost::asio::io_context::executor_type> work(boost::asio::make_work_guard(m_ioc));
+        auto work(boost::asio::make_work_guard(m_ioc));
         m_ioc.run();
     });
 }
@@ -29,24 +29,37 @@ void LabelImgData::requestImgInfo()
                         auto v = praseRespose(response, lenth);
                         if (v.has_value()) {
                             auto objArry = v.value().find_pointer("/message", ec);
+                            QList<std::tuple<QString,QString,
+                                             unsigned int,unsigned int,unsigned int>> das;
                             if (!ec && objArry->is_array()) {
+                                QString taskName,taskNameCreateTime;
+                                unsigned int taskImgCount;
+                                std::tuple<QString,QString,
+                                           unsigned int,unsigned int,unsigned int> tp;
                                 for (auto &obj : objArry->as_array()) {
                                     auto count = obj.find_pointer("/count", ec);
                                     if (!ec && count->if_int64()) {
-                                        qDebug() << count->get_int64();
+                                        taskImgCount = count->get_int64();
                                     }
 
                                     auto create_time = obj.find_pointer("/create_time", ec);
                                     if (!ec && create_time->is_string()) {
-                                        qDebug() << create_time->get_string().c_str();
+                                        taskNameCreateTime = create_time->get_string().c_str();
                                     }
 
                                     auto name = obj.find_pointer("/name", ec);
                                     if (!ec && name->is_string()) {
-                                        qDebug() << name->get_string().c_str();
+                                        taskName = name->get_string().c_str();
                                     }
+                                    tp={taskName,taskNameCreateTime,taskImgCount,0,0};
+                                    das.append(tp);
                                 }
+
+                                m_taskInfoModel->setDatas(das);
+                                m_model=QVariant::fromValue(m_taskInfoModel);
+                                emit taskInfoModelChanged();
                             }
+
                         }
                     }));
 }
