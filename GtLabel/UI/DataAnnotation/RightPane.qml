@@ -60,6 +60,7 @@ Item {
             height: 40
             hovercolor: "#DD1C76E0"
             normalcolor: "#1C76E0"
+            selectedcolor:"#1C76E0"
             radius: 4
             text: "标注"
             txtNormalColor: "#FFFFFF"
@@ -69,8 +70,9 @@ Item {
         ButtonText {
             font.pixelSize: 16
             height: 40
-            hovercolor: "#F0F0F0"
+            hovercolor: "#E8F1FC"
             normalcolor: "#FFFFFF"
+            selectedcolor:"#CCCCCC"
             pBorder: {
                 "width": 1,
                 "color": "#1C76E0"

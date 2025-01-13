@@ -66,6 +66,7 @@ Item {
                     ImgView {
                         id:imgview
                         anchors.fill:parent
+                        source:qmlLabelImgData.imgName
                         onStatusChanged:{
                             if (status === Image.Ready) {
 
@@ -100,7 +101,7 @@ Item {
                         width:114
                         height:40
                         urlNormal:"qrc:/images/requireData.png"
-                        hovercolor:"#EEEEEE"
+                        hovercolor:"#E8F1FC"
                         text:"获取数据"
                         radius:4
                         txtNormalColor:"#1C76E0"
@@ -112,8 +113,7 @@ Item {
                         onClicked:{
                             qmlLabelImgData.requestImgInfo();
                             taskInfoPop.open();
-                            tm.start();
-
+                            taskInfoPop.loadStatus="loading"
                         }
                     }
                     Rectangle{
@@ -125,11 +125,36 @@ Item {
                             width:childrenRect.width
                             spacing:16
                             Repeater {
-                                model:["tail.png","front10.png","front.png",
-                                    "next.png","next10.png","end.png"]
+                                model:ListModel {
+                                    ListElement {
+                                        name:"tail.png"
+                                        value:LabelImgNamespace.PageGo.Tail
+                                    }
+                                    ListElement {
+                                        name:"front10.png"
+                                        value:LabelImgNamespace.PageGo.Front10
+                                    }
+                                    ListElement {
+                                        name:"front.png"
+                                        value:LabelImgNamespace.PageGo.Front
+                                    }
+                                    ListElement {
+                                        name:"next.png"
+                                        value:LabelImgNamespace.PageGo.Next
+                                    }
+                                    ListElement {
+                                        name:"next10.png"
+                                        value:LabelImgNamespace.PageGo.Next10
+                                    }
+                                    ListElement {
+                                        name:"end.png"
+                                        value:LabelImgNamespace.PageGo.End
+                                    }
+                                }
                                 Button {
                                     id:btn
-                                    required property string modelData
+                                    required property string name
+                                    required property LabelImgNamespace.PageGo value
                                     property string imageColor: "#666666"
                                     width:56
                                     height:40
@@ -140,7 +165,7 @@ Item {
                                             anchors.centerIn:parent
                                             layer.enabled: true
                                             smooth: true
-                                            source: "qrc:/images/" + btn.modelData
+                                            source: "qrc:/images/" + btn.name
                                             width:sourceSize.width
                                             height:sourceSize.height
                                             layer.effect:MultiEffect {
@@ -161,9 +186,9 @@ Item {
                                         }
                                     }
                                     onClicked:{
-                                        switch(btn.modelData){
+                                        switch(btn.name){
                                             case "next.png":{
-                                                imgview.source="http://192.168.1.108:8082/uploads/p600/paddy/20241210/G800-HY-202412101645-199.830/21-GQ-P600-8888_6_20241210170232_82_00_99_UAUBDADB_4_4707-2507-303-151-4713-2501-310-150_15-15-15-15_13-10.png"
+                                                qmlLabelImgData.gotoImgs(value);
                                             }
                                             default:break;
                                         }
@@ -197,17 +222,11 @@ Item {
     TaskInfo{
         id:taskInfoPop
         taskmodel:qmlLabelImgData.taskInfoModel // C++ to qml 必须为指针才能取他的属性
-        width:690
+        width:960
         height:680
+
     }
 
-    Timer {
-        id:tm
-        interval:1000
-        onTriggered:{
-            console.log(qmlLabelImgData);
-        }
-    }
     QmlLabelImgData {
         id:qmlLabelImgData
     }

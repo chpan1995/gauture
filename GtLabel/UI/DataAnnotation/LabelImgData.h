@@ -7,8 +7,26 @@
 #include <thread>
 
 #include "TaskInfoModel.h"
-#include "TaskInfoItem.h"
 #include "HttpClient.h"
+
+namespace LabelImgNamespace {
+Q_NAMESPACE
+QML_ELEMENT
+enum class RequestMethod {
+    TasksInfo,
+};
+enum class PageGo:std::uint8_t {
+    Tail,
+    Front10,
+    Front,
+    Next,
+    Next10,
+    End
+};
+
+Q_ENUM_NS(RequestMethod)
+Q_ENUM_NS(PageGo)
+}
 
 class LabelImgData : public QObject
 {
@@ -17,13 +35,19 @@ class LabelImgData : public QObject
     QML_NAMED_ELEMENT(QmlLabelImgData)
 
     Q_PROPERTY(QVariant taskInfoModel MEMBER m_model NOTIFY taskInfoModelChanged FINAL)
+    Q_PROPERTY(QString imgName MEMBER m_imgName NOTIFY imgNameChanged FINAL)
 public:
+
     explicit LabelImgData(QObject* parent=nullptr);
     ~LabelImgData();
     Q_INVOKABLE void requestImgInfo();
     Q_INVOKABLE void requestImgName(QString name);
+    Q_INVOKABLE void gotoImgs(LabelImgNamespace::PageGo v);
 signals:
     void taskInfoModelChanged();
+    void imgNameChanged();
+
+    void request(bool v,LabelImgNamespace::RequestMethod method,QString s="");
 private:
     std::optional<boost::json::value> praseRespose(const char *response, std::size_t lenth);
 private:
@@ -31,8 +55,10 @@ private:
     boost::asio::io_context m_ioc;
     std::thread m_thd;
     QStringList m_imgNames;
+    QString m_imgName;
     TaskInfoModel* m_taskInfoModel;
     QVariant m_model;
+    qint32 m_currentIndex {0};
 };
 
 Q_DECLARE_METATYPE(TaskInfoModel)

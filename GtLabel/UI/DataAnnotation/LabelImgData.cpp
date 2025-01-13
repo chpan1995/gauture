@@ -9,6 +9,7 @@ LabelImgData::LabelImgData(QObject *parent)
         auto work(boost::asio::make_work_guard(m_ioc));
         m_ioc.run();
     });
+    qRegisterMetaType<LabelImgNamespace::RequestMethod>("RequestMethod");
 }
 
 LabelImgData::~LabelImgData()
@@ -28,6 +29,7 @@ void LabelImgData::requestImgInfo()
                         boost::system::error_code ec;
                         auto v = praseRespose(response, lenth);
                         if (v.has_value()) {
+                            emit request(true,LabelImgNamespace::RequestMethod::TasksInfo);
                             auto objArry = v.value().find_pointer("/message", ec);
                             QList<std::tuple<QString,QString,
                                              unsigned int,unsigned int,unsigned int>> das;
@@ -59,7 +61,8 @@ void LabelImgData::requestImgInfo()
                                 m_model=QVariant::fromValue(m_taskInfoModel);
                                 emit taskInfoModelChanged();
                             }
-
+                        }else {
+                            emit request(false,LabelImgNamespace::RequestMethod::TasksInfo);
                         }
                     }));
 }
@@ -85,6 +88,11 @@ void LabelImgData::requestImgName(QString name)
                                          }));
 }
 
+void LabelImgData::gotoImgs(LabelImgNamespace::PageGo v) {
+    m_imgName=m_imgNames[m_currentIndex++];
+    emit imgNameChanged();
+}
+
 std::optional<boost::json::value> LabelImgData::praseRespose(const char *response, std::size_t lenth)
 {
     boost::json::value v;
@@ -93,14 +101,14 @@ std::optional<boost::json::value> LabelImgData::praseRespose(const char *respons
     p.write(response, lenth, ec);
     if (ec) {
         qDebug() << "-> parse json failed";
-        return {};
+        return std::nullopt;
     } else {
         v = p.release();
         auto err = v.find_pointer("/eMessage", ec);
         if (!ec) {
             // 请求错误
             qDebug() << err->get_string().c_str();
-            return {};
+            return std::nullopt;
         }
     }
     return v;

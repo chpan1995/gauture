@@ -227,6 +227,7 @@ void DatatypeModel::setSelected(int parentIndexint, int index, QString v)
         QString resultStr = originalStr.replace(regex, "\\1," + v);
         node.replace(index, resultStr);
         m_sortNodes.replace(parentIndexint, node);
+        qDebug() << m_sortNodes[parentIndexint];
     }
 }
 
