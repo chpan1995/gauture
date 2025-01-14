@@ -92,8 +92,29 @@ void DataNode::setVisiable(bool v)
     emit visiableChanged();
 }
 
+void setNodesele(DataNode *node)
+{
+    node->setSelected(false);
+    if (node->m_child.size() <= 0)
+        return;
+    for (auto &it : node->m_child)
+    {
+        setNodesele(it);
+    }
+}
+
+
 void DataNode::qmlSelected(bool v)
 {
+    DataNode* root = nullptr;
+    DataNode* tmp=m_parent;
+    while(tmp) {
+        if(tmp->m_parent)
+            tmp=tmp->m_parent;
+        else break;
+    }
+    root=tmp;
+    setNodesele(root);
     setSelected(v);
 }
 
@@ -227,7 +248,28 @@ void DatatypeModel::setSelected(int parentIndexint, int index, QString v)
         QString resultStr = originalStr.replace(regex, "\\1," + v);
         node.replace(index, resultStr);
         m_sortNodes.replace(parentIndexint, node);
-        qDebug() << m_sortNodes[parentIndexint];
+
+        // 更改非index下的选中状态为false  //相同的parentIndexint
+        for(int i=0;i<node.length();i++){
+            if(i==index) continue;
+            QString originalStr=node[i];
+            QRegularExpression regex("(,[^,]*),.*");
+            QString resultStr = originalStr.replace(regex, "\\1," + QString("false"));
+            node.replace(i, resultStr);
+            m_sortNodes.replace(parentIndexint, node);
+        }
+        for(int i=0;i<m_sortNodes.size();i++) {  //不同的parentIndexint
+            if(i==parentIndexint) continue;
+            QStringList node = m_sortNodes.at(i).toStringList();
+            for(int j=0;j<node.length();j++){
+                QString originalStr=node[j];
+                QRegularExpression regex("(,[^,]*),.*");
+                QString resultStr = originalStr.replace(regex, "\\1," + QString("false"));
+                node.replace(j, resultStr);
+            }
+            m_sortNodes.replace(i, node);
+        }
+        emit sortNodesChanged();
     }
 }
 
@@ -295,14 +337,7 @@ AllDatatypeModel::AllDatatypeModel(QObject *parent) : QObject(parent)
                     {
                         "value": "破损",
                         "items": [
-                            {
-                                "value": "二分之一",
-                                "items": []
-                            },
-                            {
-                                "value": "四分之三",
-                                "items": []
-                            }
+
                         ]
                     },
                     {

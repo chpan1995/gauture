@@ -7,7 +7,7 @@ import QtQuick.Effects
 
 Item {
     id: root
-
+    signal complexBtnClicked(ButtonComplex complexBtn,bool selected,string inheritsName);
     Flow {
         id: topLeft
 
@@ -194,17 +194,15 @@ Item {
 
                                         ButtonComplex {
                                             id: secBtn
-
                                             required property int index
                                             required property var modelData
-
                                             deep: index === 0 ? 1 : 2
                                             font.pixelSize: 14
                                             height: topNode.fold ? 32 : 0
                                             inheritsName: modelData.split(",").map(item => item.trim())[1]
                                             selected: {
                                                 if (modelData.split(",").map(item => item.trim())[2] === "true") {
-                                                    topNode.forntBtn = secBtn;
+                                                    // topNode.forntBtn = secBtn;
                                                     return true;
                                                 } else {
                                                     return false;
@@ -215,15 +213,8 @@ Item {
                                             width: topNode.fold ? 88 : 0
 
                                             onClicked: {
-                                                if (topNode.forntBtn && topNode.forntBtn !== secBtn) {
-                                                    topNode.forntBtn.selected = false;
-                                                }
-                                                topNode.forntBtn = secBtn;
-                                                // console.log(inheritsName);
-
-                                            }
-                                            onSelectedChanged: {
-                                                topNode.modelData.setSelected(parent.index, index, selected);
+                                                complexBtnClicked(secBtn,!selected,inheritsName);
+                                                topNode.modelData.setSelected(parent.parent.index, secBtn.index, !secBtn.selected);
                                             }
                                         }
                                     }
@@ -380,10 +371,8 @@ Item {
     }
     Component {
         id: tagBtn
-
         ButtonComplex {
             id: btncpx
-
             deep: parent.deep
             font.pixelSize: 14
             height: parent.visiable ? 32 : 0
@@ -398,7 +387,6 @@ Item {
             }
             selected: {
                 if (parent.selected) {
-                    parent.parent.fornt = btncpx;
                     return true;
                 } else {
                     return false;
@@ -409,13 +397,7 @@ Item {
             width: parent.visiable ? 88 : 0
 
             onClicked: {
-                if (parent.parent.fornt && parent.parent.fornt !== btncpx)
-                    parent.parent.fornt.selected = false;
-                parent.parent.fornt = btncpx;
-                // console.log(inheritsName);
-            }
-            onSelectedChanged: {
-                parent.modelData.qmlSelected(selected);
+                parent.modelData.qmlSelected(!selected);
             }
         }
     }

@@ -87,6 +87,21 @@ Item {
                         anchors.bottom:parent.bottom
                         width:parent.width
                     }
+
+                    Flow {
+                        width:parent.width
+                        Repeater {
+                            model:qmlLabelTags
+                            Text {
+                                required property string inherName
+                                width:implicitWidth
+                                height:implicitHeight
+                                text:inherName
+                                color:"red"
+                            }
+                        }
+                    }
+
                 }
                 Rectangle {
                     Layout.fillWidth:true
@@ -208,6 +223,7 @@ Item {
         }
 
         RightPane {
+            id:rithPane
             anchors.right:parent.right
             anchors.rightMargin:24
             anchors.top:parent.top
@@ -216,7 +232,15 @@ Item {
             anchors.leftMargin:30
             anchors.bottom:parent.bottom
             anchors.bottomMargin:24
+
         }
+
+        Connections {
+               target: rithPane
+               function onComplexBtnClicked(complexBtn,selected,inheritsName) {
+                   qmlLabelTags.appendRow("",inheritsName,1,2,"",1);
+               }
+           }
     }
 
     TaskInfo{
@@ -224,10 +248,13 @@ Item {
         taskmodel:qmlLabelImgData.taskInfoModel // C++ to qml 必须为指针才能取他的属性
         width:960
         height:680
-
     }
 
     QmlLabelImgData {
         id:qmlLabelImgData
+    }
+
+    QmlLabelTags {
+        id:qmlLabelTags
     }
 }

@@ -34,6 +34,8 @@ qt_add_qml_module(ui_dataAnnotation
     TaskInfoModel.cpp
     TaskInfoItem.h
     TaskInfoItem.cpp
+    LabelTags.h
+    LabelTags.cpp
     SOURCES
 )
 
