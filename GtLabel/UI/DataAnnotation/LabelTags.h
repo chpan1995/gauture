@@ -22,7 +22,7 @@ public:
     };
 
     explicit LabelTags(QObject *parent = nullptr);
-    Q_INVOKABLE void removeRow(int row);
+    Q_INVOKABLE void removeRow(QString sapType,QString inherName,int trait);
     Q_INVOKABLE void appendRow(QString sapType,QString inherName,int firstIndex,int secondIndex
                                ,QString topName,int trait);
 protected:

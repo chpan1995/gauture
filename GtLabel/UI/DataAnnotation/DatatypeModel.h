@@ -111,6 +111,7 @@ signals:
 private:
     QVariantList m_allDatas;
 };
+Q_DECLARE_METATYPE(AllDatatypeModel)
 
 class AllSingleDatatypeModel:public AllDatatypeModel
 {
@@ -118,6 +119,19 @@ class AllSingleDatatypeModel:public AllDatatypeModel
     QML_NAMED_ELEMENT(AnnotationSingleIndexModel)
 public:
     // explicit AllSingleDatatypeModel(QObject* parent=nullptr);
+};
+Q_DECLARE_METATYPE(AllSingleDatatypeModel)
+
+class DatatypeModelManage:public QObject
+{
+    Q_OBJECT
+    QML_NAMED_ELEMENT(QmlDatatypeModelManage)
+public:
+    explicit DatatypeModelManage(QObject* parent=nullptr);
+    Q_INVOKABLE QVariant getAllDataModel(QString type);
+    Q_INVOKABLE QVariant getAllSingleDataModel(QString type);
+private:
+    QHash<QString,std::pair<AllDatatypeModel*,AllSingleDatatypeModel*>> m_tagModels;
 };
 
 #endif // DATATYPEMODEL_H

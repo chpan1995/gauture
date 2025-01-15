@@ -237,8 +237,9 @@ Item {
 
         Connections {
                target: rithPane
-               function onComplexBtnClicked(complexBtn,selected,inheritsName) {
-                   qmlLabelTags.appendRow("",inheritsName,1,2,"",1);
+               function onComplexBtnClicked(sapType,inherName,firstIndex,secondIndex,topName,trait,selected) {
+                   if(selected) qmlLabelTags.appendRow(sapType,inherName,firstIndex,secondIndex,topName,trait);
+                   else qmlLabelTags.removeRow(sapType,inherName,trait);
                }
            }
     }

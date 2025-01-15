@@ -23,6 +23,8 @@ qt_add_qml_module(ui_dataAnnotation
         ImgView.qml
         RightPane.qml
         TaskInfo.qml
+        TagPane.qml
+        componentCreationTagPane.js
     OUTPUT_DIRECTORY
         ui_dataAnnotation
     SOURCES

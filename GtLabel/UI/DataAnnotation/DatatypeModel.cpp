@@ -300,6 +300,31 @@ void DatatypeModel::fold(bool v)
 
 AllDatatypeModel::AllDatatypeModel(QObject *parent) : QObject(parent)
 {
+}
+
+void AllDatatypeModel::praseData(boost::json::value &&v)
+{
+    for (auto it : m_allDatas)
+    {
+        auto ptr = it.value<DatatypeModel *>();
+        ptr->deleteLater();
+    }
+    m_allDatas.clear();
+
+    boost::system::error_code ec;
+    auto obj = v.find_pointer("/items", ec);
+    if (!ec && obj->if_array())
+    {
+        for (auto &it : obj->as_array())
+        {
+            DatatypeModel *node = new DatatypeModel(std::move(it));
+            m_allDatas.append(QVariant::fromValue(node));
+        }
+    }
+    emit allDatasChanged();
+}
+
+DatatypeModelManage::DatatypeModelManage(QObject *parent):QObject(parent) {
     // test code
     std::string json_str = R"({
         "graintype": "wheat",
@@ -328,6 +353,15 @@ AllDatatypeModel::AllDatatypeModel(QObject *parent) : QObject(parent)
                                 "items": []
                             }
                         ]
+                    },
+                    {
+                        "value": "wheat",
+                        "items": [
+                            {
+                                "value": "小麦",
+                                "items": []
+                            }
+                        ]
                     }
                 ]
             },
@@ -353,28 +387,122 @@ AllDatatypeModel::AllDatatypeModel(QObject *parent) : QObject(parent)
             }
         ]
     })";
-    praseData(boost::json::parse(json_str));
+    std::string json_str2 = R"({
+        "graintype": "wheat",
+        "items": [
+            {
+                "value": "不完善颜色",
+                "items": [
+                    {
+                        "value": "灰绿色",
+                        "items": [
+                        ]
+                    },
+                    {
+                        "value": "白色",
+                        "items": [
+                        ]
+                    }
+                ]
+            },
+            {
+                "value": "图像位置",
+                "items": [
+                    {
+                        "value": "左侧",
+                        "items": [
+
+                        ]
+                    },
+                    {
+                        "value": "右侧",
+                        "items": [
+                        ]
+                    },
+                    {
+                        "value": "中间",
+                        "items": [
+                        ]
+                    }
+                ]
+            }
+        ]
+    })";
+    std::string json_str3 = R"({
+        "graintype": "wheat",
+        "items": [
+            {
+                "value": "颗粒类型",
+                "items": [
+                    {
+                        "value": "生芽",
+                        "items": [
+                            {
+                                "value": "胡须",
+                                "items": []
+                            }
+                        ]
+                    },
+                    {
+                        "value": "corn",
+                        "items": [
+                            {
+                                "value": "玉米",
+                                "items": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "value": "自定义类型",
+                "items": [
+                    {
+                        "value": "破损",
+                        "items": [
+
+                        ]
+                    },
+                    {
+                        "value": "热损伤",
+                        "items": [
+                            {
+                                "value": "自然",
+                                "items": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    })";
+    // praseData(boost::json::parse(json_str));
+    AllDatatypeModel* wheatAllDatatypeModel = new AllDatatypeModel;
+    wheatAllDatatypeModel->praseData(boost::json::parse(json_str));
+
+    AllSingleDatatypeModel* wheatAllSingleDatatypeModel = new AllSingleDatatypeModel;
+    wheatAllSingleDatatypeModel->praseData(boost::json::parse(json_str2));
+
+    AllDatatypeModel* cornAllDatatypeModel = new AllDatatypeModel;
+    cornAllDatatypeModel->praseData(boost::json::parse(json_str3));
+
+    AllSingleDatatypeModel* cornAllSingleDatatypeModel = new AllSingleDatatypeModel;
+    cornAllSingleDatatypeModel->praseData(boost::json::parse(json_str2));
+
+    m_tagModels["wheat"]= {wheatAllDatatypeModel, wheatAllSingleDatatypeModel};
+    m_tagModels["corn"]= {cornAllDatatypeModel, cornAllSingleDatatypeModel};
 }
 
-void AllDatatypeModel::praseData(boost::json::value &&v)
-{
-    for (auto it : m_allDatas)
-    {
-        auto ptr = it.value<DatatypeModel *>();
-        ptr->deleteLater();
+QVariant DatatypeModelManage::getAllDataModel(QString type) {
+    if(m_tagModels.contains(type)) {
+        return QVariant::fromValue(m_tagModels[type].first);
     }
-    m_allDatas.clear();
+    return {};
+}
 
-    boost::system::error_code ec;
-    auto obj = v.find_pointer("/items", ec);
-    if (!ec && obj->if_array())
-    {
-        for (auto &it : obj->as_array())
-        {
-            DatatypeModel *node = new DatatypeModel(std::move(it));
-            m_allDatas.append(QVariant::fromValue(node));
-        }
+QVariant DatatypeModelManage::getAllSingleDataModel(QString type) {
+    if(m_tagModels.contains(type)) {
+        return QVariant::fromValue(m_tagModels[type].second);
     }
-
-    emit allDatasChanged();
+    return {};
 }

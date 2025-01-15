@@ -4,15 +4,28 @@ LabelTags::LabelTags(QObject *parent)
     : QAbstractListModel{parent}
 {}
 
-void LabelTags::removeRow(int row) {
-    beginRemoveRows(QModelIndex(),row,row);
-    m_datas.removeAt(row);
-    endRemoveRows();
+void LabelTags::removeRow(QString sapType,QString inherName,int trait) {
+    for(int i=0;i<m_datas.size();i++) {
+        if(m_datas[i].property("inherName")==inherName && m_datas[i].property("sapType")==sapType) {
+            beginRemoveRows(QModelIndex(),i,i);
+            m_datas.removeAt(i);
+            endRemoveRows();
+            break;
+        }
+    }
 }
 
 void LabelTags::appendRow(
     QString sapType, QString inherName, int firstIndex, int secondIndex, QString topName, int trait)
 {
+    for(int i=0;i<m_datas.size();i++) {
+        if(m_datas[i].property("topName")==topName && m_datas[i].property("sapType")==sapType) {
+            beginRemoveRows(QModelIndex(),i,i);
+            m_datas.removeAt(i);
+            endRemoveRows();
+            break;
+        }
+    }
     beginInsertRows(QModelIndex(),m_datas.size(),m_datas.size());
     m_datas.append(LabelTagsItem(sapType,inherName,firstIndex,secondIndex,topName,trait));
     endInsertRows();
