@@ -3,6 +3,7 @@
 
 LabelImgData::LabelImgData(QObject *parent)
     : QObject(parent),m_taskInfoModel(new TaskInfoModel(this))
+    , m_labelTags(new LabelTags(this))
 {
     m_HttpClient = std::make_shared<HttpClient>(m_ioc);
     m_thd = std::thread([this] {
@@ -75,6 +76,8 @@ void LabelImgData::requestImgName(QString name)
                                          [this](const char *response, std::size_t lenth) {
                                              auto v = praseRespose(response, lenth);
                                              if (v.has_value()) {
+                                                 m_imgNames.clear();
+                                                 m_labelTagsModels.clear();
                                                  boost::system::error_code ec;
                                                  auto objArry = v.value().find_pointer("/message", ec);
                                                  if (!ec && objArry->is_array()) {
@@ -84,13 +87,55 @@ void LabelImgData::requestImgName(QString name)
                                                          }
                                                      }
                                                  }
+                                                 for(auto& it:m_imgNames) {
+                                                     m_labelTagsModels.insert(it,QList<LabelTagsItem>());
+                                                 }
+                                                 if(m_imgNames.size()>0) {
+                                                     m_imgName=m_imgNames[0];
+                                                     emit imgNameChanged();
+                                                     m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
+                                                 }
                                              }
                                          }));
 }
 
 void LabelImgData::gotoImgs(LabelImgNamespace::PageGo v) {
-    m_imgName=m_imgNames[m_currentIndex++];
-    emit imgNameChanged();
+    switch (v) {
+    case LabelImgNamespace::PageGo::Next:
+    {
+        int index=++m_currentIndex;
+        if(index > m_imgNames.size()) {
+            m_currentIndex--;
+        }else {
+            m_imgName=m_imgNames[index];
+            emit imgNameChanged();
+            m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
+            is_taging=false;
+        }
+    }
+        break;
+    case LabelImgNamespace::PageGo::Front:
+    {
+        int index=--m_currentIndex;
+        if(index<0) {
+            m_currentIndex++;
+        }else {
+            m_imgName=m_imgNames[index];
+            emit imgNameChanged();
+            m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
+            is_taging=false;
+        }
+    }
+        break;
+    default:
+        break;
+    }
+
+
+}
+
+void LabelImgData::setTagStatus(bool f) {
+    is_taging = f;
 }
 
 std::optional<boost::json::value> LabelImgData::praseRespose(const char *response, std::size_t lenth)

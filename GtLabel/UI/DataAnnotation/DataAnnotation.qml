@@ -89,15 +89,78 @@ Item {
                     }
 
                     Flow {
-                        width:parent.width
+                        anchors.left: parent.left
+                        anchors.leftMargin: 8
+                        anchors.top: parent.top
+                        anchors.topMargin: 8
+                        width:parent.width-16
+                        spacing: 8
                         Repeater {
-                            model:qmlLabelTags
-                            Text {
+                            model:qmlLabelImgData.getLabelTags()
+                            Rectangle {
+                                id:rec
                                 required property string inherName
-                                width:implicitWidth
-                                height:implicitHeight
-                                text:inherName
-                                color:"red"
+                                required property int trait
+                                height: 32
+                                width: childrenRect.width+16
+                                radius: 4
+                                z:5
+                                color: {
+                                    switch(trait){
+                                        case 1: return "#800000FF"
+                                        case 2: return "#80FFA500"
+                                        case 3: return "#80FFFF00"
+                                        case 4: return "#80FF0000"
+                                        case 5: return "#8000FF00"
+                                        case 6: return "#800000FF"
+                                        case 7: return "#80800080"
+                                        default: return "#800000FF"
+                                    }
+                                }
+                                Row {
+                                    spacing: 16
+                                    width: childrenRect.width
+                                    height: 32
+                                    anchors.left: parent.left
+                                    anchors.leftMargin: 8
+                                    Text {
+                                        font.pixelSize: 14
+                                        color: "#FFFFFF"
+                                        height:implicitHeight
+                                        width: implicitWidth
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        text:inherName
+                                    }
+                                    Button {
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        width: 12
+                                        height: 12
+                                        background: Image {
+                                            source: "qrc:/images/delete.png"
+                                        }
+                                    }
+                                }
+                                state: "hidden"
+                                states: [
+                                    State {
+                                        name: "hidden"
+                                        PropertyChanges { target: rec;  opacity: 0; scale: 0 }
+                                    },
+                                    State {
+                                        name: "visible"
+                                        PropertyChanges { target: rec; opacity: 1; scale: 1 }
+                                    }
+                                ]
+                                transitions: [
+                                    Transition {
+                                        from: "hidden"
+                                        to: "visible"
+                                        NumberAnimation { properties: "opacity, scale"; duration: 260; easing.type: Easing.OutQuad }
+                                    }
+                                ]
+                                Component.onCompleted: {
+                                    rec.state = "visible";
+                                }
                             }
                         }
                     }
@@ -169,7 +232,7 @@ Item {
                                 Button {
                                     id:btn
                                     required property string name
-                                    required property LabelImgNamespace.PageGo value
+                                    required property var value
                                     property string imageColor: "#666666"
                                     width:56
                                     height:40
@@ -201,12 +264,7 @@ Item {
                                         }
                                     }
                                     onClicked:{
-                                        switch(btn.name){
-                                            case "next.png":{
-                                                qmlLabelImgData.gotoImgs(value);
-                                            }
-                                            default:break;
-                                        }
+                                        qmlLabelImgData.gotoImgs(value);
                                     }
                                     onPressed:{ btn.imageColor = "#1C55FF" }
                                     onReleased:{ btn.imageColor = "#CC1C76E0" }
@@ -237,9 +295,10 @@ Item {
 
         Connections {
                target: rithPane
-               function onComplexBtnClicked(sapType,inherName,firstIndex,secondIndex,topName,trait,selected) {
-                   if(selected) qmlLabelTags.appendRow(sapType,inherName,firstIndex,secondIndex,topName,trait);
-                   else qmlLabelTags.removeRow(sapType,inherName,trait);
+               function onComplexBtnClicked(sapType,inherName,firstIndex,secondIndex,topName,selected) {
+                   let trait=0;
+                   if(selected) qmlLabelImgData.getLabelTags().appendRow(sapType,inherName,firstIndex,secondIndex,topName,trait);
+                   else qmlLabelImgData.getLabelTags().removeRow(sapType,inherName,trait);
                }
            }
     }
@@ -255,7 +314,7 @@ Item {
         id:qmlLabelImgData
     }
 
-    QmlLabelTags {
-        id:qmlLabelTags
-    }
+    // QmlLabelTags {
+    //     id:qmlLabelTags
+    // }
 }

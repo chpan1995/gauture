@@ -139,7 +139,7 @@ Item {
 
                                             onClicked: {
                                                 complexBtnClicked(cbxgraintype.currentValue,inheritsName
-                                                                  ,parent.parent.index, secBtn.index,topNode.modelData.title.title,0,!secBtn.selected);
+                                                                  ,parent.parent.index, secBtn.index,topNode.modelData.title.title,!secBtn.selected);
                                                 topNode.modelData.setSelected(parent.parent.index, secBtn.index, !secBtn.selected);
                                             }
                                         }
@@ -322,7 +322,16 @@ Item {
                 width: parent.visiable ? 88 : 0
 
                 onClicked: {
-                    parent.modelData.qmlSelected(!selected);
+                    let tmpinheritsName="";
+                    for (let i = parent.inheritsName.length - 1; i >= 0; i--)
+                    {
+                        tmpinheritsName += parent.inheritsName[i];
+                        if (i != 0)
+                            tmpinheritsName += "-";
+                    }
+                    complexBtnClicked(cbxgraintype.currentValue,tmpinheritsName
+                                      ,parent.parent.index, parent.index,parent.parent.modelData.title.title,!parent.selected);
+                    parent.modelData.qmlSelected(!parent.selected);
                 }
             }
         }

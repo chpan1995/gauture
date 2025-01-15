@@ -6,6 +6,7 @@
 #include <boost/json.hpp>
 #include <thread>
 
+#include "LabelTags.h"
 #include "TaskInfoModel.h"
 #include "HttpClient.h"
 
@@ -15,7 +16,7 @@ QML_ELEMENT
 enum class RequestMethod {
     TasksInfo,
 };
-enum class PageGo:std::uint8_t {
+enum class PageGo {
     Tail,
     Front10,
     Front,
@@ -43,6 +44,9 @@ public:
     Q_INVOKABLE void requestImgInfo();
     Q_INVOKABLE void requestImgName(QString name);
     Q_INVOKABLE void gotoImgs(LabelImgNamespace::PageGo v);
+    Q_INVOKABLE void setTagStatus(bool f);
+
+    inline Q_INVOKABLE LabelTags* getLabelTags() { return m_labelTags; }
 signals:
     void taskInfoModelChanged();
     void imgNameChanged();
@@ -59,6 +63,11 @@ private:
     TaskInfoModel* m_taskInfoModel;
     QVariant m_model;
     qint32 m_currentIndex {0};
+    LabelTags* m_labelTags;
+    QHash<QString,QList<LabelTagsItem>> m_labelTagsModels;
+    std::uint8_t m_currentTrait {1};
+    bool is_taging { false }; // 是否正在标记 (打了tag但是没点标注 关闭标签结合trait就可以控制按钮的选中状态了)
+    friend class LabelTags;
 };
 
 Q_DECLARE_METATYPE(TaskInfoModel)

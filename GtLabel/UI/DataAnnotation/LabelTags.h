@@ -25,13 +25,13 @@ public:
     Q_INVOKABLE void removeRow(QString sapType,QString inherName,int trait);
     Q_INVOKABLE void appendRow(QString sapType,QString inherName,int firstIndex,int secondIndex
                                ,QString topName,int trait);
+    void initModel(QList<LabelTagsItem>* d);
 protected:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;
     QHash<int, QByteArray> roleNames() const  override;
-
 private:
-    QList<LabelTagsItem> m_datas;
+    QList<LabelTagsItem>* m_datas {nullptr};
 };
 
 

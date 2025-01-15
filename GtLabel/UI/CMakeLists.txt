@@ -65,6 +65,7 @@ qt_add_resources(${PROJECT_NAME}
     images/min.png
     images/normal.png
     images/close.png
+    images/delete.png
 )
 
 target_include_directories(ui_main

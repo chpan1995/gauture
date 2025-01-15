@@ -4,12 +4,12 @@ import ui_main 1.0
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Effects
-
 import "componentCreationTagPane.js" as MyScript
+
 Item {
     id: root
     signal complexBtnClicked(string sapType,string inherName,int firstIndex,int secondIndex,
-                             string topName,int trait,bool selected);
+                             string topName,bool selected);
     Flow {
         id: topLeft
 
