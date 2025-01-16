@@ -83,6 +83,10 @@ public:
     Q_INVOKABLE void setSelected(int parentIndex,int index, QString v);
 
     Q_INVOKABLE void fold(bool v);
+
+    void clearStatus();
+
+    void clearSelectBtn(int parentIndex,int index,QString inherName);
 signals:
     void treeNodesChanged();
     void sortNodesChanged();
@@ -106,6 +110,8 @@ class AllDatatypeModel : public QObject
 public:
     explicit AllDatatypeModel(QObject* parent=nullptr);
     void praseData(boost::json::value&& v);
+    void clearStatus();
+    void clearSelectBtn(int parentIndex,int index,QString inherName);
 signals:
     void allDatasChanged();
 private:
@@ -130,6 +136,8 @@ public:
     explicit DatatypeModelManage(QObject* parent=nullptr);
     Q_INVOKABLE QVariant getAllDataModel(QString type);
     Q_INVOKABLE QVariant getAllSingleDataModel(QString type);
+    Q_INVOKABLE void reset();
+    Q_INVOKABLE void clearSelectBtn(QString type,QString inherName,int parentIndex,int index);
 private:
     QHash<QString,std::pair<AllDatatypeModel*,AllSingleDatatypeModel*>> m_tagModels;
 };

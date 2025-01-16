@@ -100,20 +100,32 @@ Item {
                             Rectangle {
                                 id:rec
                                 required property string inherName
+                                required property string sapType
                                 required property int trait
+                                required property int firstIndex
+                                required property int secondIndex
                                 height: 32
                                 width: childrenRect.width+16
                                 radius: 4
                                 z:5
                                 color: {
-                                    switch(trait){
+                                    let tmp=trait
+                                    if(tmp>13)
+                                    tmp=tmp%13
+                                    switch(tmp){
                                         case 1: return "#800000FF"
                                         case 2: return "#80FFA500"
-                                        case 3: return "#80FFFF00"
+                                        case 3: return "#CCCC00"
                                         case 4: return "#80FF0000"
                                         case 5: return "#8000FF00"
-                                        case 6: return "#800000FF"
+                                        case 6: return "#8000FFFF"
                                         case 7: return "#80800080"
+                                        case 8: return "#FFC0CB"
+                                        case 9: return "#A52A2A"
+                                        case 10: return "#808080"
+                                        case 11: return "#008B8B"
+                                        case 12: return "#006400"
+                                        case 13: return "#FF1493"
                                         default: return "#800000FF"
                                     }
                                 }
@@ -132,11 +144,27 @@ Item {
                                         text:inherName
                                     }
                                     Button {
+                                        id:btnTagLabel
                                         anchors.verticalCenter: parent.verticalCenter
                                         width: 12
                                         height: 12
                                         background: Image {
                                             source: "qrc:/images/delete.png"
+                                            layer.enabled: true
+                                            layer.effect:MultiEffect {
+                                                colorization:1
+                                                brightness: 1.0
+                                                colorizationColor: {
+                                                    if(btnTagLabel.hovered){
+                                                        return "#1C76E0";
+                                                    }else {
+                                                        return "#99999999";
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        onClicked:{
+                                            qmlLabelImgData.getLabelTags().removeRow(sapType,inherName,trait,firstIndex,secondIndex,false);
                                         }
                                     }
                                 }
@@ -173,6 +201,7 @@ Item {
                     color:"#FFFFFF"
                     Layout.minimumHeight: 50
                     ButtonImgText{
+                        id:btnReuestInfo
                         anchors.left:parent.left
                         anchors.leftMargin:32
                         anchors.verticalCenter:parent.verticalCenter
@@ -265,6 +294,7 @@ Item {
                                     }
                                     onClicked:{
                                         qmlLabelImgData.gotoImgs(value);
+                                        rithPane.qmlDatatypeModelManage.reset();
                                     }
                                     onPressed:{ btn.imageColor = "#1C55FF" }
                                     onReleased:{ btn.imageColor = "#CC1C76E0" }
@@ -290,17 +320,16 @@ Item {
             anchors.leftMargin:30
             anchors.bottom:parent.bottom
             anchors.bottomMargin:24
-
         }
 
         Connections {
-               target: rithPane
-               function onComplexBtnClicked(sapType,inherName,firstIndex,secondIndex,topName,selected) {
-                   let trait=0;
-                   if(selected) qmlLabelImgData.getLabelTags().appendRow(sapType,inherName,firstIndex,secondIndex,topName,trait);
-                   else qmlLabelImgData.getLabelTags().removeRow(sapType,inherName,trait);
-               }
-           }
+            target: rithPane
+            function onComplexBtnClicked(sapType,inherName,firstIndex,secondIndex,topName,selected) {
+                let trait=0;
+                if(selected) qmlLabelImgData.getLabelTags().appendRow(sapType,inherName,firstIndex,secondIndex,topName,trait);
+                else qmlLabelImgData.getLabelTags().removeRow(sapType,inherName,trait,firstIndex,secondIndex,true);
+            }
+        }
     }
 
     TaskInfo{
@@ -308,6 +337,50 @@ Item {
         taskmodel:qmlLabelImgData.taskInfoModel // C++ to qml 必须为指针才能取他的属性
         width:960
         height:680
+
+        onRequestImageNames:(v)=>{
+            btnReuestInfo.visible =!v;
+        }
+    }
+
+    GMessageBox {
+        id:popGetImg
+        title:"获取图片提示"
+        // states: [
+        //     State {
+        //         name: "load"
+        //         PropertyChanges {
+        //             target: popGetImg
+        //             sure:false
+        //             cancle:false
+        //             content:"正在获取图片数据..."
+        //         }
+        //     },
+        //     State {
+        //         name: "loaded"
+        //         PropertyChanges {
+        //             target: popGetImg
+        //             sure:true
+        //             cancle:false
+        //             content:"获取图片数据完成"
+        //         }
+        //         StateChangeScript {
+        //             script: taskinfo.requestImageNames(true)
+        //         }
+        //     },
+        //     State {
+        //         name: "loadError"
+        //         PropertyChanges {
+        //             target: popGetImg
+        //             sure:true
+        //             cancle:false
+        //             content:"获取图片数据失败"
+        //         }
+        //         StateChangeScript {
+        //             script: taskinfo.requestImageNames(false)
+        //         }
+        //     }
+        // ]
     }
 
     QmlLabelImgData {

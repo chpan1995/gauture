@@ -22,10 +22,13 @@ public:
     };
 
     explicit LabelTags(QObject *parent = nullptr);
-    Q_INVOKABLE void removeRow(QString sapType,QString inherName,int trait);
+    Q_INVOKABLE void removeRow(QString sapType,QString inherName,int trait,int firstIndex,int secondIndex,bool Btn=true);
     Q_INVOKABLE void appendRow(QString sapType,QString inherName,int firstIndex,int secondIndex
                                ,QString topName,int trait);
     void initModel(QList<LabelTagsItem>* d);
+    void removeRows();
+signals:
+    void clearSelectTag(QString sapType,QString inherName,int firstIndex,int secondIndex);
 protected:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;

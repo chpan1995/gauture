@@ -32,6 +32,7 @@ qt_add_qml_module(ui_main
         common/ButtonText.qml
         common/ButtonComplex.qml
         common/GProgressBar.qml
+        common/GMessageBox.qml
     OUTPUT_DIRECTORY
         ui_main
     SOURCES

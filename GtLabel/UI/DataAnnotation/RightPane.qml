@@ -8,6 +8,7 @@ import "componentCreationTagPane.js" as MyScript
 
 Item {
     id: root
+    property alias qmlDatatypeModelManage: qmlDatatypeModelManage
     signal complexBtnClicked(string sapType,string inherName,int firstIndex,int secondIndex,
                              string topName,bool selected);
     Flow {
@@ -71,6 +72,12 @@ Item {
             txtNormalColor: "#FFFFFF"
             txtSelectedColor: "#FFFFFF"
             width: 88
+            onClicked:{
+                if(qmlLabelImgData.lab()) {
+                    // 右边种类数据重置
+                    qmlDatatypeModelManage.reset();
+                }
+            }
         }
         ButtonText {
             font.pixelSize: 16
@@ -87,6 +94,12 @@ Item {
             txtNormalColor: "#1C76E0"
             txtSelectedColor: "#1C76E0"
             width: 88
+            onClicked:{
+                // 右边种类数据重置
+                qmlDatatypeModelManage.reset();
+                // 左边选中标签重置
+                qmlLabelImgData.reset();
+            }
         }
     }
 
@@ -114,6 +127,13 @@ Item {
 
     QmlDatatypeModelManage {
         id:qmlDatatypeModelManage
+    }
+
+    Connections {
+        target:qmlLabelImgData.getLabelTags()
+        function onClearSelectTag(sapType,inherName,firstIndex,secondIndex){
+            qmlDatatypeModelManage.clearSelectBtn(sapType,inherName,firstIndex,secondIndex);
+        }
     }
 
     Component.onCompleted: {

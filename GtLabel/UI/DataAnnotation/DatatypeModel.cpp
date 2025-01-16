@@ -113,7 +113,8 @@ void DataNode::qmlSelected(bool v)
             tmp=tmp->m_parent;
         else break;
     }
-    root=tmp;
+    if(!m_parent) root=this;
+    else root=tmp;
     setNodesele(root);
     setSelected(v);
 }
@@ -298,6 +299,44 @@ void DatatypeModel::fold(bool v)
     emit titleChanged();
 }
 
+void DatatypeModel::clearStatus() {
+    for(int i=0;i<m_sortNodes.size();i++) {
+        QStringList node = m_sortNodes.at(i).toStringList();
+        for(int j=0;j<node.length();j++){
+            QString originalStr=node[j];
+            QRegularExpression regex("(,[^,]*),.*");
+            QString resultStr = originalStr.replace(regex, "\\1," + QString("false"));
+            node.replace(j, resultStr);
+        }
+        m_sortNodes.replace(i, node);
+    }
+
+    emit sortNodesChanged();
+    if (d_ptr->m_data.size() > 0)
+    {
+        auto root = d_ptr->m_data[0];
+        root->qmlSelected(false);
+    }
+}
+
+void DatatypeModel::clearSelectBtn(int parentIndex, int index, QString inherName) {
+
+    auto tags = inherName.split("-");
+    if(tags.size()>0) {
+        if(tags[0]==m_title["title"].toString()) {
+            if(parentIndex!=-1) {
+                setSelected(parentIndex,index,"false");
+            }
+            if (d_ptr->m_data.size() > 0)
+            {
+                auto root = d_ptr->m_data[0];
+                root->qmlSelected(false);
+            }
+        }
+    }
+
+}
+
 AllDatatypeModel::AllDatatypeModel(QObject *parent) : QObject(parent)
 {
 }
@@ -322,6 +361,18 @@ void AllDatatypeModel::praseData(boost::json::value &&v)
         }
     }
     emit allDatasChanged();
+}
+
+void AllDatatypeModel::clearStatus() {
+    for(auto& it:m_allDatas) {
+        it.value<DatatypeModel*>()->clearStatus();
+    }
+}
+
+void AllDatatypeModel::clearSelectBtn(int parentIndex, int index, QString inherName) {
+    for(auto& it:m_allDatas) {
+        it.value<DatatypeModel*>()->clearSelectBtn(parentIndex,index,inherName);
+    }
 }
 
 DatatypeModelManage::DatatypeModelManage(QObject *parent):QObject(parent) {
@@ -505,4 +556,20 @@ QVariant DatatypeModelManage::getAllSingleDataModel(QString type) {
         return QVariant::fromValue(m_tagModels[type].second);
     }
     return {};
+}
+
+void DatatypeModelManage::reset() {
+    for(auto& it:m_tagModels) {
+        it.first->clearStatus();
+        it.second->clearStatus();
+    }
+
+}
+
+void DatatypeModelManage::clearSelectBtn(QString type, QString inherName, int parentIndex, int index)
+{
+    if(m_tagModels.contains(type)) {
+        m_tagModels[type].first->clearSelectBtn(parentIndex,index,inherName);
+        m_tagModels[type].second->clearSelectBtn(parentIndex,index,inherName);
+    }
 }

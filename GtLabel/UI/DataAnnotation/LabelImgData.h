@@ -15,6 +15,7 @@ Q_NAMESPACE
 QML_ELEMENT
 enum class RequestMethod {
     TasksInfo,
+    TasksPull
 };
 enum class PageGo {
     Tail,
@@ -46,6 +47,12 @@ public:
     Q_INVOKABLE void gotoImgs(LabelImgNamespace::PageGo v);
     Q_INVOKABLE void setTagStatus(bool f);
 
+    // 重置
+    Q_INVOKABLE void reset();
+
+    // 标注
+    Q_INVOKABLE bool lab();
+
     inline Q_INVOKABLE LabelTags* getLabelTags() { return m_labelTags; }
 signals:
     void taskInfoModelChanged();
@@ -62,11 +69,12 @@ private:
     QString m_imgName;
     TaskInfoModel* m_taskInfoModel;
     QVariant m_model;
-    qint32 m_currentIndex {0};
+    qint32 m_currentPage {0};
     LabelTags* m_labelTags;
     QHash<QString,QList<LabelTagsItem>> m_labelTagsModels;
-    std::uint8_t m_currentTrait {1};
-    bool is_taging { false }; // 是否正在标记 (打了tag但是没点标注 关闭标签结合trait就可以控制按钮的选中状态了)
+    QHash<QString,std::uint16_t> m_currentTrait;
+
+    bool m_isTaging { false }; // 是否正在标记 (打了tag但是没点标注 关闭标签结合trait就可以控制按钮的选中状态了)
     friend class LabelTags;
 };
 

@@ -5,47 +5,75 @@ LabelTags::LabelTags(QObject *parent)
     : QAbstractListModel{parent}
 {}
 
-void LabelTags::removeRow(QString sapType,QString inherName,int trait) {
+void LabelTags::removeRow(QString sapType,QString inherName,int trait,int firstIndex,int secondIndex,bool Btn) {
     if(!m_datas) return;
-    for(int i=0;i<m_datas->size();i++) {
-        if(m_datas->at(i).property("inherName")==inherName && m_datas->at(i).property("sapType")==sapType) {
-            beginRemoveRows(QModelIndex(),i,i);
-            m_datas->removeAt(i);
-            endRemoveRows();
+
+    auto myparent=  static_cast<LabelImgData*>(parent());
+
+    if(!Btn) {
+        // 上面标签点击的
+        if(trait==myparent->m_currentTrait[myparent->m_imgName] && myparent->m_isTaging) {
+            // 清除选中按钮
+            emit clearSelectTag(sapType,inherName,firstIndex,secondIndex);
+        }
+        for(int i=0;i<m_datas->size();i++) {
+            if(m_datas->at(i).property("inherName")==inherName
+                && m_datas->at(i).property("sapType")==sapType
+                && m_datas->at(i).property("trait")==trait) {
+                beginRemoveRows(QModelIndex(),i,i);
+                m_datas->removeAt(i);
+                endRemoveRows();
+                break;
+            }
+        }
+    }else {
+        // 左边按钮点的
+        for(int i=0;i<m_datas->size();i++) {
+            if(m_datas->at(i).property("inherName")==inherName
+                && m_datas->at(i).property("sapType")==sapType
+                && m_datas->at(i).property("trait")==myparent->m_currentTrait[myparent->m_imgName]) {
+                beginRemoveRows(QModelIndex(),i,i);
+                m_datas->removeAt(i);
+                endRemoveRows();
+                break;
+            }
+        }
+    }
+
+    bool tmp = false;
+    for(auto it:*m_datas)
+    {
+        // 查找当前特征 标签粒有没有，没有则代表当前没有正在打tag
+        if(it.property("trait").toInt()==myparent->m_currentTrait[myparent->m_imgName]){
+            tmp=true;
             break;
         }
     }
-    auto myparent=  static_cast<LabelImgData*>(parent());
-    bool is_tag {false};
-    std::find_if(m_datas->begin(),m_datas->end(),[&](LabelTagsItem it){
-        if(it.property("trait").toInt()==myparent->m_currentTrait){
-            is_tag=true;
-            return true;
-        }else {
-            is_tag=false;
-            return false;
-        }
-    });
-    myparent->setTagStatus(is_tag);
+
+    myparent->m_isTaging=tmp;
+    qDebug() << myparent->m_isTaging;
 }
 
 void LabelTags::appendRow(
     QString sapType, QString inherName, int firstIndex, int secondIndex, QString topName, int trait)
 {
     if(!m_datas) return;
+    auto myparent=  static_cast<LabelImgData*>(parent());
     for(int i=0;i<m_datas->size();i++) {
-        if(m_datas->at(i).property("topName")==topName && m_datas->at(i).property("sapType")==sapType) {
+        if(m_datas->at(i).property("topName")==topName
+            && m_datas->at(i).property("trait")==myparent->m_currentTrait[myparent->m_imgName]
+            && m_datas->at(i).property("sapType")==sapType) {
             beginRemoveRows(QModelIndex(),i,i);
             m_datas->removeAt(i);
             endRemoveRows();
             break;
         }
     }
-    auto myparent=  static_cast<LabelImgData*>(parent());
     beginInsertRows(QModelIndex(),m_datas->size(),m_datas->size());
-    m_datas->append(LabelTagsItem(sapType,inherName,firstIndex,secondIndex,topName,myparent->m_currentTrait));
+    m_datas->append(LabelTagsItem(sapType,inherName,firstIndex,secondIndex,topName
+                                  ,myparent->m_currentTrait[myparent->m_imgName]));
     endInsertRows();
-    myparent->setTagStatus(true);
+    myparent->m_isTaging=true;
 }
 
 void LabelTags::initModel(QList<LabelTagsItem>* d) {
@@ -56,10 +84,23 @@ void LabelTags::initModel(QList<LabelTagsItem>* d) {
     }
 }
 
+void LabelTags::removeRows() {
+    if(!m_datas) return;
+    auto myparent=  static_cast<LabelImgData*>(parent());
+    for (int i = m_datas->size() - 1; i >= 0; i--) {
+        if(m_datas->at(i).property("trait")==myparent->m_currentTrait[myparent->m_imgName]) {
+            beginRemoveRows(QModelIndex(),i,i);
+            m_datas->removeAt(i);
+            endRemoveRows();
+        }
+    }
+}
+
 int LabelTags::rowCount(const QModelIndex &parent) const {
     Q_UNUSED(parent);
     if(!m_datas) return 0;
     return m_datas->length();
+    if(!m_datas) return 0;
 }
 
 QVariant LabelTags::data(const QModelIndex &index, int role) const {

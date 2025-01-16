@@ -76,6 +76,7 @@ void LabelImgData::requestImgName(QString name)
                                          [this](const char *response, std::size_t lenth) {
                                              auto v = praseRespose(response, lenth);
                                              if (v.has_value()) {
+                                                 emit request(true,LabelImgNamespace::RequestMethod::TasksPull);
                                                  m_imgNames.clear();
                                                  m_labelTagsModels.clear();
                                                  boost::system::error_code ec;
@@ -89,12 +90,15 @@ void LabelImgData::requestImgName(QString name)
                                                  }
                                                  for(auto& it:m_imgNames) {
                                                      m_labelTagsModels.insert(it,QList<LabelTagsItem>());
+                                                     m_currentTrait.insert(it,1);
                                                  }
                                                  if(m_imgNames.size()>0) {
                                                      m_imgName=m_imgNames[0];
                                                      emit imgNameChanged();
                                                      m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
                                                  }
+                                             }else {
+                                                 emit request(false,LabelImgNamespace::RequestMethod::TasksPull);
                                              }
                                          }));
 }
@@ -103,27 +107,34 @@ void LabelImgData::gotoImgs(LabelImgNamespace::PageGo v) {
     switch (v) {
     case LabelImgNamespace::PageGo::Next:
     {
-        int index=++m_currentIndex;
+        int index=++m_currentPage;
         if(index > m_imgNames.size()) {
-            m_currentIndex--;
+            m_currentPage--;
         }else {
+            // 清除未点击标注信息
+            if(m_isTaging) {
+                m_labelTags->removeRows();
+            }
             m_imgName=m_imgNames[index];
             emit imgNameChanged();
             m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
-            is_taging=false;
+            m_isTaging=false;
         }
     }
         break;
     case LabelImgNamespace::PageGo::Front:
     {
-        int index=--m_currentIndex;
+        int index=--m_currentPage;
         if(index<0) {
-            m_currentIndex++;
+            m_currentPage++;
         }else {
+            if(m_isTaging) {
+                m_labelTags->removeRows();
+            }
             m_imgName=m_imgNames[index];
             emit imgNameChanged();
             m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
-            is_taging=false;
+            m_isTaging=false;
         }
     }
         break;
@@ -135,7 +146,26 @@ void LabelImgData::gotoImgs(LabelImgNamespace::PageGo v) {
 }
 
 void LabelImgData::setTagStatus(bool f) {
-    is_taging = f;
+    m_isTaging = f;
+}
+
+void LabelImgData::reset() {
+    if(m_labelTagsModels.contains(m_imgName)) {
+        m_currentTrait[m_imgName]=1;
+        m_labelTagsModels[m_imgName].clear();
+        m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
+    }
+}
+
+bool LabelImgData::lab() {
+    bool tmp = m_isTaging;
+    if(m_isTaging) {
+        m_currentTrait[m_imgName]++;
+    }
+    // 标注完成Taging状态置成false
+    m_isTaging=false;
+    qDebug() << tmp;
+    return tmp;
 }
 
 std::optional<boost::json::value> LabelImgData::praseRespose(const char *response, std::size_t lenth)
@@ -146,6 +176,7 @@ std::optional<boost::json::value> LabelImgData::praseRespose(const char *respons
     p.write(response, lenth, ec);
     if (ec) {
         qDebug() << "-> parse json failed";
+        qDebug() << QString(response);
         return std::nullopt;
     } else {
         v = p.release();

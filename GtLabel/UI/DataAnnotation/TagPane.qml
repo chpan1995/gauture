@@ -330,7 +330,7 @@ Item {
                             tmpinheritsName += "-";
                     }
                     complexBtnClicked(cbxgraintype.currentValue,tmpinheritsName
-                                      ,parent.parent.index, parent.index,parent.parent.modelData.title.title,!parent.selected);
+                                      ,/*parent.parent.index*/-1, parent.index,parent.parent.modelData.title.title,!parent.selected);
                     parent.modelData.qmlSelected(!parent.selected);
                 }
             }

@@ -8,6 +8,7 @@ Popup {
     anchors.centerIn: Overlay.overlay
     property string loadStatus
     required property var taskmodel;
+    signal requestImageNames(bool v);
     modal: true
     closePolicy:Popup.NoAutoClose
     background:Rectangle {
@@ -171,18 +172,37 @@ Popup {
                 onClicked:{
                     qmlLabelImgData.requestImgName(taskInfoName);
                     taskinfo.close();
+
+                    // pop不能嵌套，还是main pop close导致的？
+                    popGetImg.sure=false
+                    popGetImg.cancle=false
+                    popGetImg.content="正在获取图片数据..."
+                    popGetImg.open();
+
                 }
             }
 
         }
     }
 
-
     Connections {
         target:qmlLabelImgData
         function onRequest(v,method){
             if(method===LabelImgNamespace.RequestMethod.TasksInfo) {
                 v ? taskinfo.loadStatus="loaded":taskinfo.loadStatus="loadError";
+            } else if(method===LabelImgNamespace.RequestMethod.TasksPull) {
+                if(v) {
+                    popGetImg.sure=true
+                    popGetImg.cancle=false
+                    popGetImg.content="获取图片数据完成"
+                    taskinfo.requestImageNames(true)
+
+                }else {
+                    popGetImg.sure=true
+                    popGetImg.cancle=false
+                    popGetImg.content="获取图片数据失败"
+                    taskinfo.requestImageNames(false)
+                }
             }
         }
     }

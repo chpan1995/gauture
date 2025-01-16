@@ -79,16 +79,14 @@ Item {
 
         ButtonImg {
             id: max
-            property bool selected: false
             anchors.verticalCenter: parent.verticalCenter
             height: 40
             hovercolor: "#55FFFFFF"
             radius: 8
-            url: selected ? "qrc:/images/max.png":"qrc:/images/normal.png"
+            url: !view.isshowMax ? "qrc:/images/max.png":"qrc:/images/normal.png"
             width: 40
             onClicked:{
-                selected=!selected;
-                selected ? view.showNor():view.showMax();
+                view.isshowMax ? view.showNor():view.showMax();
             }
         }
 
