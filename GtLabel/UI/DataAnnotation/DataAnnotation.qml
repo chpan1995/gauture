@@ -340,6 +340,7 @@ Item {
 
         onRequestImageNames:(v)=>{
             btnReuestInfo.visible =!v;
+            rithPane.qmlDatatypeModelManage.reset();
         }
     }
 

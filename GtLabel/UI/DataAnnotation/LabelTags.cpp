@@ -43,7 +43,7 @@ void LabelTags::removeRow(QString sapType,QString inherName,int trait,int firstI
     bool tmp = false;
     for(auto it:*m_datas)
     {
-        // 查找当前特征 标签粒有没有，没有则代表当前没有正在打tag
+        // 查找当前特征 对比 历史标签里面有没有，没有则代表当前没有正在打tag
         if(it.property("trait").toInt()==myparent->m_currentTrait[myparent->m_imgName]){
             tmp=true;
             break;
