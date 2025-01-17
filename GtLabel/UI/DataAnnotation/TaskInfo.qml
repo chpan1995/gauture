@@ -174,6 +174,7 @@ Popup {
                     taskinfo.close();
 
                     // pop不能嵌套，还是main pop close导致的？
+                    popGetImg.title="获取图片提示"
                     popGetImg.sure=false
                     popGetImg.cancle=false
                     popGetImg.content="正在获取图片数据..."

@@ -7,6 +7,49 @@ import QtQuick.Controls
 
 Item {
     id:rootDataAnnotation
+
+    Row {
+        id:pageTitle
+        height:16
+        anchors.left:parent.left
+        anchors.leftMargin:24
+        anchors.top:parent.top
+        anchors.topMargin:28
+        visible:false
+        width:childrenRect.width
+        Text {
+            color:"#333333"
+            text:{
+                let tmp = qmlLabelImgData.imgName
+                return tmp.split('/').pop();
+            }
+            width:630
+            height:implicitHeight
+            font.pixelSize:14
+            elide:Text.ElideMiddle
+            anchors.verticalCenter:parent.verticalCenter
+        }
+        Text {
+            color:"#333333"
+            text:{
+                let page=qmlLabelImgData.currentPage+1
+                return " - 第"+ page + "张";
+            }
+            width:implicitWidth
+            height:implicitHeight
+            font.pixelSize:14
+            anchors.verticalCenter:parent.verticalCenter
+        }
+        Text {
+            color:"#333333"
+            text:"/" + qmlLabelImgData.allPage + "张"
+            width:implicitWidth
+            height:implicitHeight
+            font.pixelSize:14
+            anchors.verticalCenter:parent.verticalCenter
+        }
+    }
+
     Item {
         height:56
         width:parent.width
@@ -22,6 +65,14 @@ Item {
             radius:8
             txtNormalColor:"#29364A"
             font.pixelSize:16
+            onClicked:{
+                popGetImg.title="上传图片提示";
+                popGetImg.sure=true;
+                popGetImg.cancle=false;
+                let res=qmlLabelImgData.upload();
+                popGetImg.content=res[1];
+                popGetImg.open();
+            }
         }
     }
 
@@ -293,8 +344,11 @@ Item {
                                         }
                                     }
                                     onClicked:{
-                                        qmlLabelImgData.gotoImgs(value);
-                                        rithPane.qmlDatatypeModelManage.reset();
+                                        if(!qmlLabelImgData.gotoImgs(value)){
+                                            popQuestion.open();
+                                        }else {
+                                            rithPane.qmlDatatypeModelManage.reset();
+                                        }
                                     }
                                     onPressed:{ btn.imageColor = "#1C55FF" }
                                     onReleased:{ btn.imageColor = "#CC1C76E0" }
@@ -384,8 +438,32 @@ Item {
         // ]
     }
 
+    GMessageBox {
+        id:popQuestion
+        title:"翻页提示"
+        content:"含有未标注的标签信息，请标注完继续"
+        sure:true
+    }
+
     QmlLabelImgData {
         id:qmlLabelImgData
+        onRequest:(v,method,s)=> {
+            if(method===LabelImgNamespace.RequestMethod.TasksPush) {
+                if(v) {
+                    popGetImg.content=s;
+                    btnReuestInfo.visible=true;
+                    // 清除所有数据
+                    qmlLabelImgData.clear();
+                    rithPane.qmlDatatypeModelManage.reset();
+                    reset();
+                    pageTitle.visible=false
+                }else {
+                    popGetImg.content="上传失败";
+                }
+            }else if(method===LabelImgNamespace.RequestMethod.TasksPull) {
+                pageTitle.visible=v;
+            }
+        }
     }
 
     // QmlLabelTags {

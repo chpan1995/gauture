@@ -80,7 +80,7 @@ target_include_directories(ui_main
 
 target_link_libraries(ui_main
     PRIVATE Qt6::Quick Qt6::Gui Threads::Threads
-    ui_dataAnnotation ui_dataAnnotationplugin Boost::json
+    ui_dataAnnotation ui_dataAnnotationplugin Boost::json common
 )
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")

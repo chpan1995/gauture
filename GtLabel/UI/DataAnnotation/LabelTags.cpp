@@ -39,7 +39,6 @@ void LabelTags::removeRow(QString sapType,QString inherName,int trait,int firstI
             }
         }
     }
-
     bool tmp = false;
     for(auto it:*m_datas)
     {
@@ -49,9 +48,7 @@ void LabelTags::removeRow(QString sapType,QString inherName,int trait,int firstI
             break;
         }
     }
-
     myparent->m_isTaging=tmp;
-    qDebug() << myparent->m_isTaging;
 }
 
 void LabelTags::appendRow(

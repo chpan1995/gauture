@@ -58,4 +58,6 @@ target_include_directories(ui_dataAnnotation
 target_link_libraries(ui_dataAnnotation
     PRIVATE Qt6::Quick Boost::json
     protocl
+    common
+    logging
 )
