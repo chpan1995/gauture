@@ -22,6 +22,9 @@ qt_add_qml_module(ui_dataAnnotation
         DataAnnotation.qml
         ImgView.qml
         RightPane.qml
+        TaskInfo.qml
+        TagPane.qml
+        componentCreationTagPane.js
     OUTPUT_DIRECTORY
         ui_dataAnnotation
     SOURCES
@@ -29,6 +32,13 @@ qt_add_qml_module(ui_dataAnnotation
     DatatypeModel.cpp
     LabelImgData.h
     LabelImgData.cpp
+    TaskInfoModel.h
+    TaskInfoModel.cpp
+    TaskInfoItem.h
+    TaskInfoItem.cpp
+    LabelTags.h
+    LabelTags.cpp
+    SOURCES
 )
 
 qt_add_resources(${PROJECT_NAME}
@@ -48,4 +58,6 @@ target_include_directories(ui_dataAnnotation
 target_link_libraries(ui_dataAnnotation
     PRIVATE Qt6::Quick Boost::json
     protocl
+    common
+    logging
 )

@@ -7,6 +7,7 @@ Button {
 
     required property string txtNormalColor
     property string txtSelectedColor: "balck"
+    property string selectedcolor: "transparent"
     property string hovercolor: "transparent"
     property string normalcolor: "transparent"
 
@@ -19,7 +20,7 @@ Button {
     background: Rectangle {
         antialiasing:true
         color:{
-            if(btn.selected) return btn.normalcolor;
+            if(btn.selected) return btn.selectedcolor;
             if(btn.hovered){
                 return btn.hovercolor;
             }else {

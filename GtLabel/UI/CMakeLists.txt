@@ -32,6 +32,7 @@ qt_add_qml_module(ui_main
         common/ButtonText.qml
         common/ButtonComplex.qml
         common/GProgressBar.qml
+        common/GMessageBox.qml
     OUTPUT_DIRECTORY
         ui_main
     SOURCES
@@ -64,6 +65,8 @@ qt_add_resources(${PROJECT_NAME}
     images/max.png
     images/min.png
     images/normal.png
+    images/close.png
+    images/delete.png
 )
 
 target_include_directories(ui_main
@@ -77,7 +80,7 @@ target_include_directories(ui_main
 
 target_link_libraries(ui_main
     PRIVATE Qt6::Quick Qt6::Gui Threads::Threads
-    ui_dataAnnotation ui_dataAnnotationplugin Boost::json
+    ui_dataAnnotation ui_dataAnnotationplugin Boost::json common
 )
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")

@@ -15,6 +15,7 @@
 class FrameLessView : public QQuickView
 {
     Q_OBJECT
+    Q_PROPERTY(Bool isshowMax MEMBER m_ShowMax NOTIFY showMaxChanged FINAL)
 public:
     explicit FrameLessView(QWindow *parent=nullptr);
     enum Edge
@@ -41,6 +42,8 @@ public:
     // Q_INVOKABLE void showMin();
     Q_INVOKABLE void showNor();
     Q_INVOKABLE void showMax();
+signals:
+    void showMaxChanged();
 protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;

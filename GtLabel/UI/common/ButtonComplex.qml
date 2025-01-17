@@ -7,6 +7,8 @@ Button {
     required property int deep
     property bool selected: false
     property string inheritsName:""
+    property int parentIndex
+    property int currentIndex
     background : Rectangle {
         id:bck
         property string forntState: "normal"
@@ -100,9 +102,6 @@ Button {
         if(selected) return;
         btn.hovered? bck.state="hovered" : bck.state=bck.forntState
     }
-    onClicked:{
-        selected=!selected;
-    }
     onSelectedChanged:{
         if(btn.selected){
             bck.state="selected"
@@ -111,5 +110,6 @@ Button {
             bck.state="normal"
             bck.forntState="normal"
         }
+
     }
 }

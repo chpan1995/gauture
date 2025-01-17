@@ -92,8 +92,30 @@ void DataNode::setVisiable(bool v)
     emit visiableChanged();
 }
 
+void setNodesele(DataNode *node)
+{
+    node->setSelected(false);
+    if (node->m_child.size() <= 0)
+        return;
+    for (auto &it : node->m_child)
+    {
+        setNodesele(it);
+    }
+}
+
+
 void DataNode::qmlSelected(bool v)
 {
+    DataNode* root = nullptr;
+    DataNode* tmp=m_parent;
+    while(tmp) {
+        if(tmp->m_parent)
+            tmp=tmp->m_parent;
+        else break;
+    }
+    if(!m_parent) root=this;
+    else root=tmp;
+    setNodesele(root);
     setSelected(v);
 }
 
@@ -227,6 +249,28 @@ void DatatypeModel::setSelected(int parentIndexint, int index, QString v)
         QString resultStr = originalStr.replace(regex, "\\1," + v);
         node.replace(index, resultStr);
         m_sortNodes.replace(parentIndexint, node);
+
+        // 更改非index下的选中状态为false  //相同的parentIndexint
+        for(int i=0;i<node.length();i++){
+            if(i==index) continue;
+            QString originalStr=node[i];
+            QRegularExpression regex("(,[^,]*),.*");
+            QString resultStr = originalStr.replace(regex, "\\1," + QString("false"));
+            node.replace(i, resultStr);
+            m_sortNodes.replace(parentIndexint, node);
+        }
+        for(int i=0;i<m_sortNodes.size();i++) {  //不同的parentIndexint
+            if(i==parentIndexint) continue;
+            QStringList node = m_sortNodes.at(i).toStringList();
+            for(int j=0;j<node.length();j++){
+                QString originalStr=node[j];
+                QRegularExpression regex("(,[^,]*),.*");
+                QString resultStr = originalStr.replace(regex, "\\1," + QString("false"));
+                node.replace(j, resultStr);
+            }
+            m_sortNodes.replace(i, node);
+        }
+        emit sortNodesChanged();
     }
 }
 
@@ -255,8 +299,83 @@ void DatatypeModel::fold(bool v)
     emit titleChanged();
 }
 
+void DatatypeModel::clearStatus() {
+    for(int i=0;i<m_sortNodes.size();i++) {
+        QStringList node = m_sortNodes.at(i).toStringList();
+        for(int j=0;j<node.length();j++){
+            QString originalStr=node[j];
+            QRegularExpression regex("(,[^,]*),.*");
+            QString resultStr = originalStr.replace(regex, "\\1," + QString("false"));
+            node.replace(j, resultStr);
+        }
+        m_sortNodes.replace(i, node);
+    }
+
+    emit sortNodesChanged();
+    if (d_ptr->m_data.size() > 0)
+    {
+        auto root = d_ptr->m_data[0];
+        root->qmlSelected(false);
+    }
+}
+
+void DatatypeModel::clearSelectBtn(int parentIndex, int index, QString inherName) {
+
+    auto tags = inherName.split("-");
+    if(tags.size()>0) {
+        if(tags[0]==m_title["title"].toString()) {
+            if(parentIndex!=-1) {
+                setSelected(parentIndex,index,"false");
+            }
+            if (d_ptr->m_data.size() > 0)
+            {
+                auto root = d_ptr->m_data[0];
+                root->qmlSelected(false);
+            }
+        }
+    }
+
+}
+
 AllDatatypeModel::AllDatatypeModel(QObject *parent) : QObject(parent)
 {
+}
+
+void AllDatatypeModel::praseData(boost::json::value &&v)
+{
+    for (auto it : m_allDatas)
+    {
+        auto ptr = it.value<DatatypeModel *>();
+        ptr->deleteLater();
+    }
+    m_allDatas.clear();
+
+    boost::system::error_code ec;
+    auto obj = v.find_pointer("/items", ec);
+    if (!ec && obj->if_array())
+    {
+        for (auto &it : obj->as_array())
+        {
+            DatatypeModel *node = new DatatypeModel(std::move(it));
+            m_allDatas.append(QVariant::fromValue(node));
+        }
+    }
+    emit allDatasChanged();
+}
+
+void AllDatatypeModel::clearStatus() {
+    for(auto& it:m_allDatas) {
+        it.value<DatatypeModel*>()->clearStatus();
+    }
+}
+
+void AllDatatypeModel::clearSelectBtn(int parentIndex, int index, QString inherName) {
+    for(auto& it:m_allDatas) {
+        it.value<DatatypeModel*>()->clearSelectBtn(parentIndex,index,inherName);
+    }
+}
+
+DatatypeModelManage::DatatypeModelManage(QObject *parent):QObject(parent) {
     // test code
     std::string json_str = R"({
         "graintype": "wheat",
@@ -285,6 +404,15 @@ AllDatatypeModel::AllDatatypeModel(QObject *parent) : QObject(parent)
                                 "items": []
                             }
                         ]
+                    },
+                    {
+                        "value": "wheat",
+                        "items": [
+                            {
+                                "value": "小麦",
+                                "items": []
+                            }
+                        ]
                     }
                 ]
             },
@@ -294,14 +422,7 @@ AllDatatypeModel::AllDatatypeModel(QObject *parent) : QObject(parent)
                     {
                         "value": "破损",
                         "items": [
-                            {
-                                "value": "二分之一",
-                                "items": []
-                            },
-                            {
-                                "value": "四分之三",
-                                "items": []
-                            }
+
                         ]
                     },
                     {
@@ -317,28 +438,138 @@ AllDatatypeModel::AllDatatypeModel(QObject *parent) : QObject(parent)
             }
         ]
     })";
-    praseData(boost::json::parse(json_str));
+    std::string json_str2 = R"({
+        "graintype": "wheat",
+        "items": [
+            {
+                "value": "不完善颜色",
+                "items": [
+                    {
+                        "value": "灰绿色",
+                        "items": [
+                        ]
+                    },
+                    {
+                        "value": "白色",
+                        "items": [
+                        ]
+                    }
+                ]
+            },
+            {
+                "value": "图像位置",
+                "items": [
+                    {
+                        "value": "左侧",
+                        "items": [
+
+                        ]
+                    },
+                    {
+                        "value": "右侧",
+                        "items": [
+                        ]
+                    },
+                    {
+                        "value": "中间",
+                        "items": [
+                        ]
+                    }
+                ]
+            }
+        ]
+    })";
+    std::string json_str3 = R"({
+        "graintype": "wheat",
+        "items": [
+            {
+                "value": "颗粒类型",
+                "items": [
+                    {
+                        "value": "生芽",
+                        "items": [
+                            {
+                                "value": "胡须",
+                                "items": []
+                            }
+                        ]
+                    },
+                    {
+                        "value": "corn",
+                        "items": [
+                            {
+                                "value": "玉米",
+                                "items": []
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                "value": "自定义类型",
+                "items": [
+                    {
+                        "value": "破损",
+                        "items": [
+
+                        ]
+                    },
+                    {
+                        "value": "热损伤",
+                        "items": [
+                            {
+                                "value": "自然",
+                                "items": []
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    })";
+    // praseData(boost::json::parse(json_str));
+    AllDatatypeModel* wheatAllDatatypeModel = new AllDatatypeModel;
+    wheatAllDatatypeModel->praseData(boost::json::parse(json_str));
+
+    AllSingleDatatypeModel* wheatAllSingleDatatypeModel = new AllSingleDatatypeModel;
+    wheatAllSingleDatatypeModel->praseData(boost::json::parse(json_str2));
+
+    AllDatatypeModel* cornAllDatatypeModel = new AllDatatypeModel;
+    cornAllDatatypeModel->praseData(boost::json::parse(json_str3));
+
+    AllSingleDatatypeModel* cornAllSingleDatatypeModel = new AllSingleDatatypeModel;
+    cornAllSingleDatatypeModel->praseData(boost::json::parse(json_str2));
+
+    m_tagModels["wheat"]= {wheatAllDatatypeModel, wheatAllSingleDatatypeModel};
+    m_tagModels["corn"]= {cornAllDatatypeModel, cornAllSingleDatatypeModel};
 }
 
-void AllDatatypeModel::praseData(boost::json::value &&v)
+QVariant DatatypeModelManage::getAllDataModel(QString type) {
+    if(m_tagModels.contains(type)) {
+        return QVariant::fromValue(m_tagModels[type].first);
+    }
+    return {};
+}
+
+QVariant DatatypeModelManage::getAllSingleDataModel(QString type) {
+    if(m_tagModels.contains(type)) {
+        return QVariant::fromValue(m_tagModels[type].second);
+    }
+    return {};
+}
+
+void DatatypeModelManage::reset() {
+    for(auto& it:m_tagModels) {
+        it.first->clearStatus();
+        it.second->clearStatus();
+    }
+
+}
+
+void DatatypeModelManage::clearSelectBtn(QString type, QString inherName, int parentIndex, int index)
 {
-    for (auto it : m_allDatas)
-    {
-        auto ptr = it.value<DatatypeModel *>();
-        ptr->deleteLater();
+    if(m_tagModels.contains(type)) {
+        m_tagModels[type].first->clearSelectBtn(parentIndex,index,inherName);
+        m_tagModels[type].second->clearSelectBtn(parentIndex,index,inherName);
     }
-    m_allDatas.clear();
-
-    boost::system::error_code ec;
-    auto obj = v.find_pointer("/items", ec);
-    if (!ec && obj->if_array())
-    {
-        for (auto &it : obj->as_array())
-        {
-            DatatypeModel *node = new DatatypeModel(std::move(it));
-            m_allDatas.append(QVariant::fromValue(node));
-        }
-    }
-
-    emit allDatasChanged();
 }

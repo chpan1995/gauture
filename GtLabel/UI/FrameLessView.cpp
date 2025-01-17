@@ -17,6 +17,11 @@ FrameLessView::FrameLessView(QWindow *parent) : QQuickView(parent)
     connect(this,&FrameLessView::windowStateChanged,this,[this](Qt::WindowState windowState){
         if(windowState==Qt::WindowNoState && m_ShowMax) {
             showMaximized();
+        }else if(windowState==Qt::WindowMaximized) {
+            if(!m_ShowMax) {
+                m_ShowMax = true;
+                emit showMaxChanged();
+            }
         }
     });
     qApp->installEventFilter(this);
@@ -24,6 +29,7 @@ FrameLessView::FrameLessView(QWindow *parent) : QQuickView(parent)
 
 void FrameLessView::moveing(QPoint start, QPoint end)
 {
+    if(m_ShowMax) return;
 #if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
     QNativeInterface::QX11Application *x11App = qApp->nativeInterface<QNativeInterface::QX11Application>();
     Display *dpy = x11App->display();
@@ -68,11 +74,13 @@ void FrameLessView::moveing(QPoint start, QPoint end)
 void FrameLessView::showNor() {
     m_ShowMax=false;
     showNormal();
+    emit showMaxChanged();
 }
 
 void FrameLessView::showMax() {
     m_ShowMax=true;
     showMaximized();
+    emit showMaxChanged();
 }
 
 void FrameLessView::mousePressEvent(QMouseEvent *event)
