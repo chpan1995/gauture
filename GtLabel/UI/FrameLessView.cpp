@@ -29,7 +29,6 @@ FrameLessView::FrameLessView(QWindow *parent)
             setIsShowMax(flag);
             // 保存当前的普通状态下的几何信息
             if (!(m_oldState & Qt::WindowMaximized)) {
-                qDebug() << "geometry()" <<geometry();
                 m_normalGeometry = geometry();
             }
         }
