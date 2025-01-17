@@ -2,6 +2,7 @@
 
 #include <QCursor>
 #include <QTimer>
+#include <QScreen>
 
 #ifdef Q_OS_WIN
 #include <dwmapi.h>
@@ -28,6 +29,7 @@ FrameLessView::FrameLessView(QWindow *parent)
             setIsShowMax(flag);
             // 保存当前的普通状态下的几何信息
             if (!(m_oldState & Qt::WindowMaximized)) {
+                qDebug() << "geometry()" <<geometry();
                 m_normalGeometry = geometry();
             }
         }
@@ -50,6 +52,10 @@ FrameLessView::FrameLessView(QWindow *parent)
         m_oldState = windowState;
     });
     qApp->installEventFilter(this);
+
+    m_normalGeometry = QRect({(screen()->availableGeometry().width()-1294)/2
+                              ,(screen()->availableGeometry().height()-800)/2,1294,800});
+
 }
 
 void FrameLessView::moveing(QPoint start, QPoint end)
@@ -96,13 +102,15 @@ void FrameLessView::moveing(QPoint start, QPoint end)
 #else
     QPoint topLeft = end - start;
     setGeometry({topLeft.x(), topLeft.y(), width(), height()});
+    m_normalGeometry=geometry();
 #endif
 }
 
 void FrameLessView::showNor()
 {
     setIsShowMax(false);
-    showNormal();
+    setWindowState(Qt::WindowNoState);
+    setGeometry(m_normalGeometry);
 }
 
 void FrameLessView::showMax()
