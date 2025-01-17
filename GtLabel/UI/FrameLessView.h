@@ -65,6 +65,8 @@ private:
     QPoint m_dragStartPos;
     bool m_borderSelecte { true };
     QVariant m_isShowMax {true};
+    QRect m_normalGeometry;  // 存储普通状态下的窗口大小和位置
+    Qt::WindowState m_oldState {Qt::WindowState::WindowMaximized};
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS(FrameLessView::Edges)
 #endif // FRAMELESSVIEW_H
