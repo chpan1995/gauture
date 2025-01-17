@@ -48,7 +48,6 @@ protected:
     bool eventFilter(QObject *watched, QEvent *event) override;
 private:
     std::optional<Edge> isInEdge(const QPoint &pos) const;
-    void initializeWindow();
 private:
     bool m_resizing {false};
     QRect m_windowStartGeometry;
