@@ -83,10 +83,10 @@ Item {
             height: 40
             hovercolor: "#55FFFFFF"
             radius: 8
-            url: !view.isshowMax ? "qrc:/images/max.png":"qrc:/images/normal.png"
+            url: !view.isShowMax ? "qrc:/images/max.png":"qrc:/images/normal.png"
             width: 40
             onClicked:{
-                view.isshowMax ? view.showNor():view.showMax();
+                view.isShowMax ? view.showNor():view.showMax();
             }
         }
 

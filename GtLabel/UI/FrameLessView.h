@@ -15,7 +15,7 @@
 class FrameLessView : public QQuickView
 {
     Q_OBJECT
-    Q_PROPERTY(Bool isshowMax MEMBER m_ShowMax NOTIFY showMaxChanged FINAL)
+    Q_PROPERTY(QVariant isShowMax READ isShowMax  WRITE setIsShowMax NOTIFY isShowMaxChanged)
 public:
     explicit FrameLessView(QWindow *parent=nullptr);
     enum Edge
@@ -31,7 +31,6 @@ public:
         RightBottomEdge = TopEdge << 7,
     };
     Q_DECLARE_FLAGS(Edges,Edge)
-    Q_FLAGS(Edges);
 
     Q_INVOKABLE inline QPoint moveStart() { return geometry().topLeft(); }
     Q_INVOKABLE void moveing(QPoint start,QPoint end);
@@ -42,8 +41,16 @@ public:
     // Q_INVOKABLE void showMin();
     Q_INVOKABLE void showNor();
     Q_INVOKABLE void showMax();
+
+    QVariant isShowMax() const { return m_isShowMax; }
+    void setIsShowMax(QVariant value) {
+        if (m_isShowMax != value) {
+            m_isShowMax = value;
+            emit isShowMaxChanged();
+        }
+    }
 signals:
-    void showMaxChanged();
+    void isShowMaxChanged();
 protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
@@ -57,7 +64,7 @@ private:
     Edge m_resizeEdge;
     QPoint m_dragStartPos;
     bool m_borderSelecte { true };
-    bool m_ShowMax {true};
+    QVariant m_isShowMax {true};
 };
-
+Q_DECLARE_OPERATORS_FOR_FLAGS(FrameLessView::Edges)
 #endif // FRAMELESSVIEW_H
