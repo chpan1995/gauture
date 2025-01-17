@@ -2,6 +2,7 @@
 #include "log.h"
 
 #include <QCoreApplication>
+#include <QDir>
 #include <QFile>
 #include <boost/asio.hpp>
 
@@ -258,13 +259,24 @@ QVariantList LabelImgData::upload()
     std::stringstream os;
     std::string indent = "";
     pretty_print(os, v, &indent);
-    QString fpath = QCoreApplication::applicationDirPath() + "/"
-                    + QDateTime::currentDateTime().toString("yyyy-MM-dd_hh:mm:ss") + ".json";
-    QFile File(fpath);
-    File.open(QFile::WriteOnly | QFile::Text | QFile::Truncate);
-    File.write(os.str().c_str());
-    File.close();
+    QString timestamp = QDateTime::currentDateTime().toString("yyyy-MM-dd_hh-mm-ss"); // 使用下划线和连字符替换空格和冒号
+    QString fpath = QCoreApplication::applicationDirPath() + "/" + timestamp + ".json";
 
+    // // 2. 确保目录存在（注意：这里要传入目录路径，而不是文件路径）
+    // QFileInfo fileInfo(fpath);
+    // QDir dir(fileInfo.absolutePath());
+    // if (!dir.exists()) {
+    //     if (!dir.mkpath(".")) { // 创建到当前目录的路径
+    //         logging::log_error(RL, "创建目录失败");
+    //     }
+    // }
+    QFile File(fpath);
+    if(!File.open(QFile::ReadWrite | QFile::Text | QFile::Truncate)){
+        logging::log_error(RL,"打开文件失败{}",File.errorString().toStdString());
+    }else {
+        File.write(os.str().c_str());
+        File.close();
+    }
     m_HttpClient->addRequest(HttpRequest(
         "192.168.1.108",
         "8083",
@@ -305,6 +317,7 @@ void LabelImgData::clear() {
     m_currentPage=0;
     m_imgNames.clear();
     m_imgName="";
+    m_labelTagsModels.clear();
     emit imgNameChanged();
     emit currentPageChanged();
     emit allPageChanged();

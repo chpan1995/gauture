@@ -15,6 +15,11 @@
 #include "spdlog/async.h"
 #include <filesystem>
 
+#include <iostream>
+
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 
 namespace logging {
 
@@ -32,7 +37,15 @@ logger::~logger()
 
 void logger::init() {
     // 获取当前可执行文件的路径
+    std::filesystem::path execPath;
+#ifdef _WIN32
+    // Windows 方式
+    wchar_t path[1024];
+    GetModuleFileNameW(NULL, path, 1024);
+    execPath = path;
+#else
     auto execPath = std::filesystem::canonical("/proc/self/exe");
+#endif
     // 获取所在目录
     auto execDir = execPath.parent_path();
     // 创建log存放文件夹
@@ -41,7 +54,6 @@ void logger::init() {
     if (std::filesystem::exists(log_path)) {
         std::filesystem::create_directories(log_path);
     }
-
     // 天数
     auto daily_sink = std::make_shared<spdlog::sinks::daily_file_sink_mt>(log_path+"/day.log",2,20);
     daily_sink->set_level(spdlog::level::trace);
@@ -58,6 +70,8 @@ void logger::init() {
     rota_sink->set_level(spdlog::level::trace);
     auto console_sink_r = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
     console_sink_r->set_level(spdlog::level::trace);
+    console_sink_r->set_pattern(u8"[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] %v");
+
     std::vector<spdlog::sink_ptr> sinks_r{rota_sink, console_sink_r};
     m_rotalog = std::make_shared<spdlog::logger>("multi_sink_2", sinks_r.begin(),sinks_r.end());
     spdlog::details::registry::instance().register_logger(m_rotalog);
