@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=00.00.00
+Exec=/opt/Label/appGtLabel.sh
+GenericName[zh_CN]=(高哲信息)
+Icon=/opt/Label/bin/icon.png
+Name=Label
+Categories=System;
+Terminal=false
+Type=Application

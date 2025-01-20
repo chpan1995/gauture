@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -e
+
+# 打包本机配置相关数据，以便后续安装恢复
+target_files="config.json"
+targets=""
+
+bin_dir=/opt/Label/bin
+do_pack=0
+
+if [ -d ${bin_dir} ];then
+    for t in ${target_files} ${target_folders}
+    do
+        if [ -e "${bin_dir}/${t}" ];then
+            targets+=" ${bin_dir}/${t}"
+            do_pack=1
+        fi
+    done
+    if [ 0 -ne ${do_pack} ];then
+        tar czPf /var/Label_conf.tgz ${targets}
+        echo "conf files(/var/Label_conf.tgz) -> backup done."
+    fi
+fi

@@ -44,7 +44,7 @@ void logger::init() {
     GetModuleFileNameW(NULL, path, 1024);
     execPath = path;
 #else
-    auto execPath = std::filesystem::canonical("/proc/self/exe");
+    execPath = std::filesystem::canonical("/proc/self/exe");
 #endif
     // 获取所在目录
     auto execDir = execPath.parent_path();

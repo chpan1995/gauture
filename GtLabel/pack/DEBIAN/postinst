@@ -1,0 +1,13 @@
+#!/bin/bash
+set -e
+
+# 安装自动启动程序
+if [ -e /opt/Label/GzLabel.desktop ];then
+    cp -v /opt/Label/GzLabel.desktop /usr/share/applications
+fi
+
+# 恢复配置相关文件
+#if [ -e /var/E600_conf.tgz ];then
+#    tar xPf /var/E600_conf.tgz
+#    echo "conf files(/var/E600_conf.tgz) -> restorted."
+#fi

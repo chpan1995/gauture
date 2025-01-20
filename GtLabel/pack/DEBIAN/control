@@ -1,0 +1,9 @@
+Package: appGtLabel
+Version: 00.00.00
+Section: not-free
+Priority: optional
+Architecture: amd64
+Installed-Size: 1354236
+Maintainer: GAOZHE information technologies
+Provides: GAOZHE
+Description: Grain quality detector
