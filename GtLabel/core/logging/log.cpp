@@ -12,10 +12,7 @@
 
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include <spdlog/sinks/basic_file_sink.h>
-#include "spdlog/async.h"
 #include <filesystem>
-
-#include <iostream>
 
 #ifdef _WIN32
 #include <Windows.h>

@@ -142,17 +142,21 @@ bool LabelImgData::gotoImgs(LabelImgNamespace::PageGo v)
     case LabelImgNamespace::PageGo::Tail:
     {
         m_currentPage=0;
-        m_imgName = m_imgNames[m_currentPage];
-        emit imgNameChanged();
-        m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
+        if(m_imgNames.size()>0) {
+            m_imgName = m_imgNames[m_currentPage];
+            emit imgNameChanged();
+            m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
+        }
         m_isTaging = false;
     } break;
     case LabelImgNamespace::PageGo::End:
     {
         m_currentPage=m_imgNames.size()-1;
-        m_imgName = m_imgNames[m_currentPage];
-        emit imgNameChanged();
-        m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
+        if(m_imgNames.size()>0) {
+            m_imgName = m_imgNames[m_currentPage];
+            emit imgNameChanged();
+            m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
+        }
         m_isTaging = false;
     } break;
     case LabelImgNamespace::PageGo::Front10: {
@@ -161,9 +165,11 @@ bool LabelImgData::gotoImgs(LabelImgNamespace::PageGo v)
         }else {
             m_currentPage = m_currentPage-10;
         }
-        m_imgName = m_imgNames[m_currentPage];
-        emit imgNameChanged();
-        m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
+        if(m_imgNames.size()>0) {
+            m_imgName = m_imgNames[m_currentPage];
+            emit imgNameChanged();
+            m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
+        }
         m_isTaging = false;
     } break;
     case LabelImgNamespace::PageGo::Next10: {
@@ -172,9 +178,11 @@ bool LabelImgData::gotoImgs(LabelImgNamespace::PageGo v)
         }else {
             m_currentPage = m_currentPage+10;
         }
-        m_imgName = m_imgNames[m_currentPage];
-        emit imgNameChanged();
-        m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
+        if(m_imgNames.size()>0) {
+            m_imgName = m_imgNames[m_currentPage];
+            emit imgNameChanged();
+            m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
+        }
         m_isTaging = false;
     } break;
     default:
