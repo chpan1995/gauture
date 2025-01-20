@@ -21,5 +21,6 @@ int main(int argc, char *argv[])
     view->showNormal();
     QTimer::singleShot(0,[&]{view->showMaximized();});
     QObject::connect(view->engine(), &QQmlEngine::quit, qApp, &QCoreApplication::quit);
+    app.setWindowIcon(QIcon(":images/icon.png"));
     return app.exec();
 }

@@ -54,7 +54,6 @@ FrameLessView::FrameLessView(QWindow *parent)
 
     m_normalGeometry = QRect({(screen()->availableGeometry().width()-1294)/2
                               ,(screen()->availableGeometry().height()-800)/2,1294,800});
-
 }
 
 void FrameLessView::moveing(QPoint start, QPoint end)
