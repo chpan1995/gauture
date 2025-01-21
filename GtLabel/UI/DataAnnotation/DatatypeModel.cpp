@@ -393,6 +393,18 @@ DatatypeModelManage::DatatypeModelManage(QObject *parent):QObject(parent) {
                             {
                                 "value": "黑胚",
                                 "items": []
+                            },
+                            {
+                                "value": "呆白皱缩",
+                                "items": []
+                            },
+                            {
+                                "value": "开裂",
+                                "items": []
+                            },
+                            {
+                                "value": "黑色子囊壳",
+                                "items": []
                             }
                         ]
                     },
@@ -400,29 +412,64 @@ DatatypeModelManage::DatatypeModelManage(QObject *parent):QObject(parent) {
                         "value": "生芽",
                         "items": [
                             {
+                                "value": "裂口",
+                                "items": []
+                            },
+                            {
+                                "value": "短芽",
+                                "items": []
+                            },
+                            {
+                                "value": "长芽",
+                                "items": []
+                            },
+                            {
                                 "value": "胡须",
+                                "items": []
+                            },
+                            {
+                                "value": "无麦胚",
                                 "items": []
                             }
                         ]
                     },
                     {
-                        "value": "wheat",
+                        "value": "生霉",
                         "items": [
                             {
-                                "value": "小麦",
+                                "value": "类似灰尘",
                                 "items": []
                             }
                         ]
-                    }
-                ]
-            },
-            {
-                "value": "自定义类型",
-                "items": [
+                    },
+                    {
+                        "value": "虫蚀",
+                        "items": [
+                            {
+                                "value": "啃咬",
+                                "items": []
+                            },
+                            {
+                                "value": "孔洞",
+                                "items": []
+                            }
+                        ]
+                    },
                     {
                         "value": "破损",
                         "items": [
-
+                            {
+                                "value": "二分之一",
+                                "items": []
+                            },
+                            {
+                                "value": "四分之三",
+                                "items": []
+                            },
+                            {
+                                "value": "开裂",
+                                "items": []
+                            }
                         ]
                     },
                     {
@@ -431,7 +478,68 @@ DatatypeModelManage::DatatypeModelManage(QObject *parent):QObject(parent) {
                             {
                                 "value": "自然",
                                 "items": []
+                            },
+                            {
+                                "value": "烘干",
+                                "items": []
                             }
+                        ]
+                    },
+                    {
+                        "value": "正常",
+                        "items": [
+                            {
+                                "value": "破皮",
+                                "items": []
+                            },
+                            {
+                                "value": "裂纹",
+                                "items": []
+                            }
+                        ]
+                    },
+                    {
+                        "value": "杂质",
+                        "items": [
+                            {
+                                "value": "有机",
+                                "items": []
+                            },
+                            {
+                                "value": "无机",
+                                "items": []
+                            },
+                            {
+                                "value": "无使用价值",
+                                "items": []
+                            },
+                            {
+                                "value": "虫",
+                                "items": []
+                            }
+                        ]
+                    },
+                    {
+                        "value": "未熟粒",
+                        "items": [
+                            {
+                                "value": "破皮",
+                                "items": []
+                            },
+                            {
+                                "value": "裂纹",
+                                "items": []
+                            }
+                        ]
+                    },
+                    {
+                        "value": "带壳粒",
+                        "items": [
+                        ]
+                    },
+                    {
+                        "value": "未知",
+                        "items": [
                         ]
                     }
                 ]
@@ -442,7 +550,75 @@ DatatypeModelManage::DatatypeModelManage(QObject *parent):QObject(parent) {
         "graintype": "wheat",
         "items": [
             {
-                "value": "不完善颜色",
+                "value": "缺陷程度",
+                "items": [
+                    {
+                        "value": "重度",
+                        "items": [
+                        ]
+                    },
+                    {
+                        "value": "中度",
+                        "items": []
+                    },
+                    {
+                        "value": "轻微",
+                        "items": []
+                    }
+                ]
+            },
+            {
+                "value": "缺陷区域",
+                "items": [
+                    {
+                        "value": "胚乳",
+                        "items": [
+                        ]
+                    },
+                    {
+                        "value": "胚部",
+                        "items": []
+                    },
+                    {
+                        "value": "尾部",
+                        "items": []
+                    },
+                    {
+                        "value": "整体",
+                        "items": []
+                    }
+                ]
+            },
+            {
+                "value": "缺陷形状",
+                "items": [
+                    {
+                        "value": "片状",
+                        "items": [
+                        ]
+                    },
+                    {
+                        "value": "斑块",
+                        "items": []
+                    },
+                    {
+                        "value": "点状",
+                        "items": []
+                    }
+                ]
+            },
+            {
+                "value": "颗粒姿态",
+                "items": [
+                    {
+                        "value": "侧躺",
+                        "items": [
+                        ]
+                    }
+                ]
+            },
+            {
+                "value": "缺陷颜色",
                 "items": [
                     {
                         "value": "灰绿色",
@@ -453,25 +629,39 @@ DatatypeModelManage::DatatypeModelManage(QObject *parent):QObject(parent) {
                         "value": "白色",
                         "items": [
                         ]
+                    },
+                    {
+                        "value": "黑色",
+                        "items": [
+                        ]
                     }
                 ]
             },
             {
-                "value": "图像位置",
+                "value": "干扰",
                 "items": [
                     {
-                        "value": "左侧",
-                        "items": [
-
-                        ]
-                    },
-                    {
-                        "value": "右侧",
+                        "value": "杂质",
                         "items": [
                         ]
                     },
                     {
-                        "value": "中间",
+                        "value": "有灰",
+                        "items": [
+                        ]
+                    },
+                    {
+                        "value": "多颗粘连",
+                        "items": [
+                        ]
+                    },
+                    {
+                        "value": "异色",
+                        "items": [
+                        ]
+                    },
+                    {
+                        "value": "虫",
                         "items": [
                         ]
                     }
@@ -479,39 +669,93 @@ DatatypeModelManage::DatatypeModelManage(QObject *parent):QObject(parent) {
             }
         ]
     })";
+
     std::string json_str3 = R"({
-        "graintype": "wheat",
+        "graintype": "corn",
         "items": [
             {
                 "value": "颗粒类型",
                 "items": [
                     {
-                        "value": "生芽",
+                        "value": "病斑",
                         "items": [
                             {
-                                "value": "胡须",
+                                "value": "圆斑",
                                 "items": []
                             }
                         ]
                     },
                     {
-                        "value": "corn",
+                        "value": "生芽",
                         "items": [
                             {
-                                "value": "玉米",
+                                "value": "裂口",
+                                "items": []
+                            },
+                            {
+                                "value": "短芽",
+                                "items": []
+                            },
+                            {
+                                "value": "长芽",
                                 "items": []
                             }
                         ]
-                    }
-                ]
-            },
-            {
-                "value": "自定义类型",
-                "items": [
+                    },
+                    {
+                        "value": "生霉",
+                        "items": [
+                            {
+                                "value": "粒面生霉",
+                                "items": []
+                            }
+                        ]
+                    },
+                    {
+                        "value": "霉变",
+                        "items": [
+                            {
+                                "value": "内霉",
+                                "items": []
+                            },
+                            {
+                                "value": "裂口",
+                                "items": []
+                            }
+                        ]
+                    },
+                    {
+                        "value": "虫蚀",
+                        "items": [
+                            {
+                                "value": "啃咬",
+                                "items": []
+                            },
+                            {
+                                "value": "孔洞",
+                                "items": []
+                            },
+                            {
+                                "value": "隧道",
+                                "items": []
+                            }
+                        ]
+                    },
                     {
                         "value": "破损",
                         "items": [
-
+                            {
+                                "value": "二分之一",
+                                "items": []
+                            },
+                            {
+                                "value": "四分之三",
+                                "items": []
+                            },
+                            {
+                                "value": "五分之一",
+                                "items": []
+                            }
                         ]
                     },
                     {
@@ -520,7 +764,193 @@ DatatypeModelManage::DatatypeModelManage(QObject *parent):QObject(parent) {
                             {
                                 "value": "自然",
                                 "items": []
+                            },
+                            {
+                                "value": "烘干",
+                                "items": []
                             }
+                        ]
+                    },
+                    {
+                        "value": "正常",
+                        "items": [
+                            {
+                                "value": "破皮",
+                                "items": []
+                            },
+                            {
+                                "value": "未知",
+                                "items": []
+                            }
+                        ]
+                    },
+                    {
+                        "value": "杂质",
+                        "items": [
+                            {
+                                "value": "有机",
+                                "items": []
+                            },
+                            {
+                                "value": "无机",
+                                "items": []
+                            },
+                            {
+                                "value": "无使用价值",
+                                "items": []
+                            },
+                            {
+                                "value": "虫",
+                                "items": []
+                            },
+                            {
+                                "value": "毒物",
+                                "items": []
+                            }
+                        ]
+                    },
+                    {
+                        "value": "无效",
+                        "items": [
+                        ]
+                    }
+                ]
+            }
+        ]
+    })";
+
+
+    std::string json_str4 = R"({
+        "graintype": "wheat",
+        "items": [
+            {
+                "value": "缺陷程度",
+                "items": [
+                    {
+                        "value": "重度",
+                        "items": [
+                        ]
+                    },
+                    {
+                        "value": "中度",
+                        "items": []
+                    },
+                    {
+                        "value": "轻微",
+                        "items": []
+                    }
+                ]
+            },
+            {
+                "value": "缺陷区域",
+                "items": [
+                    {
+                        "value": "胚乳",
+                        "items": [
+                        ]
+                    },
+                    {
+                        "value": "胚部",
+                        "items": []
+                    },
+                    {
+                        "value": "尾部",
+                        "items": []
+                    },
+                    {
+                        "value": "整体",
+                        "items": []
+                    }
+                ]
+            },
+            {
+                "value": "缺陷形状",
+                "items": [
+                    {
+                        "value": "片状",
+                        "items": [
+                        ]
+                    },
+                    {
+                        "value": "斑块",
+                        "items": []
+                    },
+                    {
+                        "value": "点状",
+                        "items": []
+                    },
+                    {
+                        "value": "裂口",
+                        "items": []
+                    }
+                ]
+            },
+            {
+                "value": "颗粒姿态",
+                "items": [
+                    {
+                        "value": "侧躺",
+                        "items": [
+                        ]
+                    }
+                ]
+            },
+            {
+                "value": "缺陷颜色",
+                "items": [
+                    {
+                        "value": "灰绿色",
+                        "items": [
+                        ]
+                    },
+                    {
+                        "value": "黄褐色",
+                        "items": [
+                        ]
+                    },
+                    {
+                        "value": "白色",
+                        "items": [
+                        ]
+                    },
+                    {
+                        "value": "黑色",
+                        "items": [
+                        ]
+                    },
+                    {
+                        "value": "红色",
+                        "items": [
+                        ]
+                    }
+                ]
+            },
+            {
+                "value": "干扰",
+                "items": [
+                    {
+                        "value": "杂质",
+                        "items": [
+                        ]
+                    },
+                    {
+                        "value": "有灰",
+                        "items": [
+                        ]
+                    },
+                    {
+                        "value": "多颗粘连",
+                        "items": [
+                        ]
+                    },
+                    {
+                        "value": "异色",
+                        "items": [
+                        ]
+                    },
+                    {
+                        "value": "虫",
+                        "items": [
                         ]
                     }
                 ]
@@ -538,7 +968,7 @@ DatatypeModelManage::DatatypeModelManage(QObject *parent):QObject(parent) {
     cornAllDatatypeModel->praseData(boost::json::parse(json_str3));
 
     AllSingleDatatypeModel* cornAllSingleDatatypeModel = new AllSingleDatatypeModel;
-    cornAllSingleDatatypeModel->praseData(boost::json::parse(json_str2));
+    cornAllSingleDatatypeModel->praseData(boost::json::parse(json_str4));
 
     m_tagModels["wheat"]= {wheatAllDatatypeModel, wheatAllSingleDatatypeModel};
     m_tagModels["corn"]= {cornAllDatatypeModel, cornAllSingleDatatypeModel};

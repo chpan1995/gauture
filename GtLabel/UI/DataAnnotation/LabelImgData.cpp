@@ -119,7 +119,7 @@ bool LabelImgData::gotoImgs(LabelImgNamespace::PageGo v)
     switch (v) {
     case LabelImgNamespace::PageGo::Next: {
         int index = ++m_currentPage;
-        if (index > m_imgNames.size()) {
+        if (index > m_imgNames.size()-1) {
             m_currentPage--;
         } else {
             m_imgName = m_imgNames[index];
@@ -199,6 +199,7 @@ void LabelImgData::setTagStatus(bool f)
 
 void LabelImgData::reset()
 {
+    m_isTaging=false;
     if (m_labelTagsModels.contains(m_imgName)) {
         m_currentTrait[m_imgName] = 1;
         m_labelTagsModels[m_imgName].clear();
@@ -221,7 +222,7 @@ QVariantList LabelImgData::upload()
 {
     if (m_isTaging) {
         logging::log_info(RL,"{}","存在未标注信息,请标注完或取消标注在上传");
-        return {false, "存在未标注信息,请标注完或取消标注在上传"};
+        return {false, "存在未确认的标注信息,请点击标注完或取消标注在上传"};
     }
     boost::json::value v{{"taskName", m_currentTaskName.toStdString()},
                          {"userName", "fdd"},
