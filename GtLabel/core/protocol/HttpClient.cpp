@@ -119,6 +119,7 @@ void HttpClient::on_read(boost::beast::error_code ec, std::size_t bytes_transfer
             handleError("Read failed: " + ec.message());
             return;
         }
+        // m_res.result(); 回复状态码
         // 处理响应
         auto& current_request = m_pendingRequests.front();
         auto& body = m_res.body();

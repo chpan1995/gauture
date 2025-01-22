@@ -72,6 +72,7 @@ signals:
     void currentPageChanged();
     void allPageChanged();
 private:
+    void updateTags();
     std::optional<boost::json::value> praseRespose(const char *response, std::size_t lenth);
 private:
     std::shared_ptr<HttpClient> m_HttpClient;
@@ -87,6 +88,7 @@ private:
     QHash<QString,QList<LabelTagsItem>> m_labelTagsModels;
     QHash<QString,std::uint16_t> m_currentTrait;
     QString m_currentTaskName;
+    std::int32_t m_currentTaskId;
     bool m_isTaging { false }; // 是否正在标记 (打了tag但是没点标注 关闭标签结合trait就可以控制按钮的选中状态了)
     friend class LabelTags;
 };

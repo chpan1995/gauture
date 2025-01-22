@@ -12,10 +12,6 @@ void LabelTags::removeRow(QString sapType,QString inherName,int trait,int firstI
 
     if(!Btn) {
         // 上面标签点击的
-        if(trait==myparent->m_currentTrait[myparent->m_imgName] && myparent->m_isTaging) {
-            // 清除选中按钮
-            emit clearSelectTag(sapType,inherName,firstIndex,secondIndex);
-        }
         for(int i=0;i<m_datas->size();i++) {
             if(m_datas->at(i).property("inherName")==inherName
                 && m_datas->at(i).property("sapType")==sapType
@@ -26,6 +22,14 @@ void LabelTags::removeRow(QString sapType,QString inherName,int trait,int firstI
                 break;
             }
         }
+        if(trait==myparent->m_currentTrait[myparent->m_imgName] && myparent->m_isTaging) {
+            // 清除选中按钮
+            emit clearSelectTag(sapType,inherName,firstIndex,secondIndex);
+        }else {
+            // 删除之前标注的信息
+            myparent->updateTags();
+        }
+
     }else {
         // 左边按钮点的
         for(int i=0;i<m_datas->size();i++) {

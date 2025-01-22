@@ -104,6 +104,22 @@ void LabelImgData::requestImgName(QString name)
                             m_currentPage=0;
                             emit currentPageChanged();
                             emit allPageChanged();
+                            m_HttpClient->addRequest(HttpRequest("192.168.1.158","8080","/api/labTask/addLabTask"
+                                                                 ,boost::json::serialize(boost::json::object({
+                                                                    {"userid",1},
+                                                                    {"taskname",m_currentTaskName.toStdString()},
+                                                                    {"imgarry",objArry->get_array()}
+                                                                })),[this](const char *response, std::size_t lenth){
+                                auto v = praseRespose(response, lenth);
+                                if (v.has_value()) {
+                                    logging::log_info(RL,boost::json::serialize(v.value()));
+                                    boost::system::error_code ec;
+                                    auto taskid = v.value().find_pointer("/labTaskid", ec);
+                                    if(!ec&&taskid->if_int64()) {
+                                        m_currentTaskId=taskid->get_int64();
+                                    }
+                                }
+                            }));
                         } else {
                             emit request(false, LabelImgNamespace::RequestMethod::TasksPull);
                         }
@@ -112,6 +128,17 @@ void LabelImgData::requestImgName(QString name)
 
 bool LabelImgData::gotoImgs(LabelImgNamespace::PageGo v)
 {
+    // m_HttpClient->addRequest(
+    //     HttpRequest("192.168.1.158",
+    //                 "8080",
+    //                 QString(QString("/api/user/login")).toStdString(),
+    //                 boost::json::serialize(boost::json::object({{"username","fdd"},{"password","123456"}})),
+    //                 [this](const char *response, std::size_t lenth) {
+    //                     auto v = praseRespose(response, lenth);
+    //                     if(v.has_value()) {
+    //                         qDebug() <<  boost::json::serialize(v.value());
+    //                     }
+    //                 }));
     // 清除未点击标注信息
     if (m_isTaging) {
         return false;
@@ -212,6 +239,7 @@ bool LabelImgData::lab()
     bool tmp = m_isTaging;
     if (m_isTaging) {
         m_currentTrait[m_imgName]++;
+        updateTags(); // 更新tags
     }
     // 标注完成Taging状态置成false
     m_isTaging = false;
@@ -332,6 +360,37 @@ void LabelImgData::clear() {
     emit allPageChanged();
 }
 
+void LabelImgData::updateTags() {
+    boost::json::array arr;
+    for(auto it:m_labelTagsModels[m_imgName.toStdString().c_str()]){
+        boost::json::object obj({
+            {"sapType",it.property("sapType").toString().toStdString()},
+            {"inherName",it.property("inherName").toString().toStdString()},
+            {"firstIndex",it.property("firstIndex").toInt()},
+            {"secondIndex",it.property("sapType").toInt()},
+            {"topName",it.property("topName").toString().toStdString()},
+            {"trait",it.property("trait").toInt()}
+        });
+        arr.push_back(obj);
+    }
+    boost::json::object v({
+        {"taskid",m_currentTaskId},
+        {"imgname",m_imgName.toStdString()},
+        {"tags",boost::json::serialize(arr)}
+    });
+    m_HttpClient->addRequest(HttpRequest(
+        "192.168.1.158",
+        "8080",
+        "/api/labTask/updateTags",
+        boost::json::serialize(v),
+        [this](const char *response, std::size_t lenth) {
+            auto v = praseRespose(response, lenth);
+            if (v.has_value()) {
+                logging::log_info(RL,boost::json::serialize(v.value()));
+            }
+        }));
+}
+
 std::optional<boost::json::value> LabelImgData::praseRespose(const char *response, std::size_t lenth)
 {
     boost::json::value v;
@@ -346,7 +405,7 @@ std::optional<boost::json::value> LabelImgData::praseRespose(const char *respons
         auto err = v.find_pointer("/eMessage", ec);
         if (!ec) {
             // 请求错误
-            logging::log_info(RL,"请求错误:{}","parse json failed",err->get_string().c_str());
+            logging::log_info(RL,"请求错误:{}{}","parse json failed",err->get_string().c_str());
             return std::nullopt;
         }
     }
