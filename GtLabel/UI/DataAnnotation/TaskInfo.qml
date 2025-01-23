@@ -2,6 +2,8 @@
 import QtQuick
 import ui_main 1.0
 import QtQuick.Controls
+import Qt.labs.qmlmodels
+
 
 Popup {
     id:taskinfo
@@ -102,6 +104,7 @@ Popup {
             required property var taskInfoCount
             required property var taskInfoLabCount
             required property var taskContinueCount
+            required property var taskType
             width:dele.width
             height:72
             border {
@@ -116,28 +119,59 @@ Popup {
                 height:childrenRect.height
                 anchors.verticalCenter:parent.verticalCenter
                 Text {
-                    text: taskInfoName
+                    text: itm.taskInfoName
                     font.pixelSize:14
                     color:"#333333"
                     height:implicitHeight
                 }
                 Text {
-                    text: taskInfoCreateTime
+                    text: itm.taskInfoCreateTime
                     font.pixelSize:14
                     color:"#999999"
                     height:implicitHeight
                 }
             }
-
             Text {
                 anchors.left:parent.left
                 anchors.leftMargin:438
-                text: "共" + taskInfoCount + "张"
+                text: "共" + itm.taskInfoCount + "张"
                 font.pixelSize:14
                 color:"#333333"
                 height:implicitHeight
                 anchors.verticalCenter:parent.verticalCenter
             }
+            // 只能跟在 delegate: DelegateChooser
+            // DelegateChooser {
+            //     role: "taskType"
+            //     DelegateChoice {
+            //         roleValue:TaskInfoItemEnum.DataTypes.TaskInfoRole
+            //         Text {
+            //             anchors.left:parent.left
+            //             anchors.leftMargin:438
+            //             text: {
+            //                 console.log(11111123)
+            //                 return "共" + itm.taskInfoCount + "张"
+            //             }
+            //             font.pixelSize:14
+            //             color:"#333333"
+            //             height:implicitHeight
+            //             anchors.verticalCenter:parent.verticalCenter
+
+            //         }
+            //     }
+            //     DelegateChoice {
+            //         roleValue:TaskInfoItemEnum.DataTypes.TaskContinueRole
+            //         Text {
+            //             anchors.left:parent.left
+            //             anchors.leftMargin:438
+            //             text: "继续任务：" + itm.taskInfoCount
+            //             font.pixelSize:14
+            //             color:"#333333"
+            //             height:implicitHeight
+            //             anchors.verticalCenter:parent.verticalCenter
+            //         }
+            //     }
+            // }
 
             MouseArea {
                 id:mousea

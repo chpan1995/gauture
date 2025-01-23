@@ -31,6 +31,9 @@ QVariant TaskInfoModel::data(const QModelIndex &index, int role) const {
     case TaskContinueCountRole:
         return m_datas.at(index.row()).property("taskCompleteCount");
         break;
+    case TaskTypeRole:
+        return m_datas.at(index.row()).property("dataType");
+        break;
     default:
         break;
     }
@@ -43,7 +46,8 @@ QHash<int, QByteArray> TaskInfoModel::roleNames() const {
         {TaskInfoCreateTimeRole,"taskInfoCreateTime"},
         {TaskInfoCountRole,"taskInfoCount"},
         {TaskInfoLabCountRole,"taskInfoLabCount"},
-        {TaskContinueCountRole,"taskContinueCount"}
+        {TaskContinueCountRole,"taskContinueCount"},
+        {TaskTypeRole,"taskType"}
         };
 }
 
@@ -52,7 +56,7 @@ TaskInfoModel &TaskInfoModel::operator=(const TaskInfoModel &it) {
 }
 
 void TaskInfoModel::setDatas(
-    QList<std::tuple<QString, QString, unsigned int, unsigned int, unsigned int>> d)
+    QList<std::tuple<QString, QString, unsigned int, unsigned int, unsigned int, unsigned int>> d)
 {
     m_datas.clear();
     beginResetModel();

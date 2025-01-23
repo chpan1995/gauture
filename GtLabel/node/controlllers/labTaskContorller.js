@@ -105,3 +105,28 @@ exports.updateTags = (req, res) => {
         }
     );
 }
+
+exports.labupload = (req, res) => {
+    // Validate request
+    if (!req.body) {
+        res.status(400).send({
+            code: 400,
+            message: "Content can not be empty!"
+        });
+        return;
+    }
+    (async()=>{
+        const data = await labTaskModel.labupload(req.body);
+        if(data) {
+            res.send({
+                code: 200,
+                message: "add labupload success"
+            });
+        } else {
+            res.status(500).send({
+                code: 500,
+                message: "Some error occurred while labupload."
+            });
+        }
+    })();
+}

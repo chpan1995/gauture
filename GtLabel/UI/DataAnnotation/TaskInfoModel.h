@@ -15,13 +15,14 @@ public:
         TaskInfoCreateTimeRole,
         TaskInfoCountRole,
         TaskInfoLabCountRole,
-        TaskContinueCountRole
+        TaskContinueCountRole,
+        TaskTypeRole
     };
     explicit TaskInfoModel(QObject *parent = nullptr);
     TaskInfoModel(const TaskInfoModel& it);
     TaskInfoModel& operator=(const TaskInfoModel& it);
     void setDatas(QList<std::tuple<QString,QString,
-                                   unsigned int,unsigned int,unsigned int>>);
+                                   unsigned int,unsigned int,unsigned int, unsigned int>>);
 protected:
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override;

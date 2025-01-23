@@ -91,7 +91,7 @@ labTaskmodel.updateTags = async (taskid, imgname, tags) => {
 }
 
 // 上传标注信息(删除labtaskinfo里面上传图片，存到taskinfohistory里去,再更新labtask里面的uploadcnt值)
-labTaskmodel.upload = async (arrData) => {
+labTaskmodel.labupload = async (arrData) => {
     let connection;
     try {
         connection = await pool.getConnection();
@@ -105,18 +105,18 @@ labTaskmodel.upload = async (arrData) => {
         }
         let sql =  `
         DELETE FROM labtaskinfo
-        WHERE taskid = ? ${parm
-          .map(() => '(imgname = ?)')
+        WHERE taskid = ? AND ${parm
+          .map(() => ' imgname = ? ')
           .join(' OR ')}
         `;
 
-        await connection.query(sql, [arrData[0][0],parm]);
+        await connection.query(sql,[arrData[0][0],...parm]);
 
-        await connection.query('UPDATE labtask set uploadcnt = ? WHERE taskid=?', [arrData.length]);
+        await connection.query('UPDATE labtask set uploadcnt = ? WHERE taskid=?', [arrData.length,arrData[0][0]]);
 
         await connection.commit(); // 提交事务
         console.log('Transaction completed successfully');
-        return rows;
+        return true;
     } catch (err) {
         if (connection) await connection.rollback(); // 回滚事务
         console.error('Transaction failed:', err);

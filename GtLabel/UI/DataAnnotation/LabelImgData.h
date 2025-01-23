@@ -90,6 +90,7 @@ private:
     QString m_currentTaskName;
     std::int32_t m_currentTaskId;
     bool m_isTaging { false }; // 是否正在标记 (打了tag但是没点标注 关闭标签结合trait就可以控制按钮的选中状态了)
+    QList<std::tuple<QString, QString, unsigned int, unsigned int, unsigned int, unsigned int>> m_das;
     friend class LabelTags;
 };
 

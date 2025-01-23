@@ -4,6 +4,18 @@
 #include <QQmlEngine>
 #include <QObject>
 
+namespace TaskInfoItemEnum {
+Q_NAMESPACE
+QML_ELEMENT
+enum class DataTypes {
+    TaskInfoRole=Qt::UserRole+1,
+    TaskContinueRole,
+};
+
+Q_ENUM_NS(DataTypes)
+}
+
+
 class TaskInfoItem : public QObject
 {
     Q_OBJECT
@@ -15,18 +27,15 @@ class TaskInfoItem : public QObject
 
     Q_PROPERTY(unsigned int taskGetCount MEMBER m_taskGetCount NOTIFY taskGetCountChanged FINAL)
     Q_PROPERTY(unsigned int taskCompleteCount MEMBER m_taskCompleteCount NOTIFY taskCompleteCountChanged FINAL)
+    Q_PROPERTY(unsigned int taskid MEMBER m_taskid NOTIFY taskidChanged FINAL)
 
-    Q_PROPERTY(DataTypes m_dataType MEMBER m_dataType NOTIFY dataTypeChanged FINAL)
+    Q_PROPERTY(TaskInfoItemEnum::DataTypes dataType MEMBER m_dataType NOTIFY dataTypeChanged FINAL)
 public:
-    enum DataTypes {
-        TaskInfoRole = Qt::UserRole+1,
-        TaskContinueRole
-    };
-    Q_ENUM(DataTypes);
+
     explicit TaskInfoItem(QObject *parent = nullptr);
     TaskInfoItem(const TaskInfoItem& it);
     explicit TaskInfoItem(std::tuple<QString,QString,
-                unsigned int,unsigned int,unsigned int> data,QObject *parent = nullptr);
+                unsigned int,unsigned int,unsigned int,unsigned int> data,QObject *parent = nullptr);
     TaskInfoItem& operator=(const TaskInfoItem& item);
 signals:
     void taskNameChanged();
@@ -35,13 +44,15 @@ signals:
     void taskGetCountChanged();
     void taskCompleteCountChanged();
     void dataTypeChanged();
+    void taskidChanged();
 private:
-    DataTypes m_dataType {TaskInfoRole};
+    TaskInfoItemEnum::DataTypes m_dataType {TaskInfoItemEnum::DataTypes::TaskInfoRole};
     QString m_taskName;
     QString m_taskNameCreateTime;
     unsigned int m_taskImgCount;
     unsigned int m_taskGetCount;
     unsigned int m_taskCompleteCount;
+    unsigned int m_taskid;
 };
 
 Q_DECLARE_METATYPE(TaskInfoItem)

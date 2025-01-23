@@ -11,6 +11,8 @@ module.exports = app => {
     router.post("/addLabTask", labTaskContorller.addLabTask);
     // 更新标注信息
     router.post("/updateTags", labTaskContorller.updateTags);
+    // 上传标注信息
+    router.post("/labupload", labTaskContorller.labupload);
 
     app.use('/api/labTask', router);
 }

@@ -28,6 +28,41 @@ LabelImgData::~LabelImgData()
 
 void LabelImgData::requestImgInfo()
 {
+    m_das.clear();
+    m_HttpClient->addRequest(HttpRequest(
+        "192.168.1.158", "8080", "/api/labTask/labTaskList"
+        , boost::json::serialize(boost::json::object({{"userid",1}}))
+        , [this](const char *response, std::size_t lenth) {
+            boost::system::error_code ec;
+            auto v = praseRespose(response, lenth);
+            if (v.has_value()) {
+                if(!v->as_object().contains("code")) return;
+                if(v->as_object().at("code")!=200) return;
+                auto rootobj = v->as_object();
+                auto arr = rootobj.at("labtask").as_array();
+                for(auto& it:arr) {
+                    std::string taskName,taskNameCreateTime;
+                    unsigned int taskImgCount,taskGetCount,taskCompleteCount,taskid;
+                    std::tuple<QString, QString, unsigned int, unsigned int, unsigned int, unsigned int> tp;
+                    auto obj = it.as_object();
+                    if(obj.contains("imgcnt"))
+                        taskGetCount=obj.at("imgcnt").get_int64();
+                    if(obj.contains("uploadcnt"))
+                        taskCompleteCount=obj.at("uploadcnt").get_int64();
+                    if(obj.contains("taskname"))
+                        taskName=obj.at("taskname").get_string();
+                    if(obj.contains("taskid"))
+                        taskid=obj.at("taskid").get_int64();
+                    if(obj.contains("createtime"))
+                        taskNameCreateTime=obj.at("createtime").get_string();
+
+                    tp = {taskName.c_str(), taskNameCreateTime.c_str(),
+                          taskImgCount, taskGetCount,taskCompleteCount,taskid};
+                    m_das.append(tp);
+                }
+            }
+        }));
+
     m_HttpClient->addRequest(HttpRequest(
         "192.168.1.108", "8083", "/tasks/info", [this](const char *response, std::size_t lenth) {
             boost::system::error_code ec;
@@ -35,11 +70,10 @@ void LabelImgData::requestImgInfo()
             if (v.has_value()) {
                 emit request(true, LabelImgNamespace::RequestMethod::TasksInfo);
                 auto objArry = v.value().find_pointer("/message", ec);
-                QList<std::tuple<QString, QString, unsigned int, unsigned int, unsigned int>> das;
                 if (!ec && objArry->is_array()) {
                     QString taskName, taskNameCreateTime;
                     unsigned int taskImgCount;
-                    std::tuple<QString, QString, unsigned int, unsigned int, unsigned int> tp;
+                    std::tuple<QString, QString, unsigned int, unsigned int, unsigned int, unsigned int> tp;
                     for (auto &obj : objArry->as_array()) {
                         auto count = obj.find_pointer("/count", ec);
                         if (!ec && count->if_int64()) {
@@ -55,11 +89,10 @@ void LabelImgData::requestImgInfo()
                         if (!ec && name->is_string()) {
                             taskName = name->get_string().c_str();
                         }
-                        tp = {taskName, taskNameCreateTime, taskImgCount, 0, 0};
-                        das.append(tp);
+                        tp = {taskName, taskNameCreateTime, taskImgCount, 0,0,0};
+                        m_das.append(tp);
                     }
-
-                    m_taskInfoModel->setDatas(das);
+                    m_taskInfoModel->setDatas(m_das);
                     m_model = QVariant::fromValue(m_taskInfoModel);
                     emit taskInfoModelChanged();
                 }
