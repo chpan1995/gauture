@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QQmlEngine>
 #include <QAbstractListModel>
+#include <boost/json.hpp>
 
 class LabelTagsItem;
 
@@ -51,6 +52,7 @@ public:
     explicit LabelTagsItem(QObject *parent = nullptr);
     explicit LabelTagsItem(QString sapType,QString inherName,int firstIndex,int secondIndex
                            ,QString topName,int trait);
+    explicit LabelTagsItem(boost::json::value v);
     LabelTagsItem(const LabelTagsItem& it);
     LabelTagsItem& operator=(const LabelTagsItem& it);
     LabelTagsItem& operator=(LabelTagsItem&& it);
@@ -67,7 +69,7 @@ private:
     int m_firstIndex;
     int m_secondIndex;
     QString m_topName;
-    int m_trait;
+    int m_trait {0};
 };
 
 #endif // LABELTAGS_H

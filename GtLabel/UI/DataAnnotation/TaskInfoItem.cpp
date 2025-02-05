@@ -11,6 +11,7 @@ TaskInfoItem::TaskInfoItem(const TaskInfoItem &it) {
     m_taskGetCount = it.m_taskGetCount;
     m_taskCompleteCount = it.m_taskCompleteCount;
     m_taskid = it.m_taskid;
+    m_dataType=it.m_dataType;
 }
 
 TaskInfoItem::TaskInfoItem(
@@ -24,7 +25,8 @@ TaskInfoItem::TaskInfoItem(
     m_taskGetCount = taskGetCount;
     m_taskCompleteCount = taskCompleteCount;
     m_taskid = taskid;
-    if(m_taskid==0) m_dataType=TaskInfoItemEnum::DataTypes::TaskContinueRole;
+    m_taskid==0 ? m_dataType=TaskInfoItemEnum::DataTypes::TaskInfoRole
+                  :m_dataType=TaskInfoItemEnum::DataTypes::TaskContinueRole;
     emit taskNameChanged();
     emit taskNameCreateTimeChanged();
     emit taskImgCountChanged();
@@ -41,5 +43,6 @@ TaskInfoItem& TaskInfoItem::operator=(const TaskInfoItem &it) {
     m_taskGetCount = it.m_taskGetCount;
     m_taskCompleteCount = it.m_taskCompleteCount;
     m_taskid = it.m_taskid;
+    m_dataType=it.m_dataType;
     return *this;
 }

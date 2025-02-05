@@ -105,6 +105,7 @@ Popup {
             required property var taskInfoLabCount
             required property var taskContinueCount
             required property var taskType
+            required property int taskId
             width:dele.width
             height:72
             border {
@@ -115,7 +116,7 @@ Popup {
             Column {
                 spacing:6
                 anchors.left:parent.left
-                anchors.leftMargin:20
+                anchors.leftMargin:20.
                 height:childrenRect.height
                 anchors.verticalCenter:parent.verticalCenter
                 Text {
@@ -134,12 +135,15 @@ Popup {
             Text {
                 anchors.left:parent.left
                 anchors.leftMargin:438
-                text: "共" + itm.taskInfoCount + "张"
+                text: itm.taskType === TaskInfoItemEnum.DataTypes.TaskInfoRole ?
+                          "共" + itm.taskInfoCount + "张"
+                        : "共" + itm.taskInfoLabCount+"，已长传"+itm.taskContinueCount
                 font.pixelSize:14
                 color:"#333333"
                 height:implicitHeight
                 anchors.verticalCenter:parent.verticalCenter
             }
+
             // 只能跟在 delegate: DelegateChooser
             // DelegateChooser {
             //     role: "taskType"
@@ -193,7 +197,7 @@ Popup {
                 anchors.rightMargin:20
                 width:80
                 height:32
-                text:"获取"
+                text:itm.taskType===TaskInfoItemEnum.DataTypes.TaskInfoRole ? "获取":"继续"
                 txtNormalColor:"#1C76E0"
                 hovercolor:"#E8F1FC"
                 txtSelectedColor:"#1C76E0"
@@ -204,9 +208,10 @@ Popup {
                 }
                 radius:4
                 onClicked:{
-                    qmlLabelImgData.requestImgName(taskInfoName);
+                    itm.taskType===TaskInfoItemEnum.DataTypes.TaskInfoRole
+                    ? qmlLabelImgData.requestImgName(taskInfoName)
+                    :qmlLabelImgData.requestImgName(taskInfoName,taskId)
                     taskinfo.close();
-
                     // pop不能嵌套，还是main pop close导致的？
                     popGetImg.title="获取图片提示"
                     popGetImg.sure=false

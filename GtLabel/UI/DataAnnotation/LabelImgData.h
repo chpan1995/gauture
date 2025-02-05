@@ -48,6 +48,7 @@ public:
     ~LabelImgData();
     Q_INVOKABLE void requestImgInfo();
     Q_INVOKABLE void requestImgName(QString name);
+    Q_INVOKABLE void requestImgName(QString name,int taskid);
     Q_INVOKABLE bool gotoImgs(LabelImgNamespace::PageGo v);
     Q_INVOKABLE void setTagStatus(bool f);
 

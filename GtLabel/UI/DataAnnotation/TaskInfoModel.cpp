@@ -34,6 +34,9 @@ QVariant TaskInfoModel::data(const QModelIndex &index, int role) const {
     case TaskTypeRole:
         return m_datas.at(index.row()).property("dataType");
         break;
+    case TaskIdRole:
+        return m_datas.at(index.row()).property("taskid");
+        break;
     default:
         break;
     }
@@ -47,7 +50,8 @@ QHash<int, QByteArray> TaskInfoModel::roleNames() const {
         {TaskInfoCountRole,"taskInfoCount"},
         {TaskInfoLabCountRole,"taskInfoLabCount"},
         {TaskContinueCountRole,"taskContinueCount"},
-        {TaskTypeRole,"taskType"}
+        {TaskTypeRole,"taskType"},
+        {TaskIdRole,"taskId"}
         };
 }
 

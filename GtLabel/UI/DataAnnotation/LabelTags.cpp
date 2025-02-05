@@ -3,7 +3,14 @@
 
 LabelTags::LabelTags(QObject *parent)
     : QAbstractListModel{parent}
-{}
+{
+    // connect(this,&QAbstractListModel::dataChanged,this,[this](const QModelIndex &topLeft,
+    //         const QModelIndex &bottomRight,const QList<int> &roles){
+    //     qDebug() << "dataChanged";
+    //     auto myparent = static_cast<LabelImgData*>(this->parent());
+    //     myparent->updateTags();
+    // });
+}
 
 void LabelTags::removeRow(QString sapType,QString inherName,int trait,int firstIndex,int secondIndex,bool Btn) {
     if(!m_datas) return;
@@ -153,6 +160,33 @@ LabelTagsItem::LabelTagsItem(
     m_secondIndex = secondIndex;
     m_topName = topName;
     m_trait = trait;
+}
+
+LabelTagsItem::LabelTagsItem(boost::json::value v) {
+    boost::system::error_code ec;
+    auto sapType = v.find_pointer("/sapType",ec);
+    if(!ec)
+        m_sapType = sapType->get_string().c_str();
+
+    auto inherName = v.find_pointer("/inherName",ec);
+    if(!ec)
+        m_inherName = inherName->get_string().c_str();
+
+    auto firstIndex = v.find_pointer("/firstIndex",ec);
+    if(!ec)
+        m_firstIndex = firstIndex->get_int64();
+
+    auto secondIndex = v.find_pointer("/secondIndex",ec);
+    if(!ec)
+        m_secondIndex = secondIndex->get_int64();
+
+    auto topName = v.find_pointer("/topName",ec);
+    if(!ec)
+        m_topName = topName->get_string().c_str();
+
+    auto trait = v.find_pointer("/trait",ec);
+    if(!ec)
+        m_trait = trait->get_int64();
 }
 
 LabelTagsItem::LabelTagsItem(const LabelTagsItem &it) {

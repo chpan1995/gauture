@@ -16,7 +16,8 @@ public:
         TaskInfoCountRole,
         TaskInfoLabCountRole,
         TaskContinueCountRole,
-        TaskTypeRole
+        TaskTypeRole,
+        TaskIdRole
     };
     explicit TaskInfoModel(QObject *parent = nullptr);
     TaskInfoModel(const TaskInfoModel& it);

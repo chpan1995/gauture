@@ -29,7 +29,7 @@ labTaskmodel.labTaskInfo = async (taskid) => {
         // 从连接池获取连接
         connection = await pool.getConnection();
         // 执行查询
-        const [rows] = await connection.query('SELECT imgname,tags FROM labtaskinfo WHERE taskid=? AND upload=false', [taskid]);
+        const [rows] = await connection.query('SELECT imgname,tags FROM labtaskinfo WHERE taskid=?', [taskid]);
         if (rows.length > 0) {
             return rows;
         }
@@ -96,23 +96,23 @@ labTaskmodel.labupload = async (arrData) => {
     try {
         connection = await pool.getConnection();
         await connection.beginTransaction(); // 开始事务
-        // arrData [[1,"tags","111.png"]]
+        // arrData [[1,"111.png","tags"]]
         await connection.query('INSERT INTO labtaskhistory (taskid,imgname,tags) VALUES ?', [arrData]);
 
         let parm = [];
         for (const it of arrData) {
             parm.push(it[1]);
         }
-        let sql =  `
+        let sql = `
         DELETE FROM labtaskinfo
         WHERE taskid = ? AND ${parm
-          .map(() => ' imgname = ? ')
-          .join(' OR ')}
+                .map(() => ' imgname = ? ')
+                .join(' OR ')}
         `;
 
-        await connection.query(sql,[arrData[0][0],...parm]);
+        await connection.query(sql, [arrData[0][0], ...parm]);
 
-        await connection.query('UPDATE labtask set uploadcnt = ? WHERE taskid=?', [arrData.length,arrData[0][0]]);
+        await connection.query('UPDATE labtask set uploadcnt = ? WHERE taskid=?', [arrData.length, arrData[0][0]]);
 
         await connection.commit(); // 提交事务
         console.log('Transaction completed successfully');
