@@ -1,4 +1,5 @@
 const pool = require("./db.js")
+const logger = require('../logging/logging')
 
 let labTaskmodel = new Object();
 
@@ -15,7 +16,7 @@ labTaskmodel.labTaskList = async (userid) => {
         }
         return [];
     } catch (err) {
-        console.error('Error:', err);
+        logger.error(err);
     } finally {
         // 确保连接被释放
         if (connection) connection.release();
@@ -35,7 +36,7 @@ labTaskmodel.labTaskInfo = async (taskid) => {
         }
         return [];
     } catch (err) {
-        console.error('Error:', err);
+        logger.error(err);
     } finally {
         // 确保连接被释放
         if (connection) connection.release();
@@ -61,11 +62,11 @@ labTaskmodel.addLabTask = async (userid, taskname, imgarry) => {
 
         await connection.query('INSERT INTO labtaskinfo (taskid,imgname) VALUES ?', [data]);
         await connection.commit(); // 提交事务
-        console.log('Transaction completed successfully');
+        logger.info('Transaction completed successfully');
         return rows;
     } catch (err) {
         if (connection) await connection.rollback(); // 回滚事务
-        console.error('Transaction failed:', err);
+        logger.error(err);
     } finally {
         if (connection) connection.release(); // 释放连接
     }
@@ -83,7 +84,7 @@ labTaskmodel.updateTags = async (taskid, imgname, tags) => {
             return true;
         }
     } catch (err) {
-        console.error('Error:', err);
+        logger.error(err);
     } finally {
         // 确保连接被释放
         if (connection) connection.release();
@@ -115,11 +116,11 @@ labTaskmodel.labupload = async (arrData) => {
         await connection.query('UPDATE labtask set uploadcnt = ? WHERE taskid=?', [arrData.length, arrData[0][0]]);
 
         await connection.commit(); // 提交事务
-        console.log('Transaction completed successfully');
+        logger.info('Transaction completed successfully');
         return true;
     } catch (err) {
         if (connection) await connection.rollback(); // 回滚事务
-        console.error('Transaction failed:', err);
+        logger.error(err);
     } finally {
         if (connection) connection.release(); // 释放连接
     }

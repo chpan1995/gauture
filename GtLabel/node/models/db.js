@@ -1,5 +1,6 @@
 const mysql = require("mysql2");
 const dbConfig = require("../config/dbConfig.js")
+const logger = require('../logging/logging')
 
 var pool = mysql.createPool({
     host: dbConfig.HOST,
@@ -12,7 +13,7 @@ var pool = mysql.createPool({
 });
 
 pool.on('error', (err) => {
-    console.error('Database connection error:', err);
+    logger.error('Database connection error:%s', err);
 });
 
 module.exports = pool.promise();;

@@ -1,4 +1,5 @@
 const pool = require("./db.js")
+const logger = require('../logging/logging')
 
 let usermodel = new Object();
 
@@ -15,7 +16,7 @@ usermodel.login = async (username, password) => {
             return true;
         }
     } catch (err) {
-        console.error('Error:', err);
+        logger.error(err);
     } finally {
         // 确保连接被释放
         if (connection) connection.release();

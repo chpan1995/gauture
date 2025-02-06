@@ -3,6 +3,7 @@ const cors = require("cors")
 const userRouter = require("./routes/userRouter")
 const labTaskRouter = require("./routes/labTaskRouter")
 const app = express();
+const logger = require('./logging/logging')
 
 app.use(cors());
 // parse requests of content-type - application/json
@@ -15,5 +16,5 @@ labTaskRouter(app);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}.`);
+    logger.info(`Server is running on port ${PORT}.`);
 });
