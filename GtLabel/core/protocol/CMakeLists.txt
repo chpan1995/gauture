@@ -18,6 +18,8 @@ add_subdirectory(demo)
 add_library(${PROJECT_NAME}
     HttpClient.h
     HttpClient.cpp
+    WebscoketClient.h
+    WebscoketClient.cpp
 )
 
 target_include_directories(${PROJECT_NAME}
@@ -31,7 +33,9 @@ target_include_directories(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
-        PRIVATE Boost::json Threads::Threads
+        PRIVATE Boost::json
+        Threads::Threads
+        logging
 )
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
