@@ -2,8 +2,10 @@ const express = require("express")
 const cors = require("cors")
 const userRouter = require("./routes/userRouter")
 const labTaskRouter = require("./routes/labTaskRouter")
-const app = express();
 const logger = require('./logging/logging')
+require('./webscoket')
+
+const app = express();
 
 app.use(cors());
 // parse requests of content-type - application/json
@@ -16,5 +18,5 @@ labTaskRouter(app);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-    logger.info(`Server is running on port ${PORT}.`);
+    logger.info(`HTTPServer is running on port ${PORT}.`);
 });

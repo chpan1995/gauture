@@ -49,7 +49,7 @@ int main(int argc, char **argv)
     client->addRequest(std::move(post_req));
 #endif
 
-    auto client = std::make_shared<WebscoketClient>(ioc, "192.168.1.166", "8888", "?test=1");
+    auto client = std::make_shared<WebscoketSession>(ioc, "192.168.1.166", "8888", "?test=1");
     client->run();
 
     // std::vector<std::thread> threads;

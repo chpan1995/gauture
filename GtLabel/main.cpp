@@ -1,14 +1,21 @@
-﻿#include <QGuiApplication>
+﻿#include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickStyle>
 #include <QTimer>
 
 #include "UI/FrameLessView.h"
+#include "WebscoketClient.h"
+#include "UI/Login.h"
 
 int main(int argc, char *argv[])
 {
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
+    Login login;
+    if(login.exec() != QDialog::Accepted){
+        return 0;
+    }
+    WebscoketClient web("fdd");
     // 设置 QML 控件样式为 Basic
     QQuickStyle::setStyle("Basic");
     FrameLessView *view = new FrameLessView;

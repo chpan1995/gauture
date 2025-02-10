@@ -38,11 +38,12 @@ qt_add_qml_module(ui_main
     SOURCES
     FrameLessView.h
     FrameLessView.cpp
- 
+    Login.h
+    Login.cpp
 )
 
 qt_add_resources(${PROJECT_NAME}
-    "images"
+    "images" # resourcename
     FILES
     images/logo.png
     images/connect.png
@@ -68,6 +69,16 @@ qt_add_resources(${PROJECT_NAME}
     images/close.png
     images/delete.png
     images/icon.png
+    images/logintp.png
+    images/loginbtm.png
+    images/check.png
+    images/checked.png
+    images/closedseletd.png
+    images/mseled.png
+    images/munseleted.png
+    images/loginlogo.png
+    FILES
+    qss/login.qss
 )
 
 target_include_directories(ui_main
@@ -80,7 +91,7 @@ target_include_directories(ui_main
 )
 
 target_link_libraries(ui_main
-    PRIVATE Qt6::Quick Qt6::Gui Threads::Threads
+    PRIVATE Qt6::Quick Qt6::Gui Qt6::Widgets Threads::Threads
     ui_dataAnnotation ui_dataAnnotationplugin Boost::json common
 )
 
