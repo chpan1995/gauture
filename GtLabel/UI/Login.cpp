@@ -6,6 +6,7 @@
 #include <QPainter>
 #include <QApplication>
 
+#include "Utils.h"
 #include "log.h"
 
 std::optional<boost::json::value> praseRespose(const char *response, std::size_t lenth)
@@ -91,8 +92,11 @@ void Login::slotBtnLogin()
                                              auto v = praseRespose(response, lenth);
                                              if (v.has_value()) {
                                                  if (v->as_object().contains("code")
-                                                     &&v->as_object().at("code") == 200)
+                                                     &&v->as_object().at("code").as_int64() == 200)
+                                                 {
+                                                     common::userid=v->as_object().at("userid").as_int64();
                                                      emit sigLoginStatus(true);
+                                                 }
                                                  if(!v->as_object().contains("code")) {
                                                      emit sigServerFailed();
                                                  }
@@ -116,6 +120,7 @@ void Login::slotOnLoginStatus(bool f) {
             }
         }
         m_loginUserName = m_username->text();
+        common::username = m_username->text().toStdString();
         accept();
     }else {
         m_tipPssword->setText("用户名或密码错误");

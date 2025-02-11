@@ -57,7 +57,7 @@ done
 ##############################################################
 #################### 编译appGtLabel，并打包依赖库 ####################
 ##############################################################
-qmake_bin=/opt/qt/6.8.0/gcc_64/bin/qmake
+qmake_bin=/opt/qt/6.8.2/gcc_64/bin/qmake
 
 cd $repo_build_dir
 cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_PREFIX_PATH:PATH=/opt/qt/6.8.2/gcc_64  -DLOG_NOCOLOR=ON -DGZLICENSE=ON ..;make -j${cpu_num}

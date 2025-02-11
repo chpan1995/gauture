@@ -5,6 +5,7 @@
 #include <QDir>
 #include <QFile>
 #include <boost/asio.hpp>
+#include "Utils.h"
 
 LabelImgData::LabelImgData(QObject *parent)
     : QObject(parent)
@@ -17,6 +18,8 @@ LabelImgData::LabelImgData(QObject *parent)
         m_ioc.run();
     });
     qRegisterMetaType<LabelImgNamespace::RequestMethod>("RequestMethod");
+    connect(this,&LabelImgData::imgNameChanged,this,&LabelImgData::slotImgNamechanged);
+    connect(this,&LabelImgData::sigTaskInfoFinished,this,&LabelImgData::slotTaskInfoFinished);
     qApp->installEventFilter(this);
 }
 
@@ -34,7 +37,7 @@ void LabelImgData::requestImgInfo()
         "192.168.1.158",
         "8080",
         "/api/labTask/labTaskList",
-        boost::json::serialize(boost::json::object({{"userid", 1}})),
+        boost::json::serialize(boost::json::object({{"userid", common::userid}})),
         [this](const char *response, std::size_t lenth) {
             boost::system::error_code ec;
             auto v = praseRespose(response, lenth);
@@ -45,6 +48,7 @@ void LabelImgData::requestImgInfo()
                     return;
                 auto rootobj = v->as_object();
                 auto arr = rootobj.at("labtask").as_array();
+                logging::log_info(RL,response);
                 for (auto &it : arr) {
                     std::string taskName, taskNameCreateTime;
                     unsigned int taskImgCount, taskGetCount, taskCompleteCount, taskid;
@@ -103,9 +107,7 @@ void LabelImgData::requestImgInfo()
                         tp = {taskName, taskNameCreateTime, taskImgCount, 0, 0, 0};
                         m_das.append(tp);
                     }
-                    m_taskInfoModel->setDatas(m_das);
-                    m_model = QVariant::fromValue(m_taskInfoModel);
-                    emit taskInfoModelChanged();
+                    emit sigTaskInfoFinished();
                 }
             } else {
                 emit request(false, LabelImgNamespace::RequestMethod::TasksInfo);
@@ -142,7 +144,8 @@ void LabelImgData::requestImgName(QString name)
                             if (m_imgNames.size() > 0) {
                                 m_imgName = m_imgNames[0];
                                 emit imgNameChanged();
-                                m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
+                                // 线程更新model竟然不刷新？？？？？？？
+                                // m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
                             }
                             m_allPage = m_imgNames.size();
                             m_currentPage = 0;
@@ -223,9 +226,9 @@ void LabelImgData::requestImgName(QString name, int taskid)
                                         }
                                     }
                                     m_labelTagsModels.insert(m_imgNames[i], da);
-                                    if(da.size() > i) {
+                                    if(da.size() > 0) {
                                         m_currentTrait.insert(m_imgNames[i],
-                                                              da[i].property("trait").toInt() + 1);
+                                                              da[da.size()-1].property("trait").toInt() + 1);
                                     }else {
                                         m_currentTrait.insert(m_imgNames[i],1);
                                     }
@@ -235,7 +238,8 @@ void LabelImgData::requestImgName(QString name, int taskid)
                             if (m_imgNames.size() > 0) {
                                 m_imgName = m_imgNames[0];
                                 emit imgNameChanged();
-                                m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
+                                // 线程更新model竟然不刷新？？？？？？？
+                                // m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
                             }
                             m_allPage = m_imgNames.size();
                             m_currentPage = 0;
@@ -272,7 +276,7 @@ bool LabelImgData::gotoImgs(LabelImgNamespace::PageGo v)
         } else {
             m_imgName = m_imgNames[index];
             emit imgNameChanged();
-            m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
+            // m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
             m_isTaging = false;
         }
     } break;
@@ -283,7 +287,7 @@ bool LabelImgData::gotoImgs(LabelImgNamespace::PageGo v)
         } else {
             m_imgName = m_imgNames[index];
             emit imgNameChanged();
-            m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
+            // m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
             m_isTaging = false;
         }
     } break;
@@ -292,7 +296,7 @@ bool LabelImgData::gotoImgs(LabelImgNamespace::PageGo v)
         if (m_imgNames.size() > 0) {
             m_imgName = m_imgNames[m_currentPage];
             emit imgNameChanged();
-            m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
+            // m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
         }
         m_isTaging = false;
     } break;
@@ -301,7 +305,7 @@ bool LabelImgData::gotoImgs(LabelImgNamespace::PageGo v)
         if (m_imgNames.size() > 0) {
             m_imgName = m_imgNames[m_currentPage];
             emit imgNameChanged();
-            m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
+            // m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
         }
         m_isTaging = false;
     } break;
@@ -314,7 +318,7 @@ bool LabelImgData::gotoImgs(LabelImgNamespace::PageGo v)
         if (m_imgNames.size() > 0) {
             m_imgName = m_imgNames[m_currentPage];
             emit imgNameChanged();
-            m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
+            // m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
         }
         m_isTaging = false;
     } break;
@@ -327,7 +331,7 @@ bool LabelImgData::gotoImgs(LabelImgNamespace::PageGo v)
         if (m_imgNames.size() > 0) {
             m_imgName = m_imgNames[m_currentPage];
             emit imgNameChanged();
-            m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
+            // m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
         }
         m_isTaging = false;
     } break;
@@ -373,7 +377,7 @@ QVariantList LabelImgData::upload()
         return {false, "存在未确认的标注信息,请点击标注完或取消标注在上传"};
     }
     boost::json::value v{{"taskName", m_currentTaskName.toStdString()},
-                         {"userName", "fdd"},
+                         {"userName", common::username},
                          {"info", boost::json::array()}};
 
     boost::json::array tagarr;
@@ -501,6 +505,18 @@ void LabelImgData::clear()
     emit imgNameChanged();
     emit currentPageChanged();
     emit allPageChanged();
+}
+
+void LabelImgData::slotImgNamechanged() {
+    if(m_imgName!=""){
+        m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
+    }
+}
+
+void LabelImgData::slotTaskInfoFinished() {
+    m_taskInfoModel->setDatas(m_das);
+    m_model = QVariant::fromValue(m_taskInfoModel);
+    emit taskInfoModelChanged();
 }
 
 bool LabelImgData::eventFilter(QObject *object, QEvent *event) {

@@ -87,5 +87,10 @@ private:
     bool m_state;
 };
 
+namespace common {
+    inline std::string username;
+    inline std::uint32_t userid;
+}
+
 
 #endif

@@ -10,7 +10,7 @@ labTaskmodel.labTaskList = async (userid) => {
         // 从连接池获取连接
         connection = await pool.getConnection();
         // 执行查询
-        const [rows] = await connection.query('SELECT imgcnt,uploadcnt,taskname,taskid,createtime FROM labtask WHERE userid=? ORDER BY createtime ASC', [userid]);
+        const [rows] = await connection.query('SELECT imgcnt,uploadcnt,taskname,taskid,createtime FROM labtask WHERE userid=? and status=0 ORDER BY createtime ASC', [userid]);
         if (rows.length > 0) {
             return rows;
         }
@@ -113,7 +113,13 @@ labTaskmodel.labupload = async (arrData) => {
 
         await connection.query(sql, [arrData[0][0], ...parm]);
 
-        await connection.query('UPDATE labtask set uploadcnt = ? WHERE taskid=?', [arrData.length, arrData[0][0]]);
+        const [rows] = await connection.query('SELECT imgcnt, uploadcnt FROM labtask WHERE taskid = ?', [arrData[0][0]]);
+
+        let status =false;
+        if(arrData.length+rows[0].uploadcnt===rows[0].imgcnt) {
+            status=true;
+        }
+        await connection.query('UPDATE labtask set uploadcnt = ? , status=? WHERE taskid=?', [arrData.length+rows[0].uploadcnt, status, arrData[0][0]]);
 
         await connection.commit(); // 提交事务
         logger.info('Transaction completed successfully');

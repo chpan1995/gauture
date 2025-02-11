@@ -87,6 +87,7 @@ QLineEdit:hover {
     border-radius: 8px;
     max-height: 48px;
     min-height: 48px;
+    color:#FFFFFF
 }
 
 #btnLogin:hover {

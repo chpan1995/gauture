@@ -108,7 +108,6 @@ int LabelTags::rowCount(const QModelIndex &parent) const {
     Q_UNUSED(parent);
     if(!m_datas) return 0;
     return m_datas->length();
-    if(!m_datas) return 0;
 }
 
 QVariant LabelTags::data(const QModelIndex &index, int role) const {

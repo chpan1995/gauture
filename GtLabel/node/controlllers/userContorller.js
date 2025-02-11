@@ -11,10 +11,11 @@ exports.login = (req, res) => {
     }
     const { username, password } = req.body;
     userModel.login(username, password).then(data => {
-        if (data === true) {
+        if (data) {
             res.send({
                 code: 200,
-                message: "login success"
+                message: "login success",
+                userid:data.id
             });
         } else {
             res.status(500).send({

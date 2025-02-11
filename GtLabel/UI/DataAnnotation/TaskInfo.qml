@@ -235,13 +235,13 @@ Popup {
                     popGetImg.sure=true
                     popGetImg.cancle=false
                     popGetImg.content="获取图片数据完成"
-                    taskinfo.requestImageNames(true)
+                    // taskinfo.requestImageNames(true)
 
                 }else {
                     popGetImg.sure=true
                     popGetImg.cancle=false
                     popGetImg.content="获取图片数据失败"
-                    taskinfo.requestImageNames(false)
+                    // taskinfo.requestImageNames(false)
                 }
             }
         }

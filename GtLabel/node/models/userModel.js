@@ -10,10 +10,10 @@ usermodel.login = async (username, password) => {
         // 从连接池获取连接
         connection = await pool.getConnection();
         // 执行查询
-        const [rows] = await connection.query('SELECT password FROM user WHERE username=?', [username]);
+        const [rows] = await connection.query('SELECT id, password FROM user WHERE username=?', [username]);
         if (rows.length > 0) {
             rows[0].password === password;
-            return true;
+            return rows[0];
         }
     } catch (err) {
         logger.error(err);

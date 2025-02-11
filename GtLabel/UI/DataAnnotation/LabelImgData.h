@@ -65,6 +65,9 @@ public:
     Q_INVOKABLE void clear();
 
     inline Q_INVOKABLE LabelTags* getLabelTags() { return m_labelTags; }
+private:
+    void slotImgNamechanged();
+    void slotTaskInfoFinished();
 protected:
     bool eventFilter(QObject *object, QEvent *event) override;
 signals:
@@ -76,6 +79,7 @@ signals:
     void allPageChanged();
 
     void netState(bool v);
+    void sigTaskInfoFinished();
 private:
     void updateTags();
     std::optional<boost::json::value> praseRespose(const char *response, std::size_t lenth);

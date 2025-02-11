@@ -122,7 +122,7 @@ Item {
             hovercolor: "#55FFFFFF"
             imagecolor: "#1C76E0"
             radius: 8
-            text: "admin"
+            text: ctx_username
             txtNormalColor: "#333333"
             urlNormal: "qrc:/images/user.png"
             width: 80

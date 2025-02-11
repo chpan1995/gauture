@@ -206,7 +206,7 @@ Item {
                                         height:implicitHeight
                                         width: implicitWidth
                                         anchors.verticalCenter: parent.verticalCenter
-                                        text:inherName
+                                        text:rec.inherName
                                     }
                                     Button {
                                         id:btnTagLabel
