@@ -60,7 +60,7 @@ done
 qmake_bin=/opt/qt/6.8.0/gcc_64/bin/qmake
 
 cd $repo_build_dir
-cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_PREFIX_PATH:PATH=/opt/qt/6.8.0/gcc_64  -DLOG_NOCOLOR=ON -DGZLICENSE=ON ..;make -j${cpu_num}
+cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_PREFIX_PATH:PATH=/opt/qt/6.8.2/gcc_64  -DLOG_NOCOLOR=ON -DGZLICENSE=ON ..;make -j${cpu_num}
 $cqtdp -bin $repo_build_dir/appGtLabel -qmake $qmake_bin -qmlDir $repo_dir/UI -targetDir $pack_label_dir
 
 GtLabel_bin=$bin_dir/appGtLabel
