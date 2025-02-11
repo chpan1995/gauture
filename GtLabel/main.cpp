@@ -4,18 +4,19 @@
 #include <QQuickStyle>
 #include <QTimer>
 
+#include "Application.h"
 #include "UI/FrameLessView.h"
-#include "WebscoketClient.h"
+
 #include "UI/Login.h"
 
 int main(int argc, char *argv[])
 {
-    QApplication app(argc, argv);
+    Application app(argc, argv);
     Login login;
     if(login.exec() != QDialog::Accepted){
         return 0;
     }
-    WebscoketClient web("fdd");
+    app.initWebScoket(login.username().toStdString());
     // 设置 QML 控件样式为 Basic
     QQuickStyle::setStyle("Basic");
     FrameLessView *view = new FrameLessView;

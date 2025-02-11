@@ -20,7 +20,13 @@ add_subdirectory(UI)
 qt_standard_project_setup(REQUIRES 6.5)
 
 qt_add_executable(appGtLabel
+    Application.h
+    Application.cpp
     main.cpp
+)
+
+qt_add_executable(Gzjump
+    Gzjump.cpp
 )
 
 set_target_properties(appGtLabel PROPERTIES
@@ -32,8 +38,12 @@ set_target_properties(appGtLabel PROPERTIES
 
 target_link_libraries(appGtLabel
         PRIVATE Qt6::Quick Qt6::QuickControls2 Qt6::Widgets
-	ui_mainplugin
+    ui_mainplugin common
     protocl
+)
+
+target_link_libraries(Gzjump
+        PRIVATE  Qt6::Core
 )
 
 include(GNUInstallDirs)

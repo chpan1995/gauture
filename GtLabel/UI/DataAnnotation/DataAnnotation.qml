@@ -50,13 +50,27 @@ Item {
         }
     }
 
-    Item {
+    Text {
+        id:net_text
+        anchors.right: btn_upload.left
+        anchors.rightMargin: 60
+        color:"#FF0000"
+        width:implicitWidth
         height:56
-        width:parent.width
+        verticalAlignment:Text.AlignVCenter
+        font.pixelSize:16
+        font.bold: true
+    }
+
+    Item {
+        id:btn_upload
+        height:56
+        width:110
+        anchors.right:parent.right
+        anchors.rightMargin:15
         ButtonImgText{
             anchors.verticalCenter:parent.verticalCenter
             anchors.right:parent.right
-            anchors.rightMargin:15
             width:110
             height:40
             urlNormal:"qrc:/images/upload.png"
@@ -462,6 +476,13 @@ Item {
                 }
             }else if(method===LabelImgNamespace.RequestMethod.TasksPull) {
                 pageTitle.visible=v;
+            }
+        }
+        onNetState:(v) => {
+            if(v) {
+                 net_text.text=""
+            }else {
+                net_text.text="与主服务器连接异常!!!"
             }
         }
     }

@@ -17,6 +17,7 @@ LabelImgData::LabelImgData(QObject *parent)
         m_ioc.run();
     });
     qRegisterMetaType<LabelImgNamespace::RequestMethod>("RequestMethod");
+    qApp->installEventFilter(this);
 }
 
 LabelImgData::~LabelImgData()
@@ -500,6 +501,14 @@ void LabelImgData::clear()
     emit imgNameChanged();
     emit currentPageChanged();
     emit allPageChanged();
+}
+
+bool LabelImgData::eventFilter(QObject *object, QEvent *event) {
+    if(event->type() == NetState::TYPE) {
+        auto net = static_cast<NetState*>(event);
+        emit netState(net->state());
+    }
+    return QObject::eventFilter(object, event);
 }
 
 void LabelImgData::updateTags()

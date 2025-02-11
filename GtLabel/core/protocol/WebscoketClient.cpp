@@ -7,12 +7,14 @@
 WebscoketSession::WebscoketSession(boost::asio::io_context &ioc,
                                    std::string host,
                                    std::string port,
-                                   std::string pram)
+                                   std::string pram,
+                                   WebscoketClient* parent)
     : m_resolver(boost::asio::make_strand(ioc)),m_ioc(ioc)
     , m_ws(std::make_shared<boost::beast::websocket::stream<boost::beast::tcp_stream>>(boost::asio::make_strand(ioc)))
     , m_host(host)
     , m_port(port)
     , m_pram(pram)
+    , m_parent(parent)
     , m_timer(ioc, boost::asio::chrono::seconds(3))
     , m_keeplAlive(ioc, boost::asio::chrono::seconds(6))
 {
@@ -116,10 +118,16 @@ void WebscoketSession::on_read(boost::beast::error_code ec, std::size_t bytes_tr
                 if (!ec) {
                     if (cmd->get_string() == "keepAlive") {
                         m_run = true;
-                    } else if(cmd->get_string() == "logout"){
-                        exit(0);
-                        logging::log_info(RL, boost::beast::buffers_to_string(m_buffer.data()));
+                    } else {
+                        if(m_parent) {
+                            for(auto it:m_parent->m_obs){
+                                it->praseData(v);
+                            }
+                        }
+                        // exit(0);
+                        // logging::log_info(RL, boost::beast::buffers_to_string(m_buffer.data()));
                     }
+
                 }
             }
         } catch (const std::exception &e) {
@@ -171,6 +179,13 @@ void WebscoketSession::keepAliveEntrty(const boost::system::error_code &ec)
         return; // 定时器被取消，退出回调
     }
     if (!m_run) {
+        if(m_parent) {
+            for(auto it:m_parent->m_obs){
+                boost::json::object obj({{"commond","ServerDown"}});
+                auto v=boost::json::value_from(obj);
+                it->praseData(v);
+            }
+        }
         logging::log_info(RL, "reconnect");
         boost::system::error_code ec;
         // m_ws.close({""}, ec); // 会阻塞，异步多次会有问题
@@ -181,6 +196,14 @@ void WebscoketSession::keepAliveEntrty(const boost::system::error_code &ec)
         socket.close();
         m_ws = std::make_shared<boost::beast::websocket::stream<boost::beast::tcp_stream>>(boost::asio::make_strand(m_ioc));
         run();
+    }else {
+        if(m_parent) {
+            for(auto it:m_parent->m_obs){
+                boost::json::object obj({{"commond","ServerUP"}});
+                auto v=boost::json::value_from(obj);
+                it->praseData(v);
+            }
+        }
     }
     m_keeplAlive.expires_from_now(boost::asio::chrono::seconds(6));
     m_keeplAlive.async_wait(
@@ -198,7 +221,7 @@ WebscoketClient::WebscoketClient(std::string username)
     m_webscoketSession = std::make_shared<WebscoketSession>(m_ioc,
                                                             "192.168.1.158",
                                                             "8081",
-                                                            "?username=" + username+"_"+std::to_string(microseconds));
+                                                            "?username=" + username+"_"+std::to_string(microseconds),this);
     m_webscoketSession->run();
     m_thd = std::thread([this] {
         auto work(boost::asio::make_work_guard(m_ioc));
@@ -211,4 +234,13 @@ WebscoketClient::~WebscoketClient()
     m_ioc.stop();
     if (m_thd.joinable())
         m_thd.join();
+}
+
+void WebscoketClient::attach(std::shared_ptr<ObsWebContent> obs) {
+    for (const auto &it : m_obs) if (it == obs) return;
+    m_obs.push_back(obs);
+}
+
+void WebscoketClient::detach(std::shared_ptr<ObsWebContent> obs) {
+    m_obs.remove(obs);
 }

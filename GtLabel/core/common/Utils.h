@@ -2,6 +2,7 @@
 #define UTILS_H
 
 #include <boost/json.hpp>
+#include <QEvent>
 
 static void pretty_print(std::ostream& os, boost::json::value const& jv, std::string* indent = nullptr) {
     std::string indent_;
@@ -74,6 +75,17 @@ static void pretty_print(std::ostream& os, boost::json::value const& jv, std::st
 
     if (indent->empty()) os << "\n";
 }
+
+class NetState:public QEvent{
+public:
+    explicit NetState(bool s,Type t = TYPE);
+    static const Type TYPE = static_cast<QEvent::Type>(Type::User+1001);
+    inline bool state(){
+        return m_state;
+    }
+private:
+    bool m_state;
+};
 
 
 #endif

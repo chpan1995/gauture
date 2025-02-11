@@ -9,6 +9,12 @@
 #include <windows.h>
 #endif
 
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
+#include <X11/Xlib.h>
+#include <X11/Xatom.h>
+#include <xcb/xcb.h>
+#endif
+
 FrameLessView::FrameLessView(QWindow *parent)
     : QQuickView(parent)
 {

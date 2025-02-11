@@ -6,6 +6,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 17)
 
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTORCC ON)
+
 qt_standard_project_setup(REQUIRES 6.5)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick Gui)
@@ -92,7 +96,8 @@ target_include_directories(ui_main
 
 target_link_libraries(ui_main
     PRIVATE Qt6::Quick Qt6::Gui Qt6::Widgets Threads::Threads
-    ui_dataAnnotation ui_dataAnnotationplugin Boost::json common
+    ui_dataAnnotation ui_dataAnnotationplugin Boost::json common protocl
+    logging
 )
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")

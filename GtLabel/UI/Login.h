@@ -5,6 +5,11 @@
 #include <QPushButton>
 #include <QLineEdit>
 #include <QCheckBox>
+#include <thread>
+#include <QLabel>
+#include <QPropertyAnimation>
+
+#include "HttpClient.h"
 
 class BackWidget : public QWidget
 {
@@ -20,6 +25,17 @@ class Login : public QDialog
     Q_OBJECT
 public:
     Login();
+    ~Login();
+    inline QString username() {
+        return m_loginUserName;
+    }
+signals:
+    void sigLoginStatus(bool f);
+    void sigServerFailed();
+private slots:
+    void slotBtnLogin();
+    void slotOnLoginStatus(bool f);
+    void slotOnServerFailed();
 private:
     void initLayout();
     void readStylesheet();
@@ -28,6 +44,13 @@ private:
     QLineEdit* m_password;
     QPushButton* m_btnLogin;
     QCheckBox* m_checkBox;
+    QPropertyAnimation* m_animationUserName;
+    QPropertyAnimation* m_animationPassword;
+    QLabel* m_tipPssword;
+    std::shared_ptr<HttpClient> m_HttpClient;
+    boost::asio::io_context m_ioc;
+    std::thread m_thd;
+    QString m_loginUserName;
 };
 
 #endif // LOGIN_H

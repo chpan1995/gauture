@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+
+find_package(Qt6 REQUIRED COMPONENTS Core)
 find_package(Boost REQUIRED json)
 find_package(Threads REQUIRED)
 
@@ -31,4 +33,5 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
         PRIVATE Boost::json Threads::Threads
+        Qt6::Core
 )

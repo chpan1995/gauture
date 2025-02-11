@@ -112,3 +112,11 @@ QCheckBox::indicator:unchecked {
 QCheckBox::indicator:checked {
     image: url(:/images/checked.png);
 }
+
+QLabel {
+    padding: 0 16px;
+    max-height: 20px;
+    min-height: 20px;
+    color: #FF0000;
+    font-size: 12px;
+}

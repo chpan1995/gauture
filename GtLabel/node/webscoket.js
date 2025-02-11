@@ -14,7 +14,7 @@ logger.info('WebSocket server is running on ws://localhost:8081');
 // 监听客户端连接
 wss.on('connection', (ws, request) => {
     const queryParams = new URLSearchParams(url.parse(request.url).query);
-    logger.log(queryParams);
+    logger.info(queryParams);
     const clientId = queryParams.get("username");
     const keys = clients.keys();
     let findkey = '';
