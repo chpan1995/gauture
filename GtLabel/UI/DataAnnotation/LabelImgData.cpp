@@ -19,7 +19,6 @@ LabelImgData::LabelImgData(QObject *parent)
     });
     qRegisterMetaType<LabelImgNamespace::RequestMethod>("RequestMethod");
     connect(this,&LabelImgData::imgNameChanged,this,&LabelImgData::slotImgNamechanged);
-    connect(this,&LabelImgData::sigTaskInfoFinished,this,&LabelImgData::slotTaskInfoFinished);
     qApp->installEventFilter(this);
 }
 
@@ -107,7 +106,12 @@ void LabelImgData::requestImgInfo()
                         tp = {taskName, taskNameCreateTime, taskImgCount, 0, 0, 0};
                         m_das.append(tp);
                     }
-                    emit sigTaskInfoFinished();
+                    // 发送到主线程
+                    QMetaObject::invokeMethod(this,[this]{
+                        m_taskInfoModel->setDatas(m_das);
+                        m_model = QVariant::fromValue(m_taskInfoModel);
+                        emit taskInfoModelChanged();
+                    },Qt::QueuedConnection);
                 }
             } else {
                 emit request(false, LabelImgNamespace::RequestMethod::TasksInfo);
@@ -511,12 +515,6 @@ void LabelImgData::slotImgNamechanged() {
     if(m_imgName!=""){
         m_labelTags->initModel(&m_labelTagsModels[m_imgName]);
     }
-}
-
-void LabelImgData::slotTaskInfoFinished() {
-    m_taskInfoModel->setDatas(m_das);
-    m_model = QVariant::fromValue(m_taskInfoModel);
-    emit taskInfoModelChanged();
 }
 
 bool LabelImgData::eventFilter(QObject *object, QEvent *event) {
