@@ -1,4 +1,4 @@
-#include "WebscoketClient.h"
+﻿#include "WebscoketClient.h"
 #include "log.h"
 
 #include <boost/json/parse.hpp>
@@ -169,7 +169,7 @@ void WebscoketSession::tmEntrty(const boost::system::error_code &ec)
         return; // 定时器被取消，退出回调
     }
     send(boost::json::serialize(boost::json::object{{"commond", "keepAlive"}}));
-    m_timer.expires_from_now(boost::asio::chrono::seconds(3));
+    m_timer.expires_after(boost::asio::chrono::seconds(3));
     m_timer.async_wait(boost::bind(&WebscoketSession::tmEntrty, this, boost::placeholders::_1));
 }
 
@@ -205,7 +205,7 @@ void WebscoketSession::keepAliveEntrty(const boost::system::error_code &ec)
             }
         }
     }
-    m_keeplAlive.expires_from_now(boost::asio::chrono::seconds(6));
+    m_keeplAlive.expires_after(boost::asio::chrono::seconds(6));
     m_keeplAlive.async_wait(
         boost::bind(&WebscoketSession::keepAliveEntrty, this, boost::placeholders::_1));
     m_run = false;

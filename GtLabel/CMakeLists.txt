@@ -38,6 +38,7 @@ set_target_properties(appGtLabel PROPERTIES
 
 target_link_libraries(appGtLabel
         PRIVATE Qt6::Quick Qt6::QuickControls2 Qt6::Widgets
+        Boost::json
     ui_mainplugin common
     protocl
 )
