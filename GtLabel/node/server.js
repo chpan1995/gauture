@@ -2,6 +2,7 @@ const express = require("express")
 const cors = require("cors")
 const userRouter = require("./routes/userRouter")
 const labTaskRouter = require("./routes/labTaskRouter")
+const otherRouter = require('./routes/otherRouter')
 const logger = require('./logging/logging')
 require('./webscoket')
 
@@ -13,6 +14,9 @@ app.use(express.json()); /* bodyParser.json() is deprecated */
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: true }));
 
+app.use(express.static(__dirname+'/pack'));
+
+otherRouter(app);
 userRouter(app);
 labTaskRouter(app);
 

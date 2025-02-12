@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/update.qss</file>
+        <file>resources/GPT.jpg</file>
+        <file>resources/icon.png</file>
+    </qresource>
+</RCC>

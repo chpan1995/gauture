@@ -59,7 +59,6 @@ function handleClientMessage(clientId, message) {
         if (obj["commond"] === "keepAlive") {
             clients.get(clientId).send(`${message}`);
         }
-        logger.info(`recive ${clientId} message: ${message}`);
     } catch (error) {
         logger.log(error);
     }

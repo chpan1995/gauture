@@ -5,7 +5,7 @@ set -e
 target_files="config.json"
 targets=""
 
-bin_dir=/opt/Label/bin
+bin_dir=/opt/appGtLabel/bin
 do_pack=0
 
 if [ -d ${bin_dir} ];then
@@ -17,7 +17,7 @@ if [ -d ${bin_dir} ];then
         fi
     done
     if [ 0 -ne ${do_pack} ];then
-        tar czPf /var/Label_conf.tgz ${targets}
-        echo "conf files(/var/Label_conf.tgz) -> backup done."
+        tar czPf /var/appGtLabel.tgz ${targets}
+        echo "conf files(/var/appGtLabel.tgz) -> backup done."
     fi
 fi

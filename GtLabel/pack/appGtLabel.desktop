@@ -1,9 +1,9 @@
 [Desktop Entry]
 Version=00.00.00
-Exec=/opt/Label/appGtLabel.sh
+Exec=/opt/appGtLabel/appGtLabel.sh
 GenericName[zh_CN]=(高哲信息)
-Icon=/opt/Label/bin/icon.png
-Name=Label
+Icon=/opt/appGtLabel/bin/icon.png
+Name=appGtLabel
 Categories=System;
 Terminal=false
 Type=Application

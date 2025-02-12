@@ -31,7 +31,7 @@ pack_src_dir=$(cd $(dirname $0);pwd)
 repo_dir=$(cd $pack_src_dir/..;pwd)
 repo_build_dir=$repo_dir/build
 pack_dir=$repo_build_dir/$1
-pack_label_dir=$pack_dir/opt/Label
+pack_label_dir=$pack_dir/opt/appGtLabel
 
 bin_dir=$pack_label_dir/bin
 lib_dir=$pack_label_dir/lib
@@ -43,7 +43,7 @@ mkdir -p ${lib_dir}
 
 # 拷贝基础文件
 cp -rf $pack_src_dir/DEBIAN $pack_dir
-cp $pack_src_dir/GzLabel.desktop $pack_label_dir
+cp $pack_src_dir/appGtLabel.desktop $pack_label_dir
 cp $pack_src_dir/icon.png $pack_label_dir
 # 打包软件配置文件项
 soft_conf="icon.png"
@@ -70,9 +70,9 @@ cp $GtLabel_deplist $lib_dir
 # 更新相关文件的版本号
 verkeyword=Version
 # desktop文件
-desktop_vkeyword=$(sed -n /${verkeyword}/p ${pack_src_dir}/GzLabel.desktop)
-(sed "/${desktop_vkeyword}/c Version=$1" ${pack_src_dir}/GzLabel.desktop) > ${pack_label_dir}/tmp_version.desktop
-mv ${pack_label_dir}/tmp_version.desktop ${pack_label_dir}/GzLabel.desktop
+desktop_vkeyword=$(sed -n /${verkeyword}/p ${pack_src_dir}/appGtLabel.desktop)
+(sed "/${desktop_vkeyword}/c Version=$1" ${pack_src_dir}/appGtLabel.desktop) > ${pack_label_dir}/tmp_version.desktop
+mv ${pack_label_dir}/tmp_version.desktop ${pack_label_dir}/appGtLabel.desktop
 
 # control文件
 # version keyword
@@ -88,4 +88,4 @@ isize=$(du -d 1 ${pack_dir} | awk '{if (match($2,"opt")){printf("%s", $1)} }')
 	| sed "/${control_skeyword}/c Installed-Size: ${isize}") > $pack_dir/DEBIAN/control
 
 # 生成dep文件
-cd $repo_build_dir;dpkg -b $1 GtLabel_$1.deb
+cd $repo_build_dir;dpkg -b $1 appGtLabel$1.deb

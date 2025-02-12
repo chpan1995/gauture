@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 set -e
 
-rm -rf /opt/Label
-echo "remove /opt/Label done."
+rm -rf /opt/appGtLabel
+echo "remove /opt/appGtLabel done."

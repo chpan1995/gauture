@@ -2,8 +2,8 @@
 set -e
 
 # 安装自动启动程序
-if [ -e /opt/Label/GzLabel.desktop ];then
-    cp -v /opt/Label/GzLabel.desktop /usr/share/applications
+if [ -e /opt/appGtLabel/appGtLabel.desktop ];then
+    cp -v /opt/appGtLabel/appGtLabel.desktop /usr/share/applications
 fi
 
 # 恢复配置相关文件
