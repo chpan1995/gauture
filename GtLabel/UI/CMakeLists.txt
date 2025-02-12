@@ -12,7 +12,7 @@ set(CMAKE_AUTORCC ON)
 
 qt_standard_project_setup(REQUIRES 6.5)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick Gui)
+find_package(Qt6 REQUIRED COMPONENTS Quick Gui Network)
 find_package(Threads REQUIRED)
 
 add_subdirectory(DataAnnotation)
@@ -95,7 +95,7 @@ target_include_directories(ui_main
 )
 
 target_link_libraries(ui_main
-    PRIVATE Qt6::Quick Qt6::Gui Qt6::Widgets Threads::Threads
+    PRIVATE Qt6::Quick Qt6::Gui Qt6::Widgets Threads::Threads Qt6::Network
     ui_dataAnnotation ui_dataAnnotationplugin Boost::json common protocl
     logging
 )

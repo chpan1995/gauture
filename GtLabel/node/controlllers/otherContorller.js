@@ -3,13 +3,14 @@ const moment = require('moment');
 
 exports.update = (req, res) => {
     let obj = {};
-    obj["cmd"] = "update";
+    obj["commond"] = "update";
     try {
-        let readDir = fs.readdirSync(__dirname + "/pack");
+        console.log(__dirname);
+        let readDir = fs.readdirSync(__dirname + "/../pack");
         let arryLinux = [];
         let arryWin = [];
         readDir.forEach(element => {
-            const result = fs.statSync(__dirname + "/pack/" + element);
+            const result = fs.statSync(__dirname + "/../pack/" + element);
             if (element.search("linux") != -1) {
                 arryLinux.push({ ctime: result.ctime, version: element });
             }

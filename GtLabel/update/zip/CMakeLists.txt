@@ -8,9 +8,9 @@ set(CMAKE_CXX_STANDARD 14)
 set(QUAZIP_LIB_VERSION ${QuaZip_VERSION})
 set(QUAZIP_LIB_SOVERSION 1.3.0)
 
-option(BUILD_SHARED_LIBS "" ON)
-option(QUAZIP_INSTALL "" ON)
-option(QUAZIP_USE_QT_ZLIB "" ON)
+option(BUILD_SHARED_LIBS "" OFF)
+option(QUAZIP_INSTALL "" OFF)
+option(QUAZIP_USE_QT_ZLIB "" OFF)
 option(QUAZIP_ENABLE_TESTS "Build QuaZip tests" OFF)
 
 # Set the default value of `${QUAZIP_QT_MAJOR_VERSION}`.
