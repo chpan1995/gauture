@@ -5,7 +5,6 @@ exports.update = (req, res) => {
     let obj = {};
     obj["commond"] = "update";
     try {
-        console.log(__dirname);
         let readDir = fs.readdirSync(__dirname + "/../pack");
         let arryLinux = [];
         let arryWin = [];

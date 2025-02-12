@@ -76,6 +76,7 @@ Login::Login()
                                                      QString s = f[1].remove(".zip");
                                                      int v = s.toInt();
                                                      logging::log_info(RL,"server version: {}" , version.toStdString());
+#ifdef Q_OS_UNIX
                                                      if(v > LINUX_VERSION) {
                                                          QMetaObject::invokeMethod(this,[version]{
                                                              QMessageBox::information(nullptr,"提示","检测到新版本请升级");
@@ -84,6 +85,23 @@ Login::Login()
                                                              exit(0);
                                                          },Qt::QueuedConnection);
                                                      }
+#elif Q_OS_WIN
+                                                     if(obj.contains("win")){
+                                                         auto it = obj.at("win").as_object();
+                                                         QString version = it.at("version").as_string().c_str();
+                                                         QStringList f= version.split("_");
+                                                         QString s = f[1].remove(".zip");
+                                                         int v = s.remove(".zip").toInt();
+                                                         if(v > WINDOWS_VERSION) {
+                                                             QMetaObject::invokeMethod(this,[version]{
+                                                                 QMessageBox::information(nullptr,"提示","检测到新版本请升级");
+                                                                 QProcess::startDetached(QApplication::applicationDirPath()+"/../GPTupdate.exe"
+                                                                                         ,{version,"http://192.168.1.158:8080/"});
+                                                                 exit(0);
+                                                             },Qt::QueuedConnection);
+                                                         }
+                                                     }
+#endif
                                                  }
                                              }else {
                                                  logging::log_error(RL,"/api/update error");
