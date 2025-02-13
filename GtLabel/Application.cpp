@@ -1,4 +1,4 @@
-#include "Application.h"
+﻿#include "Application.h"
 #include "Utils.h"
 
 #include <QProcess>
@@ -17,6 +17,9 @@ void Application::initWebScoket(std::string name) {
 
 void Application::slotRcvlogout() {
     m_process.startDetached(QCoreApplication::applicationDirPath()+"/Gzjump");
+#ifdef _WIN32
+    ExitProcess(0);
+#endif
     exit(0);
 }
 
