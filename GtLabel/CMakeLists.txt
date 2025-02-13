@@ -23,6 +23,7 @@ qt_add_executable(appGtLabel
     Application.h
     Application.cpp
     main.cpp
+    icon.rc
 )
 
 qt_add_executable(Gzjump

@@ -98,7 +98,7 @@ Login::Login()
                                                      if(v > WINDOWS_VERSION) {
                                                          QMetaObject::invokeMethod(this,[version]{
                                                              QMessageBox::information(nullptr,"提示","检测到新版本请升级");
-                                                             QProcess::startDetached(QApplication::applicationDirPath()+"/../GPTupdate.exe"
+                                                             QProcess::startDetached(QApplication::applicationDirPath()+"/Gzupdate.exe"
                                                                                      ,{version,"http://192.168.1.158:8080/"});
                                                              exit(0);
                                                          },Qt::QueuedConnection);
@@ -276,7 +276,7 @@ void Login::initLayout()
     mainWidget->setGraphicsEffect(shadowEffect);
 
     connect(btnMin, &QPushButton::clicked, this, [this] { showMinimized(); });
-    connect(btnClose, &QPushButton::clicked, this, [this] { reject(); });
+    connect(btnClose, &QPushButton::clicked, this, [this] { exit(0); });
     connect(m_btnLogin, &QPushButton::clicked, this, &Login::slotBtnLogin);
     connect(this, &Login::sigLoginStatus, this, &Login::slotOnLoginStatus);
     connect(this, &Login::sigServerFailed, this, &Login::slotOnServerFailed);

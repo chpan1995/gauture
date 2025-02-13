@@ -1,4 +1,4 @@
-#include "Updater.h"
+﻿#include "Updater.h"
 
 #include <QApplication>
 #include <QProcess>
@@ -152,12 +152,12 @@ void Updater::replyFinished()
         QProcess p(0);
         p.start("cmd",QStringList() << "/c" <<"taskkill /f /t /im appGtLabel.exe");
         p.waitForFinished();
-        JlCompress::extractDir(QApplication::applicationDirPath()+"/"+m_version,"C:/");
-        QDir dir_back(QApplication::applicationDirPath()+"/appGtLabel");
+        JlCompress::extractDir(QApplication::applicationDirPath()+"/"+m_version,"C:/pack");
+        QDir dir_back(QApplication::applicationDirPath());
         dir_back.removeRecursively();
 
-        copyDir("C:/pack/appGtLabel",QApplication::applicationDirPath()+"/appGtLabel",true);
-        QProcess::startDetached(QApplication::applicationDirPath()+"/appGtLabel/appGtLabel.exe",QStringList());
+        copyDir("C:/pack",QApplication::applicationDirPath(),true);
+        QProcess::startDetached(QApplication::applicationDirPath()+"/appGtLabel.exe",QStringList());
         QDir dir("C:/pack");
         dir.removeRecursively();
         QFile f;
