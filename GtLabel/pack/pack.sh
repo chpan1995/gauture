@@ -72,6 +72,8 @@ cd $repo_build_dir
 cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_PREFIX_PATH:PATH=/opt/qt/6.8.2/gcc_64 ..;make -j${cpu_num}
 $cqtdp -bin $repo_build_dir/appGtLabel -qmake $qmake_bin -qmlDir $repo_dir/UI -targetDir $pack_label_dir
 
+cp -rf $repo_build_dir/Gzjump $bin_dir
+
 GtLabel_bin=$bin_dir/appGtLabel
 GtLabel_deplist=$(ldd $GtLabel_bin | awk '{if (match($3,"/")){ printf("%s "),$3 } }')
 cp $GtLabel_deplist $lib_dir
