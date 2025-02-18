@@ -73,7 +73,7 @@ const login = async () => {
         await userStore.userLogin(loginForm);
         //登录成功加载效果也消失
         loading.value = false;
-        $router.push('/home');
+        $router.push('/layout');
     } catch (error) {
         //登录失败加载效果消息
         loading.value = false;
@@ -87,7 +87,8 @@ const login = async () => {
 
 </script>
 
-// 由于你使用了 scoped，默认情况下，子组件的样式会被限制在当前组件范围内，而 Element Plus 的 el-form-item 的 label 是其内部渲染的，不能直接被 scoped 样式影响。
+// 由于你使用了 scoped,默认情况下,子组件的样式会被限制在当前组件范围内,
+// 而 Element Plus 的 el-form-item 的 label 是其内部渲染的,不能直接被 scoped 样式影响。
 <style lang="scss">
 .login_container {
     width: 100%;

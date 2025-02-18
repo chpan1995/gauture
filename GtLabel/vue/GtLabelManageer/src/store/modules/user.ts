@@ -4,11 +4,13 @@ import { reqLogin } from '@/api/user'
 import type {
     loginFormData, ResponseData
   } from '@/api/user/type'
+import { constantRoute } from '@/router/router'
 const useUserStore = defineStore('User',{
     // 小仓库储存数据地方
     state:() => {
         return {
-            token:''
+            token:'',
+            menuRoutes:constantRoute
         }
     },
     // 处理异步逻辑地方
@@ -22,7 +24,7 @@ const useUserStore = defineStore('User',{
                 //能保证当前async函数返回一个成功的promise
                 return 'ok'
               } else {
-                return Promise.reject(new Error(result.message))
+                return Promise.reject(new Error('账号或密码错误'))
               }
         }
     },

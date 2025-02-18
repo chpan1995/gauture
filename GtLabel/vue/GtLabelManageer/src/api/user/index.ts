@@ -5,10 +5,9 @@ import type {
 } from './type'
 
 enum API {
-    LOGIN_URL = '/user/login',
+    LOGIN_URL = '/api/user/login',
 }
 
 export const reqLogin = (data:loginFormData) => {
-    console.log(1111);
     return request.post<any,ResponseData>(API.LOGIN_URL,data)
 }
