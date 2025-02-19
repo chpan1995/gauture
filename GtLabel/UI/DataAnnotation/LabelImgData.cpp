@@ -233,10 +233,13 @@ void LabelImgData::requestImgName(QString name, int taskid)
                                     if(da.size() > 0) {
                                         m_currentTrait.insert(m_imgNames[i],
                                                               da[da.size()-1].property("trait").toInt() + 1);
+                                        qDebug() << "uuuuuuu:" << m_currentTrait[m_imgNames[i]];
                                     }else {
                                         m_currentTrait.insert(m_imgNames[i],1);
+                                        qDebug() << m_currentTrait[m_imgNames[i]];
                                     }
                                 } catch (boost::system::system_error& ec) {
+                                    m_currentTrait.insert(m_imgNames[i],1);
                                 }
                             }
                             if (m_imgNames.size() > 0) {
@@ -367,6 +370,7 @@ bool LabelImgData::lab()
     bool tmp = m_isTaging;
     if (m_isTaging) {
         m_currentTrait[m_imgName]++;
+        qDebug() << "dddd" <<m_currentTrait[m_imgName];
         updateTags(); // 更新tags
     }
     // 标注完成Taging状态置成false
@@ -410,17 +414,17 @@ QVariantList LabelImgData::upload()
                 if (i == m_labelTagsModels[it].size() - 1) {
                     arr.emplace_back(arrChird);
                 }
-                arr.push_back(obj);
+                // arr.push_back(obj);
                 /////////////////////////////////////////////////////////
-                boost::json::object obj({{"sapType", m_labelTagsModels[it][i].property("sapType").toString().toStdString()},
-                                         {"inherName", m_labelTagsModels[it][i].property("inherName").toString().toStdString()},
-                                         {"firstIndex", m_labelTagsModels[it][i].property("firstIndex").toInt()},
-                                         {"secondIndex", m_labelTagsModels[it][i].property("sapType").toInt()},
-                                         {"topName", m_labelTagsModels[it][i].property("topName").toString().toStdString()},
-                                         {"trait", m_labelTagsModels[it][i].property("trait").toInt()}});
-                tagArrChird.emplace_back(obj);
+                // boost::json::object obj({{"sapType", m_labelTagsModels[it][i].property("sapType").toString().toStdString()},
+                //                          {"inherName", m_labelTagsModels[it][i].property("inherName").toString().toStdString()},
+                //                          {"firstIndex", m_labelTagsModels[it][i].property("firstIndex").toInt()},
+                //                          {"secondIndex", m_labelTagsModels[it][i].property("sapType").toInt()},
+                //                          {"topName", m_labelTagsModels[it][i].property("topName").toString().toStdString()},
+                //                          {"trait", m_labelTagsModels[it][i].property("trait").toInt()}});
+                // tagArrChird.emplace_back(obj);
             }
-            tagarr.emplace_back(boost::json::array({m_currentTaskId,it.toStdString(),boost::json::serialize(tagArrChird)}));
+            // tagarr.emplace_back(boost::json::array({m_currentTaskId,it.toStdString(),boost::json::serialize(tagArrChird)}));
             obj.insert({{"property", arr}});
             v.at("info").as_array().emplace_back(obj);
         }

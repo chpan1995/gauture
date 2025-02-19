@@ -147,10 +147,11 @@ void Login::slotBtnLogin()
                                                      common::userid=v->as_object().at("userid").as_int64();
                                                      emit sigLoginStatus(true);
                                                  }
-                                                 if(!v->as_object().contains("code")) {
+                                                 else if(!v->as_object().contains("code")) {
                                                      emit sigServerFailed();
+                                                 }else {
+                                                     emit sigLoginStatus(false);
                                                  }
-                                                 emit sigLoginStatus(false);
                                              }else {
                                                  emit sigServerFailed();
                                              }
