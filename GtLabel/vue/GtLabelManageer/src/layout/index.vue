@@ -15,7 +15,12 @@
         </div>
 
         <div class="layout_main" :class="{ fold:  LayOutSettingStore.fold ? true : false }" >
-
+            <router-view v-slot="{ Component }">
+                <transition name="fade">
+                    <!-- 渲染layout一级路由的子路由 -->
+                    <component :is="Component"/>
+                </transition>
+            </router-view>
         </div>
     </div>
 </template>
@@ -58,7 +63,7 @@ let LayOutSettingStore = useLayOutSettingStore();
         }
     }
     .layout_tabbar {
-        margin-left: 10px;
+        padding-left: 10px;
         position: fixed;
         left: 260px;
         width: calc(100% - 260px);
@@ -67,6 +72,21 @@ let LayOutSettingStore = useLayOutSettingStore();
         top: 0px;
         display: flex;
         align-items: center;
+        background: linear-gradient(to right, rgb(247, 243, 243) , rgb(250, 229, 229), rgb(245, 243, 243) );
+        &.fold{
+            width: calc(100vw - 100px );
+            left: 100px;
+        }
+    }
+    .layout_main{
+        position: absolute;
+        left:260px;
+        top: 50px;
+        height: calc(100% - 50px);
+        width: calc(100% - 260px);
+        padding: 20px;
+        overflow: auto;
+        transition: all 0.3s;
         &.fold{
             width: calc(100vw - 100px );
             left: 100px;

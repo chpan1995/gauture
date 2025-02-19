@@ -68,6 +68,56 @@ export const constantRoute = [
     },
 
     {
+        path: "/cig",
+        component: () => import('@/layout/index.vue'),
+        name: 'Cig',
+        redirect: '/cig/graintype',
+        meta: {
+            title: '标注信息设置',
+            hidden: false,
+            icon: 'User',
+        },
+        children:[
+            {
+                path:'/cig/graintype',
+                component: () => import('@/views/labconfig/graintype/index.vue'),
+                meta: {
+                    title: '谷物种类配置',
+                    hidden: false,
+                    icon: 'User',
+                  },
+            },
+            {
+                path:'/cig/toplevel',
+                component: () => import('@/views/labconfig/toplevel/index.vue'),
+                meta: {
+                    title: '一级分类配置',
+                    hidden: false,
+                    icon: 'User',
+                  },
+            },
+            {
+                path:'/cig/firstOrderTag',
+                component: () => import('@/views/labconfig/firstOrderTag/index.vue'),
+                meta: {
+                    title: '分类配置1配置',
+                    hidden: false,
+                    icon: 'User',
+                  },
+            },
+            {
+                path:'/Cig/secOrderTag',
+                component: () => import('@/views/labconfig/secOrderTag/index.vue'),
+                meta: {
+                    title: '分类配置2配置',
+                    hidden: false,
+                    icon: 'User',
+                  },
+            }
+        ]
+    },
+
+    {
         path: '/404',
         component: () => import('@/views/404/index.vue'),
         name: '404',

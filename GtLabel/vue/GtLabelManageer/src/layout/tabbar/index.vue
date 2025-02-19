@@ -8,7 +8,7 @@
                 <el-icon>
                     <component :is="item.meta.icon"></component>
                 </el-icon>
-                <span>{{item.meta.title}}</span>
+                <span style="margin-left: 4px;">{{item.meta.title}}</span>
             </el-breadcrumb-item>
         </template>
     </el-breadcrumb>

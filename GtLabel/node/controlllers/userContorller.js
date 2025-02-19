@@ -18,8 +18,8 @@ exports.login = (req, res) => {
                 userid:data.id
             });
         } else {
-            res.status(500).send({
-                code: 500,
+            res.status(200).send({
+                code: 201,
                 message: "Some error occurred while login."
             });
         }
