@@ -1,5 +1,5 @@
 <template>
-    <P>toplevel</p>
+    <p>toplevel</p>
 </template>
 
 <script setup lang="ts">
