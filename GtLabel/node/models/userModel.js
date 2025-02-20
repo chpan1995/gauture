@@ -12,8 +12,9 @@ usermodel.login = async (username, password) => {
         // 执行查询
         const [rows] = await connection.query('SELECT id, password FROM user WHERE username=?', [username]);
         if (rows.length > 0) {
-            rows[0].password === password;
-            return rows[0];
+            console.log(rows[0].password);
+            if(rows[0].password === password)
+                return rows[0];
         }
     } catch (err) {
         logger.error(err);
