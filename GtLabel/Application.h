@@ -5,6 +5,7 @@
 #include <boost/function.hpp>
 #include <QProcess>
 
+#include "Utils.h"
 #include "WebscoketClient.h"
 
 class ReviceWebSocketdata : public ObsWebContent {
@@ -23,7 +24,7 @@ class Application : public QApplication
     Q_OBJECT
 public:
     explicit Application(int& argc, char **argv);
-    void initWebScoket(std::string name);
+    void initWebScoket(std::string name,std::string ip,std::string port);
 signals:
     void sigRcvlogout();
 private:

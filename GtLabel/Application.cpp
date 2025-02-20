@@ -1,6 +1,6 @@
 ﻿#include "Application.h"
-#include "Utils.h"
 
+#include <QSettings>
 #include <QProcess>
 
 Application::Application(int& argc, char **argv) : QApplication(argc,argv)
@@ -8,10 +8,28 @@ Application::Application(int& argc, char **argv) : QApplication(argc,argv)
     m_reviceWebSocketdata=std::make_shared<ReviceWebSocketdata>(
         boost::bind(&Application::praseData,this,boost::placeholders::_1));
     QObject::connect(this,&Application::sigRcvlogout,this,&Application::slotRcvlogout);
+
+    QSettings settings(QApplication::applicationDirPath()+"/config.ini",QSettings::IniFormat);
+    // settings.setValue("serveralgo/ip","192.168.1.108");
+    // settings.setValue("serveralgo/port","8083");
+
+    // settings.setValue("server1/ip","192.168.1.158");
+    // settings.setValue("server1/port","8080");
+
+    // settings.setValue("server2/ip","192.168.1.158");
+    // settings.setValue("server2/port","8081");
+    common::serveralgoIP=settings.value("serveralgo/ip","192.168.1.108").toString().toStdString();
+    common::serveralgoPort=settings.value("serveralgo/port","8083").toString().toStdString();
+
+    common::server1IP=settings.value("server1/ip","192.168.1.158").toString().toStdString();
+    common::server1Port=settings.value("server1/port","8080").toString().toStdString();
+
+    common::server2IP=settings.value("server2/ip","192.168.1.158").toString().toStdString();
+    common::server2Port=settings.value("server2/port","8081").toString().toStdString();
 }
 
-void Application::initWebScoket(std::string name) {
-    m_webSocket=std::make_shared<WebscoketClient>(name);
+void Application::initWebScoket(std::string name,std::string ip,std::string port) {
+    m_webSocket=std::make_shared<WebscoketClient>(name,ip,port);
     m_webSocket->attach(m_reviceWebSocketdata);
 }
 

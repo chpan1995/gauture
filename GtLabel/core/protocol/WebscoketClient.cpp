@@ -1,6 +1,7 @@
 ﻿#include "WebscoketClient.h"
 #include "log.h"
 
+
 #include <boost/json/parse.hpp>
 #include <boost/json/serialize.hpp>
 
@@ -211,7 +212,7 @@ void WebscoketSession::keepAliveEntrty(const boost::system::error_code &ec)
     m_run = false;
 }
 
-WebscoketClient::WebscoketClient(std::string username)
+WebscoketClient::WebscoketClient(std::string username,std::string ip,std::string port)
 {
     auto now = std::chrono::high_resolution_clock::now();
     auto duration = now.time_since_epoch();
@@ -219,8 +220,8 @@ WebscoketClient::WebscoketClient(std::string username)
     // 获取微秒
     auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(duration).count();
     m_webscoketSession = std::make_shared<WebscoketSession>(m_ioc,
-                                                            "192.168.1.158",
-                                                            "8081",
+                                                            ip,
+                                                            port,
                                                             "?username=" + username+"_"+std::to_string(microseconds),this);
     m_webscoketSession->run();
     m_thd = std::thread([this] {

@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     if(login.exec() != QDialog::Accepted){
         return 0;
     }
-    app.initWebScoket(login.username().toStdString());
+    app.initWebScoket(login.username().toStdString(),common::server2IP,common::server2Port);
     // 设置 QML 控件样式为 Basic
     QQuickStyle::setStyle("Basic");
     FrameLessView *view = new FrameLessView;

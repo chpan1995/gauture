@@ -33,8 +33,8 @@ void LabelImgData::requestImgInfo()
 {
     m_das.clear();
     m_HttpClient->addRequest(HttpRequest(
-        "192.168.1.158",
-        "8080",
+        common::server1IP,
+        common::server1Port,
         "/api/labTask/labTaskList",
         boost::json::serialize(boost::json::object({{"userid", common::userid}})),
         [this](const char *response, std::size_t lenth) {
@@ -156,8 +156,8 @@ void LabelImgData::requestImgName(QString name)
                             emit currentPageChanged();
                             emit allPageChanged();
                             m_HttpClient->addRequest(HttpRequest(
-                                "192.168.1.158",
-                                "8080",
+                                common::server1IP,
+                                common::server1Port,
                                 "/api/labTask/addLabTask",
                                 boost::json::serialize(boost::json::object(
                                     {{"userid", 1},
@@ -185,8 +185,8 @@ void LabelImgData::requestImgName(QString name, int taskid)
     m_currentTaskId = taskid;
     m_currentTaskName = name;
     m_HttpClient->addRequest(
-        HttpRequest("192.168.1.158",
-                    "8080",
+        HttpRequest(common::server1IP,
+                    common::server1Port,
                     QString("/api/labTask/labTaskInfo").toStdString(),
                     boost::json::serialize(boost::json::object({{"taskid", taskid}})),
                     [this](const char *response, std::size_t lenth) {
@@ -484,7 +484,8 @@ QVariantList LabelImgData::upload()
                         }
                         emit request(true, LabelImgNamespace::RequestMethod::TasksPush, content);
                         m_HttpClient->addRequest(
-                            HttpRequest("192.168.1.158", "8080", "/api/labTask/labupload/"
+                            HttpRequest(common::server1IP,
+                                        common::server1Port, "/api/labTask/labupload/"
                                         ,boost::json::serialize(tagarr), [this](const char *response, std::size_t lenth) {
                                 auto v = praseRespose(response, lenth);
                                 if (v.has_value()) {
@@ -545,8 +546,8 @@ void LabelImgData::updateTags()
                            {"imgname", m_imgName.toStdString()},
                            {"tags", boost::json::serialize(arr)}});
     m_HttpClient->addRequest(
-        HttpRequest("192.168.1.158",
-                    "8080",
+        HttpRequest(common::server1IP,
+                    common::server1Port,
                     "/api/labTask/updateTags",
                     boost::json::serialize(v),
                     [this](const char *response, std::size_t lenth) {

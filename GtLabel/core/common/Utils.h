@@ -1,4 +1,4 @@
-#ifndef UTILS_H
+﻿#ifndef UTILS_H
 #define UTILS_H
 
 #include <boost/json.hpp>
@@ -90,6 +90,14 @@ private:
 namespace common {
     inline std::string username;
     inline std::uint32_t userid;
+    inline std::string serveralgoIP;
+    inline std::string serveralgoPort;
+
+    inline std::string server1IP;
+    inline std::string server1Port;
+
+    inline std::string server2IP;
+    inline std::string server2Port;
 }
 
 

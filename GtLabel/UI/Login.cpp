@@ -61,8 +61,8 @@ Login::Login()
     }else {
         logging::log_error(RL,"open file failed");
     }
-    m_HttpClient->addRequest(HttpRequest("192.168.1.158",
-                                         "8080",
+    m_HttpClient->addRequest(HttpRequest(common::server1IP,
+                                         common::server1Port,
                                          "/api/update",
                                          [this](const char *response, std::size_t lenth) {
                                              boost::system::error_code ec;
@@ -81,8 +81,10 @@ Login::Login()
                                                      if(v > LINUX_VERSION) {
                                                          QMetaObject::invokeMethod(this,[version]{
                                                              QMessageBox::information(nullptr,"提示","检测到新版本请升级");
+                                                             std::string host = "http://"+common::server1IP+":"+
+                                                                                common::server1Port+"/";
                                                              QProcess::startDetached(QApplication::applicationDirPath()+"/../Gzupdate.sh"
-                                                                                     ,{version,"http://192.168.1.158:8080/"});
+                                                                                     ,{version,host.c_str()});
                                                              exit(0);
                                                          },Qt::QueuedConnection);
                                                      }
@@ -98,8 +100,10 @@ Login::Login()
                                                      if(v > WINDOWS_VERSION) {
                                                          QMetaObject::invokeMethod(this,[version]{
                                                              QMessageBox::information(nullptr,"提示","检测到新版本请升级");
+                                                             std::string host = "http://"+common::server1IP+":"+
+                                                                                common::server1Port+"/";
                                                              QProcess::startDetached(QApplication::applicationDirPath()+"/Gzupdate.exe"
-                                                                                     ,{version,"http://192.168.1.158:8080/"});
+                                                                                     ,{version,host.c_str()});
                                                              exit(0);
                                                          },Qt::QueuedConnection);
                                                      }
@@ -131,8 +135,8 @@ void Login::slotBtnLogin()
         m_animationPassword->start();
         return;
     }
-    m_HttpClient->addRequest(HttpRequest("192.168.1.158",
-                                         "8080",
+    m_HttpClient->addRequest(HttpRequest(common::server1IP,
+                                         common::server1Port,
                                          "/api/user/login",
                                          boost::json::serialize(boost::json::object(
                                              {{"username", m_username->text().toStdString()},

@@ -1,4 +1,4 @@
-#ifndef WEBSCOKETCLIENT_H
+﻿#ifndef WEBSCOKETCLIENT_H
 #define WEBSCOKETCLIENT_H
 
 #include <boost/asio/io_context.hpp>
@@ -64,7 +64,7 @@ using WebscoketSignature= boost::function1<void,boost::json::value&>;
 class WebscoketClient
 {
 public:
-    explicit WebscoketClient(std::string username);
+    explicit WebscoketClient(std::string username,std::string ip,std::string port);
     ~WebscoketClient();
 
     void attach(std::shared_ptr<ObsWebContent> obs);
