@@ -9,7 +9,6 @@ export default defineConfig(({ command, mode  }) => {
   return {
     plugins: [
       vue(),
-  
     ],
     resolve: {
       alias: {

@@ -10,7 +10,8 @@ const useUserStore = defineStore('User',{
     state:() => {
         return {
             token:'',
-            menuRoutes:constantRoute
+            menuRoutes:constantRoute,
+            username:''
         }
     },
     // 处理异步逻辑地方
@@ -21,6 +22,7 @@ const useUserStore = defineStore('User',{
                 //pinia仓库存储一下token
                 //由于pinia|vuex存储数据其实利用js对象
                 this.token = result.message as string
+                this.username=data.username;
                 //能保证当前async函数返回一个成功的promise
                 return 'ok'
               } else {

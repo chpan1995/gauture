@@ -43,7 +43,16 @@ export const constantRoute = [
             }
         ]
     },
-
+    {
+        path: "/screen",
+        component: () => import('@/views/screen/index.vue'),
+        name: 'Screen',
+        meta: {
+            title: '数据大屏',
+            hidden: false,
+            icon: 'Platform',
+        },
+    },
     {
         path: "/acl",
         component: () => import('@/layout/index.vue'),
@@ -83,15 +92,6 @@ export const constantRoute = [
                 component: () => import('@/views/labconfig/graintype/index.vue'),
                 meta: {
                     title: '谷物种类配置',
-                    hidden: false,
-                    icon: 'User',
-                  },
-            },
-            {
-                path:'/cig/toplevel',
-                component: () => import('@/views/labconfig/toplevel/index.vue'),
-                meta: {
-                    title: '一级分类配置',
                     hidden: false,
                     icon: 'User',
                   },
