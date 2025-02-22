@@ -1,9 +1,9 @@
 <template>
     <div class="box">
         <div class="top">
-            <p class="title">实时游客统计</p>
+            <p class="title">实时谷物数量</p>
             <p class="bg"></p>
-            <p class="right">可预约总量<span>99999</span>人</p>
+            <p class="right">总量<span>1000000000000</span>颗粒</p>
         </div>
         <div class="number">
             <span v-for="(item, index) in people" :key="index">{{ item }}</span>

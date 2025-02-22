@@ -23,8 +23,8 @@
         <el-table-column
           label="用户角色"
           align="center"
-          prop="role"
-        ></el-table-column>
+
+        > 质检员123 </el-table-column>
         <el-table-column
           label="创建时间"
           align="center"
@@ -100,7 +100,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick } from "vue";
+import { ref, nextTick ,onMounted } from "vue";
+
+import  userApi  from '@/api/user'
 
 let isEdit = ref(false);
 
@@ -133,7 +135,7 @@ let pageNo = ref<number>(1);
 //一页展示几条数据
 let pageSize = ref<number>(5);
 //用户总个数
-let total = ref<number>(3);
+let total = ref<number>(0);
 
 let userArr = ref<any[]>([
   {
@@ -185,7 +187,8 @@ const confirmClick = () => {
   drawer.value = false;
 };
 
-const getHasUser = () => {};
+const getHasUser = () => {
+};
 
 const pageSizeChange = () => {};
 
@@ -199,6 +202,12 @@ const updateUser = (raw: any) => {
   });
   drawer.value = !drawer.value;
 };
+
+onMounted(async() =>{
+    let res:any = await userApi.reqUsercount();
+    total.value=res.count;
+});
+
 </script>
 
 <style lang="scss">

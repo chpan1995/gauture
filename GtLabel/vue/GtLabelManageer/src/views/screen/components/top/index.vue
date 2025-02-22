@@ -4,7 +4,7 @@
             <span class="lbtn" @click="goHome">首页</span>
         </div>
         <div class="center">
-            <div class="title">智慧旅游可视化大数据平台</div>
+            <div class="title">高哲可视化大数据平台</div>
         </div>
         <div class="right">
             <span class="rbtn">统计报告</span>
