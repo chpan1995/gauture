@@ -76,3 +76,21 @@ exports.deleteTags = (req, res) => {
         }
     })();
 }
+
+exports.tags = (req, res) => {
+    (async()=>{
+        const data = await tagsModel.tags();
+        if(data) {
+            res.send({
+                code: 200,
+                message: "get tags success",
+                data:data
+            });
+        } else {
+            res.status(500).send({
+                code: 500,
+                message: "Some error occurred while tags."
+            });
+        }
+    })();
+}

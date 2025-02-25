@@ -132,14 +132,18 @@ class DatatypeModelManage:public QObject
 {
     Q_OBJECT
     QML_NAMED_ELEMENT(QmlDatatypeModelManage)
+    Q_PROPERTY(QVariantList graintypes MEMBER m_graintypes NOTIFY graintypesChanged FINAL)
 public:
     explicit DatatypeModelManage(QObject* parent=nullptr);
     Q_INVOKABLE QVariant getAllDataModel(QString type);
     Q_INVOKABLE QVariant getAllSingleDataModel(QString type);
     Q_INVOKABLE void reset();
     Q_INVOKABLE void clearSelectBtn(QString type,QString inherName,int parentIndex,int index);
+signals:
+    void graintypesChanged();
 private:
     QHash<QString,std::pair<AllDatatypeModel*,AllSingleDatatypeModel*>> m_tagModels;
+    QVariantList m_graintypes;
 };
 
 #endif // DATATYPEMODEL_H

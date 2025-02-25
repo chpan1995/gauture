@@ -82,4 +82,47 @@ tagsModel.deleteTags = async (id) => {
     }
 }
 
+// 合并函数
+function mergeByTypeId(rows) {
+    const result = {};
+
+    rows.forEach(({ chrildobj, typeid }) => {
+        const parsedObj = JSON.parse(chrildobj);
+
+        if (!result[typeid]) {
+            result[typeid] = [];
+        }
+
+        parsedObj.forEach((item) => {
+            // 查找是否已存在相同的 value
+            const existingItem = result[typeid].find((el) => el.value === item.value);
+            if (existingItem) {
+                // 合并 items
+                existingItem.items.push(...item.items);
+            } else {
+                result[typeid].push(item);
+            }
+        });
+    });
+
+    return result;
+}
+
+tagsModel.tags = async () => {
+    let connection;
+    try {
+        // 从连接池获取连接
+        connection = await pool.getConnection();
+        // 执行查询
+        const [rows1] = await connection.query('SELECT a.chrildobj,a.typeid FROM graintags a, graintype b WHERE a.typeid=b.id AND deep = 1', []);
+        const [rows2] = await connection.query('SELECT a.chrildobj,a.typeid FROM graintags a, graintype b WHERE a.typeid=b.id AND deep = 2', []);
+        return [mergeByTypeId(rows1),mergeByTypeId(rows2)];
+    } catch (err) {
+        logger.error(err);
+    } finally {
+        // 确保连接被释放
+        if (connection) connection.release();
+    }
+}
+
 module.exports = tagsModel;

@@ -1,4 +1,5 @@
 ﻿#include "DatatypeModel.h"
+#include "Utils.h"
 
 #include <QRegularExpression>
 
@@ -341,7 +342,7 @@ AllDatatypeModel::AllDatatypeModel(QObject *parent) : QObject(parent)
 {
 }
 
-void AllDatatypeModel::praseData(boost::json::value &&v)
+void AllDatatypeModel::praseData(boost::json::value&& v)
 {
     for (auto it : m_allDatas)
     {
@@ -376,6 +377,70 @@ void AllDatatypeModel::clearSelectBtn(int parentIndex, int index, QString inherN
 }
 
 DatatypeModelManage::DatatypeModelManage(QObject *parent):QObject(parent) {
+    try {
+        auto tags = boost::json::parse(common::tags);
+        auto tagsArry = tags.as_array();
+
+        QHash<QString,AllDatatypeModel*> secTag;
+        QHash<QString,AllSingleDatatypeModel*> fisTag;
+        // 一级标签
+        for(const auto& [key,value] : tagsArry[0].as_object()) {
+            auto firs = new AllSingleDatatypeModel;
+            boost::json::object tmp {{"items",value}};
+            firs->praseData(std::move(tmp));
+            fisTag.insert(key.data(),firs);
+        }
+
+        // 二级标签
+        for(const auto& [key,value] : tagsArry[1].as_object()) {
+            auto sec = new AllDatatypeModel;
+            boost::json::object tmp {{"items",value}};
+            sec->praseData(std::move(tmp));
+            secTag.insert(key.data(),sec);
+        }
+
+        auto gt = boost::json::parse(common::grianType);
+        auto arry = gt.as_array();
+        for(auto obj : arry) {
+            QString it;
+            QString id = QString::number(obj.at("id").get_int64());
+            it.append(id+"-");
+            it.append(obj.at("name").get_string().c_str());
+            m_graintypes.append(it);
+
+            AllDatatypeModel *model1;
+            AllSingleDatatypeModel *model2;
+            if(fisTag.contains(id)) {
+                model2 = fisTag[id];
+            }else {
+                model2 = new AllSingleDatatypeModel;
+            }
+            if(secTag.contains(id)){
+                model1 = secTag[id];
+            } else {
+                model1 = new AllDatatypeModel;
+            }
+            m_tagModels[id] = { model1, model2 };
+        }
+        qDebug() << m_tagModels;
+        emit graintypesChanged();
+
+        // AllDatatypeModel* wheatAllDatatypeModel = new AllDatatypeModel;
+        // wheatAllDatatypeModel->praseData(boost::json::parse(json_str));
+
+        // AllSingleDatatypeModel* wheatAllSingleDatatypeModel = new AllSingleDatatypeModel;
+        // wheatAllSingleDatatypeModel->praseData(boost::json::parse(json_str2));
+
+        // AllDatatypeModel* cornAllDatatypeModel = new AllDatatypeModel;
+        // cornAllDatatypeModel->praseData(boost::json::parse(json_str3));
+
+        // AllSingleDatatypeModel* cornAllSingleDatatypeModel = new AllSingleDatatypeModel;
+        // cornAllSingleDatatypeModel->praseData(boost::json::parse(json_str4));
+
+        // m_tagModels["wheat"]= {wheatAllDatatypeModel, wheatAllSingleDatatypeModel};
+        // m_tagModels["corn"]= {cornAllDatatypeModel, cornAllSingleDatatypeModel};
+    } catch(...) { }
+#ifdef TEST
     // test code
     std::string json_str = R"({
         "graintype": "wheat",
@@ -957,21 +1022,7 @@ DatatypeModelManage::DatatypeModelManage(QObject *parent):QObject(parent) {
             }
         ]
     })";
-    // praseData(boost::json::parse(json_str));
-    AllDatatypeModel* wheatAllDatatypeModel = new AllDatatypeModel;
-    wheatAllDatatypeModel->praseData(boost::json::parse(json_str));
-
-    AllSingleDatatypeModel* wheatAllSingleDatatypeModel = new AllSingleDatatypeModel;
-    wheatAllSingleDatatypeModel->praseData(boost::json::parse(json_str2));
-
-    AllDatatypeModel* cornAllDatatypeModel = new AllDatatypeModel;
-    cornAllDatatypeModel->praseData(boost::json::parse(json_str3));
-
-    AllSingleDatatypeModel* cornAllSingleDatatypeModel = new AllSingleDatatypeModel;
-    cornAllSingleDatatypeModel->praseData(boost::json::parse(json_str4));
-
-    m_tagModels["wheat"]= {wheatAllDatatypeModel, wheatAllSingleDatatypeModel};
-    m_tagModels["corn"]= {cornAllDatatypeModel, cornAllSingleDatatypeModel};
+#endif
 }
 
 QVariant DatatypeModelManage::getAllDataModel(QString type) {

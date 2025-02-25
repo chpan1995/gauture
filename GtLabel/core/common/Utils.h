@@ -98,6 +98,9 @@ namespace common {
 
     inline std::string server2IP;
     inline std::string server2Port;
+
+    inline std::string grianType;
+    inline std::string tags;
 }
 
 

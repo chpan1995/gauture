@@ -176,6 +176,52 @@ void Login::slotOnLoginStatus(bool f) {
         }
         m_loginUserName = m_username->text();
         common::username = m_username->text().toStdString();
+
+
+        m_HttpClient->addRequest(HttpRequest(common::server1IP,
+                                             common::server1Port,
+                                             "/api/type/typeInfo",
+                                             [this](const char *response, std::size_t lenth) {
+                                                 boost::system::error_code ec;
+                                                 auto v = praseRespose(response, lenth);
+                                                 if (v.has_value()) {
+                                                     if (v->as_object().contains("code")
+                                                         &&v->as_object().at("code").as_int64() == 200)
+                                                     {
+                                                         try {
+                                                             auto data = v->as_object().at("data").as_array();
+                                                             common::grianType = boost::json::serialize(data);
+                                                             return;
+                                                         } catch (std::exception &e) {
+                                                             logging::log_error(RL,"获取谷物种类失败");
+                                                         }
+                                                     }
+                                                 }
+                                                 logging::log_error(RL,"获取谷物种类失败");
+                                             }));
+
+        m_HttpClient->addRequest(HttpRequest(common::server1IP,
+                                             common::server1Port,
+                                             "/api/tags/tags",
+                                             [this](const char *response, std::size_t lenth) {
+                                                 boost::system::error_code ec;
+                                                 auto v = praseRespose(response, lenth);
+                                                 if (v.has_value()) {
+                                                     if (v->as_object().contains("code")
+                                                         &&v->as_object().at("code").as_int64() == 200)
+                                                     {
+                                                         try {
+                                                             auto data = v->as_object().at("data").as_array();
+                                                             common::tags = boost::json::serialize(data);
+                                                             return;
+                                                         } catch (std::exception &e) {
+                                                             logging::log_error(RL,"获取标签失败");
+                                                         }
+                                                     }
+                                                 }
+                                                 logging::log_error(RL,"获取谷物标签失败");
+                                             }));
+
         accept();
     }else {
         m_tipPssword->setText("用户名或密码错误");

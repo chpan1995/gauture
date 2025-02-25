@@ -11,6 +11,8 @@ Item {
     property alias qmlDatatypeModelManage: qmlDatatypeModelManage
     signal complexBtnClicked(string sapType,string inherName,int firstIndex,int secondIndex,
                              string topName,bool selected);
+    property var option: []
+
     Flow {
         id: topLeft
 
@@ -29,19 +31,11 @@ Item {
         }
         GCombox {
             id: cbxgraintype
-
             height: 40
             leftPadding: 12
-            model: [
-                {
-                    text: "小麦",
-                    value: "wheat"
-                },
-                {
-                    text: "玉米",
-                    value: "corn"
-                }
-            ]
+            model: ListModel {
+                id: optmodel
+            }
             textRole: "text"
             valueRole: "value"
             width: 144
@@ -127,6 +121,7 @@ Item {
 
     QmlDatatypeModelManage {
         id:qmlDatatypeModelManage
+
     }
 
     Connections {
@@ -137,12 +132,16 @@ Item {
     }
 
     Component.onCompleted: {
-        for(let i=0;i<cbxgraintype.count;i++) {
-            // console.log(qmlDatatypeModelManage.getAllDataModel(cbxgraintype.model[i].value).allDatas)
-
-            MyScript.createTagPaneObjects(qmlDatatypeModelManage.getAllDataModel(cbxgraintype.model[i].value)
-                ,qmlDatatypeModelManage.getAllSingleDataModel(cbxgraintype.model[i].value));
+        option=[];
+        for(var i=0;i<qmlDatatypeModelManage.graintypes.length;i++) {
+            let tmp = qmlDatatypeModelManage.graintypes[i].split("-");
+            optmodel.append({"text":tmp[1],"value":tmp[0]});
         }
-
+        for(let i=0;i<cbxgraintype.count;i++) {
+            // // console.log(qmlDatatypeModelManage.getAllDataModel(cbxgraintype.model[i].value).allDatas)
+            MyScript.createTagPaneObjects(qmlDatatypeModelManage.getAllDataModel(optmodel.get(i).value)
+                ,qmlDatatypeModelManage.getAllSingleDataModel(optmodel.get(i).value));
+        }
+        cbxgraintype.currentIndex=0;
     }
 }
