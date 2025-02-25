@@ -3,11 +3,11 @@ const dbConfig = require("../config/dbConfig.js")
 const logger = require('../logging/logging')
 
 var pool = mysql.createPool({
-    host: dbConfig.HOST,
-    user: dbConfig.USER,
-    password: dbConfig.PASSWORD,
-    database: dbConfig.DB,
-    port: dbConfig.PORT,
+    host: process.env.DATABASE_HOST || dbConfig.HOST,
+    user: process.env.DB_USER || dbConfig.USER,
+    password: process.env.DB_PASSWORD || dbConfig.PASSWORD,
+    database: process.env.DB_NAME || dbConfig.DB,
+    port: process.env.DB_PORT || dbConfig.PORT,
     connectionLimit: 10,
     waitForConnections: true, // 等待连接可用
 });
