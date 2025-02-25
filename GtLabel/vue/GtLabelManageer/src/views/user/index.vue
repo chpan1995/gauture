@@ -20,11 +20,9 @@
           align="center"
           prop="nickname"
         ></el-table-column>
-        <el-table-column
-          label="用户角色"
-          align="center"
-
-        > 质检员123 </el-table-column>
+        <el-table-column label="用户角色" align="center">
+          质检员
+        </el-table-column>
         <el-table-column
           label="创建时间"
           align="center"
@@ -83,7 +81,10 @@
             <el-form-item label="用户名字" prop="nickname">
               <el-input v-model="ruleForm.nickname" />
             </el-form-item>
-            <el-form-item :label="!isEdit ? '用户密码':'新密码'" prop="password">
+            <el-form-item
+              :label="!isEdit ? '用户密码' : '新密码'"
+              prop="password"
+            >
               <el-input v-model="ruleForm.password" type="password" />
             </el-form-item>
           </el-form>
@@ -100,9 +101,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick ,onMounted } from "vue";
+import { ref, nextTick, onMounted } from "vue";
+import { ElNotification } from "element-plus";
 
-import  userApi  from '@/api/user'
+import userApi from "@/api/user";
 
 let isEdit = ref(false);
 
@@ -137,35 +139,10 @@ let pageSize = ref<number>(5);
 //用户总个数
 let total = ref<number>(0);
 
-let userArr = ref<any[]>([
-  {
-    id: 1,
-    username: "fdd",
-    nickname: "范冬冬",
-    role: "质检员",
-    createtime: "2025-01-21 10:45:59",
-    password:"123456",
-  },
-  {
-    id: 2,
-    username: "chpan",
-    nickname: "潘承浩",
-    role: "质检员",
-    createtime: "2025-01-21 10:45:59",
-    password:"123456",
-  },
-  {
-    id: 3,
-    username: "dyw",
-    nickname: "丁益文",
-    role: "质检员",
-    createtime: "2025-01-21 10:45:59",
-    password:"123456",
-  },
-]);
+let userArr = ref<any[]>([]);
 
-const addUser = () => {
-  isEdit.value=false;
+const addUser = async () => {
+  isEdit.value = false;
   //清空数据
   Object.assign(ruleForm.value, {
     username: "",
@@ -174,7 +151,7 @@ const addUser = () => {
   });
   //清除上一次的错误的提示信息
   nextTick(() => {
-    ruleFormRef.value.clearValidate();
+    if (ruleFormRef.value) ruleFormRef.value.clearValidate();
   });
   drawer.value = !drawer.value;
 };
@@ -183,31 +160,74 @@ const cancelClick = () => {
   drawer.value = false;
 };
 
-const confirmClick = () => {
+const confirmClick = async () => {
   drawer.value = false;
+  if (!isEdit.value) {
+    let res: any = await userApi.reqAddUser(ruleForm.value);
+    if (res.code !== 200) {
+      ElNotification({
+        type: "error",
+        message: "添加用户失败",
+      });
+    }
+  }else {
+    await userApi.reqUpdateUser(ruleForm.value);
+  }
+  await initData();
 };
 
-const getHasUser = () => {
+const deleteUser = async (id:number) => {
+  let res = await userApi.reqDeleteUser({id:id});
+  if (res.code !== 200) {
+      ElNotification({
+        type: "error",
+        message: "删除用户失败",
+      });
+    }
+    await initData();
+}
+
+const getHasUser = (pager = 1) => {
+  pageNo.value = pager;
+  initData();
 };
 
-const pageSizeChange = () => {};
+const pageSizeChange = () => {
+  getHasUser();
+};
 
 const updateUser = (raw: any) => {
-  ruleFormRef.value.clearValidate();
-  isEdit.value=true;
+  if(ruleFormRef.value)
+    ruleFormRef.value.clearValidate();
+  isEdit.value = true;
   Object.assign(ruleForm.value, {
     username: raw.username,
     nickname: raw.nickname,
     password: raw.password,
+    id: raw.id
   });
   drawer.value = !drawer.value;
 };
 
-onMounted(async() =>{
-    let res:any = await userApi.reqUsercount();
-    total.value=res.count;
-});
+const initData = async () => {
+  let res: any = await userApi.reqUsercount();
+  let data: any = await UserInfo();
+  if ((data.code = 200)) {
+    userArr.value = data.data;
+  }
+  total.value = res.count;
+};
 
+const UserInfo = async () => {
+  return await userApi.reqUserInfo(
+    (pageNo.value - 1) * pageSize.value,
+    pageSize.value
+  );
+};
+
+onMounted(async () => {
+  await initData();
+});
 </script>
 
 <style lang="scss">

@@ -19,7 +19,7 @@ onMounted(() => {
   let mychart = echarts.init(charts.value);
   let option = {
     title: {
-      text: '游客消费统计',
+      text: '公司人员统计',
       textStyle:{
         color:'white'
       }
@@ -27,12 +27,12 @@ onMounted(() => {
     radar: {
       // shape: 'circle',
       indicator: [
-        { name: '消费', max: 6500 },
-        { name: '好感', max: 16000 },
-        { name: '出行', max: 30000 },
-        { name: '小吃', max: 38000 },
-        { name: '爱好', max: 52000 },
-        { name: '景点', max: 25000 }
+        { name: '研发', max: 6500 },
+        { name: '市场', max: 16000 },
+        { name: '售后', max: 30000 },
+        { name: '生产', max: 38000 },
+        { name: '供应链', max: 52000 },
+        { name: '财务', max: 25000 }
       ]
     },
     series: [
@@ -42,11 +42,11 @@ onMounted(() => {
         data: [
           {
             value: [4200, 3000, 20000, 35000, 50000, 18000],
-            name: '购物'
+
           },
           {
             value: [5000, 14000, 28000, 26000, 42000, 21000],
-            name: '吃饭'
+
           }
         ]
       }
@@ -73,7 +73,7 @@ onMounted(() => {
   }
 
   .charts {
-    height: calc(100% - 30px);
+    height: 100%;
   }
 
 }

@@ -1,7 +1,7 @@
 <template>
     <div class="box2">
         <div class="title">
-            <p>年龄比例</p>
+            <p>谷物比例</p>
             <img src="../../images/dataScreen-title.png" alt="">
         </div>
         <!-- 图形图标的容器 -->
@@ -52,11 +52,11 @@ onMounted(() => {
                     show: false
                 },
                 data: [
-                    { value: 1048, name: '军事' },
-                    { value: 735, name: '新闻' },
-                    { value: 580, name: '直播' },
-                    { value: 484, name: '娱乐' },
-                    { value: 300, name: '财经' }
+                    { value: 1048, name: '小麦' },
+                    { value: 735, name: '玉米' },
+                    { value: 580, name: '稻谷' },
+                    { value: 484, name: '大米' },
+                    { value: 300, name: '高粱' }
                 ]
             }
         ],
@@ -88,9 +88,9 @@ onMounted(() => {
         }
     }
 
-    .charts {
-        height: 260px;
-    }
+  .charts {
+    height: calc(100% - 30px);
+  }
 
 }
 </style>

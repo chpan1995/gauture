@@ -84,7 +84,7 @@ export const constantRoute = [
         meta: {
             title: '标注信息设置',
             hidden: false,
-            icon: 'User',
+            icon: 'ChromeFilled',
         },
         children:[
             {
@@ -93,25 +93,25 @@ export const constantRoute = [
                 meta: {
                     title: '谷物种类配置',
                     hidden: false,
-                    icon: 'User',
+                    icon: 'Magnet',
                   },
             },
             {
                 path:'/cig/firstOrderTag',
                 component: () => import('@/views/labconfig/firstOrderTag/index.vue'),
                 meta: {
-                    title: '分类配置1配置',
+                    title: '一级分类配置',
                     hidden: false,
-                    icon: 'User',
+                    icon: 'Setting',
                   },
             },
             {
                 path:'/Cig/secOrderTag',
                 component: () => import('@/views/labconfig/secOrderTag/index.vue'),
                 meta: {
-                    title: '分类配置2配置',
+                    title: '二级分类配置',
                     hidden: false,
-                    icon: 'User',
+                    icon: 'Setting',
                   },
             }
         ]

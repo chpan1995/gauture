@@ -13,14 +13,6 @@ enum API {
     REMOVE_USER_URL = '/api/user/removeUser'
 }
 
-// export const reqLogin = (data:loginFormData) => {
-//     return request.post<any,ResponseData>(API.LOGIN_URL,data)
-// }
-
-// export const reqUsercount = ()=> {
-    
-// }
-
 class UserApi {
     constructor() {
     }
@@ -29,6 +21,18 @@ class UserApi {
     }
     reqUsercount():any {
         return request.get<any>(API.USER_COUNT_URL)
+    }
+    reqUserInfo(startPos:number,endPos:number):any {
+        return request.get<any>(API.USER_INFO_URL+'/'+startPos+'/'+endPos)
+    }
+    reqAddUser(data:any):any {
+        return request.post<any,any>(API.ADD_USER_URL,data)
+    }
+    reqUpdateUser(data:any) {
+        return request.post<any,any>(API.EDIR_USER_URL,data)
+    }
+    reqDeleteUser(data:any) {
+        return request.post<any,any>(API.REMOVE_USER_URL,data)
     }
 }
 

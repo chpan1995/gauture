@@ -1,4 +1,4 @@
 export default {
-    title:'高哲标注平台',
+    title:'高哲信息化数据平台',
     logoHidden:true
 }

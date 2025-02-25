@@ -4,7 +4,12 @@
       style="display: flex; align-items: center; gap: 10px; margin-bottom: 24px"
     >
       <p>种类：</p>
-      <el-select v-model="selectValue" size="large" style="width: 240px">
+      <el-select
+        v-model="selectValue"
+        @change="selectChanged"
+        size="large"
+        style="width: 240px"
+      >
         <el-option
           v-for="item in options"
           :key="item.value"
@@ -17,7 +22,7 @@
       </el-button>
     </div>
     <el-card>
-      <template v-for="(item, index) in testone" :key="index">
+      <template v-for="(item, index) in tags" :key="index">
         <div v-if="item.items">
           <div
             style="
@@ -29,6 +34,25 @@
           >
             <span class="first_type_span"> 一级分类 </span>
             <span class="first_value_span"> {{ item.value }} </span>
+            <el-popconfirm
+              :title="`你确定要删除${item.value}分类?`"
+              width="260px"
+              @confirm="deleteTags(item.id)"
+            >
+              <template #reference>
+                <el-button
+                  style="
+                    width: 24px;
+                    height: 24px;
+                    border: none;
+                    margin-left: -6px;
+                  "
+                  circle
+                >
+                  <el-icon :size="24" color="#FF0000"><Remove /></el-icon>
+                </el-button>
+              </template>
+            </el-popconfirm>
           </div>
           <div
             class="first_tags"
@@ -48,7 +72,7 @@
           </div>
         </div>
         <!-- 分割线，避免最后一个元素也有分割线 -->
-        <hr v-if="index !== testone.length - 1" class="divider" />
+        <hr v-if="index !== tags.length - 1" class="divider" />
       </template>
     </el-card>
     <el-dialog
@@ -86,7 +110,7 @@
         >
           <el-button type="primary" @click="parseJson">解析</el-button>
         </div>
-        <template v-for="(item, index) in tags" :key="index">
+        <template v-for="(item, index) in newTags" :key="index">
           <div v-if="item.items">
             <div
               style="
@@ -117,7 +141,7 @@
             </div>
           </div>
           <!-- 分割线，避免最后一个元素也有分割线 -->
-          <hr v-if="index !== tags.length - 1" class="divider" />
+          <hr v-if="index !== newTags.length - 1" class="divider" />
           <div
             style="
               display: flex;
@@ -127,8 +151,9 @@
             "
           >
             <el-button
-              v-if="index === tags.length - 1 && item.value"
+              v-if="index === newTags.length - 1 && item.value"
               type="primary"
+              @click="saveTags"
             >
               保存
             </el-button>
@@ -140,191 +165,19 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { ElMessageBox } from "element-plus";
+import grainTypeApi from "@/api/graintype";
+import tagsApi from "@/api/tags";
 
-const selectValue = ref("wheat");
+const selectValue = ref<number>();
 const dialogVisible = ref(false);
 const fileValue = ref<string>("");
-import { ElMessageBox } from "element-plus";
+const newTags = ref<any[]>();
+const fileInputRef = ref();
 const tags = ref<any[]>();
 
-const fileInputRef = ref();
-
-const options = [
-  {
-    value: "wheat",
-    label: "小麦",
-  },
-  {
-    value: "corn",
-    label: "玉米",
-  },
-];
-
-const testone = [
-  {
-    value: "颗粒类型",
-    items: [
-      {
-        value: "病斑",
-        items: [
-          {
-            value: "赤霉",
-            items: [],
-          },
-          {
-            value: "黑胚",
-            items: [],
-          },
-          {
-            value: "呆白皱缩",
-            items: [],
-          },
-          {
-            value: "开裂",
-            items: [],
-          },
-          {
-            value: "黑色子囊壳",
-            items: [],
-          },
-        ],
-      },
-      {
-        value: "生芽",
-        items: [
-          {
-            value: "裂口",
-            items: [],
-          },
-          {
-            value: "短芽",
-            items: [],
-          },
-          {
-            value: "长芽",
-            items: [],
-          },
-          {
-            value: "胡须",
-            items: [],
-          },
-          {
-            value: "无麦胚",
-            items: [],
-          },
-        ],
-      },
-      {
-        value: "生霉",
-        items: [
-          {
-            value: "类似灰尘",
-            items: [],
-          },
-        ],
-      },
-      {
-        value: "虫蚀",
-        items: [
-          {
-            value: "啃咬",
-            items: [],
-          },
-          {
-            value: "孔洞",
-            items: [],
-          },
-        ],
-      },
-      {
-        value: "破损",
-        items: [
-          {
-            value: "二分之一",
-            items: [],
-          },
-          {
-            value: "四分之三",
-            items: [],
-          },
-          {
-            value: "开裂",
-            items: [],
-          },
-        ],
-      },
-      {
-        value: "热损伤",
-        items: [
-          {
-            value: "自然",
-            items: [],
-          },
-          {
-            value: "烘干",
-            items: [],
-          },
-        ],
-      },
-      {
-        value: "正常",
-        items: [
-          {
-            value: "破皮",
-            items: [],
-          },
-          {
-            value: "裂纹",
-            items: [],
-          },
-        ],
-      },
-      {
-        value: "杂质",
-        items: [
-          {
-            value: "有机",
-            items: [],
-          },
-          {
-            value: "无机",
-            items: [],
-          },
-          {
-            value: "无使用价值",
-            items: [],
-          },
-          {
-            value: "虫",
-            items: [],
-          },
-        ],
-      },
-      {
-        value: "未熟粒",
-        items: [
-          {
-            value: "破皮",
-            items: [],
-          },
-          {
-            value: "裂纹",
-            items: [],
-          },
-        ],
-      },
-      {
-        value: "带壳粒",
-        items: [],
-      },
-      {
-        value: "未知",
-        items: [],
-      },
-    ],
-  },
-];
+const options = ref<any[]>([]);
 
 const handleFileUpload = (event) => {
   const file = event.target.files[0]; // 获取文件
@@ -343,7 +196,7 @@ const parseJson = () => {
   try {
     let obj = JSON.parse(fileValue.value);
     if (Array.isArray(obj)) {
-      tags.value = obj;
+      newTags.value = obj;
     } else {
       ElMessageBox.alert("内容输入有误", { confirmButtonText: "确定" });
     }
@@ -353,9 +206,66 @@ const parseJson = () => {
 };
 
 const resetData = () => {
-  tags.value = [];
+  newTags.value = [];
   fileValue.value = "";
   fileInputRef.value.value = "";
+};
+
+onMounted(async () => {
+  let data: any = await grainTypeApi.reqTypeInfo();
+  if (data.code === 200) {
+    data.data.forEach((element) => {
+      options.value.push({
+        value: element.id,
+        label: element.name,
+      });
+    });
+    if (options.value.length > 0) selectValue.value = options.value[0].value;
+    let res: any = await tagsApi.reqTagsInfo({
+      typeid: selectValue.value,
+      deep: 2,
+    });
+    tags.value = res.data;
+  }
+});
+
+const selectChanged = async () => {
+  let res: any = await tagsApi.reqTagsInfo({
+    typeid: selectValue.value,
+    deep: 2,
+  });
+  tags.value = res.data;
+};
+
+const deleteTags = async (id: number) => {
+  let res: any = await tagsApi.reqDeleteTags({ id: id });
+  if (res.code !== 200) {
+    ElMessageBox.alert("删除标签出错", { confirmButtonText: "确定" });
+    return;
+  }
+  res = await tagsApi.reqTagsInfo({
+    typeid: selectValue.value,
+    deep: 2,
+  });
+  tags.value = res.data;
+};
+
+const saveTags = async () => {
+  let res: any = await tagsApi.reqAddTags({
+    chrildobj: JSON.stringify(newTags.value),
+    deep: 2,
+    typeid: selectValue.value,
+  });
+  if (res.code !== 200) {
+    ElMessageBox.alert("保存标签出错", { confirmButtonText: "确定" });
+    return;
+  }
+  res = await tagsApi.reqTagsInfo({
+    typeid: selectValue.value,
+    deep: 2,
+  });
+  tags.value = res.data;
+  dialogVisible.value = false;
 };
 </script>
 

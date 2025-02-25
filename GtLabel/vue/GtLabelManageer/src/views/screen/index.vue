@@ -131,11 +131,13 @@ window.onresize = () => {
                 flex-direction: column;
 
                 .map {
-                    flex: 4;
+                    // flex: 4;
+                    height: 74%;
                 }
 
                 .line {
-                    flex: 1;
+                    // flex: 1;
+                    height: 26%;
                 }
             }
         }

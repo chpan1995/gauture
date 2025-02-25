@@ -1,7 +1,7 @@
 <template>
   <div class="box7">
     <div class="title">
-      <p>年度游客量对比</p>
+      <p></p>
       <img src="../../images/dataScreen-title.png" alt="">
     </div>
     <div class="charts" ref="charts"></div>

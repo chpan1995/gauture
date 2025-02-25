@@ -15,9 +15,29 @@
           <el-input
             class="elinput"
             :input-style="{ textAlign: 'center' }"
-            v-model="graintypeList[index]"
+            v-model="graintypeList[index].name"
             :disabled="!isEdit"
           ></el-input>
+
+          <el-popconfirm
+            :title="`你确定要删除${graintypeList[index].name}?`"
+            width="260px"
+            @confirm="deleteType(graintypeList[index].id)"
+          >
+            <template #reference>
+              <el-button
+                style="
+                  width: 24px;
+                  height: 24px;
+                  border: none;
+                  margin-left: 10px;
+                "
+                circle
+              >
+                <el-icon :size="24" color="#FF0000"><Remove /></el-icon>
+              </el-button>
+            </template>
+          </el-popconfirm>
         </div>
       </template>
       <div class="tmp" v-if="isAdd">
@@ -33,23 +53,26 @@
         <el-button type="primary" style="width: 100px" @click="saveGrainType">
           保存
         </el-button>
-        <el-button
+        <!-- <el-button
           type="primary"
           style="width: 100px"
           @click="editGrainType"
           :disabled="isAdd"
         >
           编辑
-        </el-button>
+        </el-button> -->
       </div>
     </el-card>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { ElMessageBox } from "element-plus";
-const graintypeList = ref<string[]>(["小麦", "玉米"]);
+import grainTypeApi from "@/api/graintype";
+import { animateScrollTo } from "element-plus/es/utils";
+
+const graintypeList = ref<any[]>([]);
 
 const isAdd = ref<boolean>(false);
 const isEdit = ref<boolean>(false);
@@ -60,15 +83,21 @@ const addGrainType = () => {
   isAdd.value = true;
 };
 
-const saveGrainType = () => {
-  console.log(newGraintype.value);
+const saveGrainType = async () => {
   if (isAdd.value) {
     if (newGraintype.value == "") {
       ElMessageBox.alert("输入不能为空", { confirmButtonText: "确定" });
     } else {
       isAdd.value = false;
-      graintypeList.value.push(newGraintype.value);
+      let res: any = await grainTypeApi.reqAddType({
+        name: newGraintype.value,
+      });
+      if (res.code !== 200) {
+        ElMessageBox.alert("添加种类失败", { confirmButtonText: "确定" });
+      }
       newGraintype.value = "";
+      let data: any = await grainTypeApi.reqTypeInfo();
+      graintypeList.value = data.data;
     }
     return;
   }
@@ -84,9 +113,23 @@ const saveGrainType = () => {
   }
 };
 
+const deleteType = async (id: number) => {
+  let res: any = await grainTypeApi.reqDeleteType({ id: id });
+  if (res.code !== 200) {
+    ElMessageBox.alert("删除种类失败", { confirmButtonText: "确定" });
+  }
+  let data: any = await grainTypeApi.reqTypeInfo();
+  graintypeList.value = data.data;
+};
+
 const editGrainType = () => {
   isEdit.value = true;
 };
+
+onMounted(async () => {
+  let data: any = await grainTypeApi.reqTypeInfo();
+  graintypeList.value = data.data;
+});
 </script>
 
 <style lang="scss" scoped>
@@ -99,24 +142,18 @@ const editGrainType = () => {
     .elinput {
       width: 360px;
       height: 40px;
-
-      /* Style the disabled input using the correct selectors */
-      :deep(.el-input__wrapper.is-disabled) {
-        background-color: #1a98d6 !important;
-        box-shadow: 0 0 0 1px #cbcbcb inset !important;
-      }
-
-      :deep(.el-input__wrapper.is-disabled .el-input__inner) {
-        color: #333333 !important;
-        -webkit-text-fill-color: #333333 !important;
-        cursor: not-allowed;
-      }
     }
   }
   .tmp {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
+  }
+
+  :deep(.el-input.is-disabled .el-input__inner) {
+    color: #333333 !important;
+    -webkit-text-fill-color: #333333 !important;
+    cursor: not-allowed;
   }
 }
 </style>

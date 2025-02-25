@@ -1,7 +1,7 @@
 <template>
   <div class="box1">
     <div class="title">
-      <p>男女比例</p>
+      <p>公司男女比例</p>
       <img src="../../images/dataScreen-title.png" alt="">
     </div>
     <div class="sex">
@@ -98,7 +98,7 @@ onMounted(() => {
 
     p {
       color: white;
-      font-size: 20px;
+      font-size: 18px;
     }
   }
 

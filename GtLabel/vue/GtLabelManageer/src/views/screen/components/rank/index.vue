@@ -1,7 +1,7 @@
 <template>
     <div class="box6">
         <div class="title">
-            <p>热门景区排行</p>
+            <p>算法模型性能</p>
             <img src="../../images/dataScreen-title.png" alt="">
         </div>
         <!-- 图形图标的容器 -->
@@ -23,8 +23,8 @@ onMounted(() => {
         //标题组件
         title: {
             //主标题
-            text: '景区排行',
-            link: 'http://www.baidu.com',
+            text: '速度排行',
+            // link: 'http://www.baidu.com',
             //标题的位置
             left: '50%',
             //主标题文字样式
@@ -33,7 +33,7 @@ onMounted(() => {
                 fontSize: 20
             },
             //子标题
-            subtext: "各大景区排行",
+            subtext: "不用模型排行",
             //子标题的样式
             subtextStyle: {
                 color: 'yellowgreen',
