@@ -149,6 +149,7 @@ void Login::slotBtnLogin()
                                                      &&v->as_object().at("code").as_int64() == 200)
                                                  {
                                                      common::userid=v->as_object().at("userid").as_int64();
+                                                     common::nickname = v->as_object().at("nickname").as_string();
                                                      emit sigLoginStatus(true);
                                                  }
                                                  else if(!v->as_object().contains("code")) {
@@ -176,7 +177,6 @@ void Login::slotOnLoginStatus(bool f) {
         }
         m_loginUserName = m_username->text();
         common::username = m_username->text().toStdString();
-
 
         m_HttpClient->addRequest(HttpRequest(common::server1IP,
                                              common::server1Port,

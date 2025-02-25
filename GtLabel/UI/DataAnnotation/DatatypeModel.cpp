@@ -422,7 +422,6 @@ DatatypeModelManage::DatatypeModelManage(QObject *parent):QObject(parent) {
             }
             m_tagModels[id] = { model1, model2 };
         }
-        qDebug() << m_tagModels;
         emit graintypesChanged();
 
         // AllDatatypeModel* wheatAllDatatypeModel = new AllDatatypeModel;

@@ -260,17 +260,6 @@ void LabelImgData::requestImgName(QString name, int taskid)
 
 bool LabelImgData::gotoImgs(LabelImgNamespace::PageGo v)
 {
-    // m_HttpClient->addRequest(
-    //     HttpRequest("192.168.1.158",
-    //                 "8080",
-    //                 QString(QString("/api/user/login")).toStdString(),
-    //                 boost::json::serialize(boost::json::object({{"username","fdd"},{"password","123456"}})),
-    //                 [this](const char *response, std::size_t lenth) {
-    //                     auto v = praseRespose(response, lenth);
-    //                     if(v.has_value()) {
-    //                         qDebug() <<  boost::json::serialize(v.value());
-    //                     }
-    //                 }));
     // 清除未点击标注信息
     if (m_isTaging) {
         return false;

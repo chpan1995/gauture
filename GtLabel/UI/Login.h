@@ -11,7 +11,7 @@
 
 #include "HttpClient.h"
 
-#define LINUX_VERSION 1002
+#define LINUX_VERSION 1004
 #define WINDOWS_VERSION 1004
 
 class BackWidget : public QWidget

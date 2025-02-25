@@ -15,7 +15,8 @@ exports.login = (req, res) => {
             res.send({
                 code: 200,
                 message: "login success",
-                userid: data.id
+                userid: data.id,
+                nickname:data.nickname
             });
         } else {
             res.status(200).send({

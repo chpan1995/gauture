@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     // view->engine()->addImportPath(":/");
     view->engine()->addImportPath(":/qt/qml/");
     view->rootContext()->setContextProperty("view", view);
-    view->rootContext()->setContextProperty("ctx_username", login.username());
+    view->rootContext()->setContextProperty("ctx_username", QString::fromStdString(common::nickname));
     view->loadFromModule("ui_main", "Main");
     view->setWidth(1294);
     view->setHeight(800);

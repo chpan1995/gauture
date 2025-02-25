@@ -1,23 +1,28 @@
 ﻿#ifndef UTILS_H
 #define UTILS_H
 
-#include <boost/json.hpp>
 #include <QEvent>
+#include <boost/json.hpp>
 
-static void pretty_print(std::ostream& os, boost::json::value const& jv, std::string* indent = nullptr) {
+static void pretty_print(std::ostream &os,
+                         boost::json::value const &jv,
+                         std::string *indent = nullptr)
+{
     std::string indent_;
-    if (!indent) indent = &indent_;
+    if (!indent)
+        indent = &indent_;
     switch (jv.kind()) {
     case boost::json::kind::object: {
         os << "{\n";
         indent->append(4, ' ');
-        auto const& obj = jv.get_object();
+        auto const &obj = jv.get_object();
         if (!obj.empty()) {
             auto it = obj.begin();
             for (;;) {
                 os << *indent << boost::json::serialize(it->key()) << ": ";
                 pretty_print(os, it->value(), indent);
-                if (++it == obj.end()) break;
+                if (++it == obj.end())
+                    break;
                 os << ",\n";
             }
         }
@@ -30,13 +35,14 @@ static void pretty_print(std::ostream& os, boost::json::value const& jv, std::st
     case boost::json::kind::array: {
         os << "[\n";
         indent->append(4, ' ');
-        auto const& arr = jv.get_array();
+        auto const &arr = jv.get_array();
         if (!arr.empty()) {
             auto it = arr.begin();
             for (;;) {
                 os << *indent;
                 pretty_print(os, *it, indent);
-                if (++it == arr.end()) break;
+                if (++it == arr.end())
+                    break;
                 os << ",\n";
             }
         }
@@ -73,35 +79,36 @@ static void pretty_print(std::ostream& os, boost::json::value const& jv, std::st
         break;
     }
 
-    if (indent->empty()) os << "\n";
+    if (indent->empty())
+        os << "\n";
 }
 
-class NetState:public QEvent{
+class NetState : public QEvent
+{
 public:
-    explicit NetState(bool s,Type t = TYPE);
-    static const Type TYPE = static_cast<QEvent::Type>(Type::User+1001);
-    inline bool state(){
-        return m_state;
-    }
+    explicit NetState(bool s, Type t = TYPE);
+    static const Type TYPE = static_cast<QEvent::Type>(Type::User + 1001);
+    inline bool state() { return m_state; }
+
 private:
     bool m_state;
 };
 
 namespace common {
-    inline std::string username;
-    inline std::uint32_t userid;
-    inline std::string serveralgoIP;
-    inline std::string serveralgoPort;
+inline std::string username;
+inline std::string nickname;
+inline std::uint32_t userid;
+inline std::string serveralgoIP;
+inline std::string serveralgoPort;
 
-    inline std::string server1IP;
-    inline std::string server1Port;
+inline std::string server1IP;
+inline std::string server1Port;
 
-    inline std::string server2IP;
-    inline std::string server2Port;
+inline std::string server2IP;
+inline std::string server2Port;
 
-    inline std::string grianType;
-    inline std::string tags;
-}
-
+inline std::string grianType;
+inline std::string tags;
+} // namespace common
 
 #endif
