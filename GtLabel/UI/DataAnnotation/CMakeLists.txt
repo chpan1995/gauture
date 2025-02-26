@@ -10,7 +10,7 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick Gui)
+find_package(Qt6 REQUIRED COMPONENTS Quick Gui Widgets)
 find_package(Boost REQUIRED json)
 
 add_library(ui_dataAnnotation)
@@ -56,7 +56,7 @@ target_include_directories(ui_dataAnnotation
 )
 
 target_link_libraries(ui_dataAnnotation
-    PRIVATE Qt6::Quick Boost::json
+    PRIVATE Qt6::Quick Qt6::Widgets Boost::json
     protocl
     common
     logging

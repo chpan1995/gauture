@@ -1,11 +1,15 @@
 ﻿#include "LabelImgData.h"
 #include "log.h"
+#include "Utils.h"
 
 #include <QCoreApplication>
 #include <QDir>
 #include <QFile>
+#include <QFileDialog>
+#include <QApplication>
 #include <boost/asio.hpp>
-#include "Utils.h"
+#include <QTimer>
+
 
 LabelImgData::LabelImgData(QObject *parent)
     : QObject(parent)
@@ -31,6 +35,7 @@ LabelImgData::~LabelImgData()
 
 void LabelImgData::requestImgInfo()
 {
+    m_isLocal = false;
     m_das.clear();
     m_HttpClient->addRequest(HttpRequest(
         common::server1IP,
@@ -233,10 +238,8 @@ void LabelImgData::requestImgName(QString name, int taskid)
                                     if(da.size() > 0) {
                                         m_currentTrait.insert(m_imgNames[i],
                                                               da[da.size()-1].property("trait").toInt() + 1);
-                                        qDebug() << "uuuuuuu:" << m_currentTrait[m_imgNames[i]];
                                     }else {
                                         m_currentTrait.insert(m_imgNames[i],1);
-                                        qDebug() << m_currentTrait[m_imgNames[i]];
                                     }
                                 } catch (boost::system::system_error& ec) {
                                     m_currentTrait.insert(m_imgNames[i],1);
@@ -343,6 +346,96 @@ void LabelImgData::setTagStatus(bool f)
     m_isTaging = f;
 }
 
+void LabelImgData::requestImgName() {
+    m_isLocal = true;
+    m_imgNames.clear();
+    m_localPath = QFileDialog::getExistingDirectory(nullptr, "打开文件夹",
+                                      QApplication::applicationDirPath(),
+                                      QFileDialog::ShowDirsOnly
+                                          | QFileDialog::DontResolveSymlinks);
+    QDir dir(m_localPath);
+    auto fileinfos = dir.entryInfoList({"*.png"},QDir::NoDotAndDotDot|QDir::Files);
+    for(auto& it:fileinfos) {
+        m_imgNames.append("file:///"+m_localPath+"/"+it.fileName());
+    }
+
+    QHash<QString,boost::json::array> tmp;
+    QFile fp(m_localPath+"/result.json");
+    if(fp.open(QIODevice::ReadWrite | QIODevice::Text)) {
+        auto data = fp.readAll();
+        try {
+            auto jsonValue = boost::json::parse(data.constData());
+            boost::system::error_code ec;
+            auto info = jsonValue.find_pointer("/info",ec);
+            if(ec) {
+                logging::log_error(RL,"解析json失败");
+            }else {
+
+                auto arr = info->as_array();
+                for(auto& it: arr) { // 每张图片
+                    auto imgname = it.at("imageName").as_string();
+                    auto sapType = it.at("grainType").as_string();
+                    boost::json::array jsonarr;
+                    int trait = 0;
+                    for(auto tag: it.at("property").as_array()){ // 每张图片下的多特征
+                        ++trait;
+                        for(auto name: tag.as_array()){
+                            boost::json::object obj = {{"sapType",sapType},
+                                                       {"inherName",""},
+                                                       {"firstIndex",0},
+                                                       {"secondIndex",0},
+                                                       {"topName",""},
+                                                       {"trait",0}};
+                            obj.at("inherName") = name.as_string();
+                            obj.at("trait")=trait;
+                            jsonarr.push_back(obj);
+                        }
+                    }
+                    tmp[imgname.c_str()]=jsonarr;
+                }
+            }
+        } catch (...) {
+            logging::log_error(RL,"解析json失败");
+        }
+    }
+
+    for (int i = 0; i < m_imgNames.size(); i++) {
+        try {
+            QList<LabelTagsItem> da;
+            if (tmp.contains(m_imgNames[i])) {
+                auto value = tmp[m_imgNames[i]];
+                for (auto &it : value) {
+                    da.append(LabelTagsItem(it.get_object()));
+                }
+                m_labelTagsModels.insert(m_imgNames[i], da);
+                if (da.size() > 0) {
+                    m_currentTrait.insert(m_imgNames[i],
+                                          da[da.size() - 1].property("trait").toInt() + 1);
+                } else {
+                    m_currentTrait.insert(m_imgNames[i], 1);
+                }
+            } else {
+                m_labelTagsModels.insert(m_imgNames[i], QList<LabelTagsItem>());
+                m_currentTrait.insert(m_imgNames[i], 1);
+            }
+        } catch (boost::system::system_error &ec) {
+            m_labelTagsModels.insert(m_imgNames[i], QList<LabelTagsItem>());
+            m_currentTrait.insert(m_imgNames[i], 1);
+        }
+    }
+
+    if (m_imgNames.size() > 0) {
+        m_imgName = m_imgNames[0];
+        emit imgNameChanged();
+        emit request(true, LabelImgNamespace::RequestMethod::TasksPull);
+    }
+
+    m_allPage = m_imgNames.size();
+    m_currentPage = 0;
+    emit currentPageChanged();
+    emit allPageChanged();
+}
+
 void LabelImgData::reset()
 {
     m_isTaging = false;
@@ -359,7 +452,6 @@ bool LabelImgData::lab()
     bool tmp = m_isTaging;
     if (m_isTaging) {
         m_currentTrait[m_imgName]++;
-        qDebug() << "dddd" <<m_currentTrait[m_imgName];
         updateTags(); // 更新tags
     }
     // 标注完成Taging状态置成false
@@ -403,17 +495,17 @@ QVariantList LabelImgData::upload()
                 if (i == m_labelTagsModels[it].size() - 1) {
                     arr.emplace_back(arrChird);
                 }
-                // arr.push_back(obj);
-                /////////////////////////////////////////////////////////
-                // boost::json::object obj({{"sapType", m_labelTagsModels[it][i].property("sapType").toString().toStdString()},
-                //                          {"inherName", m_labelTagsModels[it][i].property("inherName").toString().toStdString()},
-                //                          {"firstIndex", m_labelTagsModels[it][i].property("firstIndex").toInt()},
-                //                          {"secondIndex", m_labelTagsModels[it][i].property("sapType").toInt()},
-                //                          {"topName", m_labelTagsModels[it][i].property("topName").toString().toStdString()},
-                //                          {"trait", m_labelTagsModels[it][i].property("trait").toInt()}});
-                // tagArrChird.emplace_back(obj);
+
+                ///////////////////////////////////////////////////////// node server /////////////////////////////////////
+                boost::json::object obj_2({{"sapType", m_labelTagsModels[it][i].property("sapType").toString().toStdString()},
+                                         {"inherName", m_labelTagsModels[it][i].property("inherName").toString().toStdString()},
+                                         {"firstIndex", m_labelTagsModels[it][i].property("firstIndex").toInt()},
+                                         {"secondIndex", m_labelTagsModels[it][i].property("sapType").toInt()},
+                                         {"topName", m_labelTagsModels[it][i].property("topName").toString().toStdString()},
+                                         {"trait", m_labelTagsModels[it][i].property("trait").toInt()}});
+                tagArrChird.emplace_back(obj_2);
             }
-            // tagarr.emplace_back(boost::json::array({m_currentTaskId,it.toStdString(),boost::json::serialize(tagArrChird)}));
+            tagarr.emplace_back(boost::json::array({m_currentTaskId,it.toStdString(),boost::json::serialize(tagArrChird)}));
             obj.insert({{"property", arr}});
             v.at("info").as_array().emplace_back(obj);
         }
@@ -425,22 +517,17 @@ QVariantList LabelImgData::upload()
         return {false, "未标注任何图片,禁止上传"};
     }
 
-    // test code
     std::stringstream os;
     std::string indent = "";
     pretty_print(os, v, &indent);
     QString timestamp = QDateTime::currentDateTime().toString(
         "yyyy-MM-dd_hh-mm-ss"); // 使用下划线和连字符替换空格和冒号
-    QString fpath = QCoreApplication::applicationDirPath() + "/" + timestamp + ".json";
-
-    // // 2. 确保目录存在（注意：这里要传入目录路径，而不是文件路径）
-    // QFileInfo fileInfo(fpath);
-    // QDir dir(fileInfo.absolutePath());
-    // if (!dir.exists()) {
-    //     if (!dir.mkpath(".")) { // 创建到当前目录的路径
-    //         logging::log_error(RL, "创建目录失败");
-    //     }
-    // }
+    QString fpath;
+    if(m_isLocal) {
+        fpath=m_localPath+"/result.json";
+    }else {
+        fpath = QCoreApplication::applicationDirPath() + "/" + timestamp + ".json";
+    }
     QFile File(fpath);
     if (!File.open(QFile::ReadWrite | QFile::Text | QFile::Truncate)) {
         logging::log_error(RL, "打开文件失败{}", File.errorString().toStdString());
@@ -448,7 +535,8 @@ QVariantList LabelImgData::upload()
         File.write(os.str().c_str());
         File.close();
     }
-    m_HttpClient->addRequest(HttpRequest(
+    if(!m_isLocal) {
+        m_HttpClient->addRequest(HttpRequest(
         "192.168.1.108",
         "8083",
         "/tasks/push/" + m_currentTaskName.toStdString(),
@@ -487,6 +575,12 @@ QVariantList LabelImgData::upload()
                 emit request(false, LabelImgNamespace::RequestMethod::TasksPush);
             }
         }));
+    }
+    else {
+        QTimer::singleShot(100,[this]{
+            emit request(true, LabelImgNamespace::RequestMethod::TasksPush, "本地保存成功");
+        });
+    }
     return {true, "正在上传中..."};
 }
 

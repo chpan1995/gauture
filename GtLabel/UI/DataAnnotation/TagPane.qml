@@ -138,7 +138,7 @@ Item {
                                             width: topNode.fold ? 88 : 0
 
                                             onClicked: {
-                                                complexBtnClicked(cbxgraintype.currentValue,inheritsName
+                                                complexBtnClicked(cbxgraintype.currentText,inheritsName
                                                                   ,parent.parent.index, secBtn.index,topNode.modelData.title.title,!secBtn.selected);
                                                 topNode.modelData.setSelected(parent.parent.index, secBtn.index, !secBtn.selected);
                                             }
@@ -329,7 +329,7 @@ Item {
                         if (i != 0)
                             tmpinheritsName += "-";
                     }
-                    complexBtnClicked(cbxgraintype.currentValue,tmpinheritsName
+                    complexBtnClicked(cbxgraintype.currentText,tmpinheritsName
                                       ,/*parent.parent.index*/-1, parent.index,parent.parent.modelData.title.title,!parent.selected);
                     parent.modelData.qmlSelected(!parent.selected);
                 }

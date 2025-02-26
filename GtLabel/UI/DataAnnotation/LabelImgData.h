@@ -51,6 +51,8 @@ public:
     Q_INVOKABLE void requestImgName(QString name,int taskid);
     Q_INVOKABLE bool gotoImgs(LabelImgNamespace::PageGo v);
     Q_INVOKABLE void setTagStatus(bool f);
+    // 获取本地数据
+    Q_INVOKABLE void requestImgName();
 
     // 重置
     Q_INVOKABLE void reset();
@@ -98,6 +100,8 @@ private:
     std::int32_t m_currentTaskId;
     bool m_isTaging { false }; // 是否正在标记 (打了tag但是没点标注 关闭标签结合trait就可以控制按钮的选中状态了)
     QList<std::tuple<QString, QString, unsigned int, unsigned int, unsigned int, unsigned int>> m_das;
+    bool m_isLocal { false };
+    QString m_localPath {""};
     friend class LabelTags;
 };
 

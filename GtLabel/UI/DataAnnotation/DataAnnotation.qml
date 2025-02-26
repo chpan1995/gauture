@@ -374,6 +374,31 @@ Item {
                             }
                         }
                     }
+
+                    ButtonImgText{
+                        id:btnReuestLocalInfo
+                        anchors.right:parent.right
+                        anchors.rightMargin:32
+                        anchors.verticalCenter:parent.verticalCenter
+                        width:114
+                        height:40
+                        urlNormal:"qrc:/images/requireData.png"
+                        hovercolor:"#E8F1FC"
+                        text:"获取本地数据"
+                        radius:4
+                        txtNormalColor:"#1C76E0"
+                        font.pixelSize:14
+                        pBorder:{
+                            "width":1,
+                            "color":"#1C76E0"
+                        }
+                        onClicked:{
+                            // qmlLabelImgData.requestImgInfo();
+                            // taskInfoPop.open();
+                            // taskInfoPop.loadStatus="loading"
+                            qmlLabelImgData.requestImgName();
+                        }
+                    }
                 }
             }
         }
@@ -409,6 +434,7 @@ Item {
         onRequestImageNames:(v)=>{
             btnReuestInfo.visible =!v;
             rithPane.qmlDatatypeModelManage.reset();
+            btnReuestLocalInfo.visible =!v;
         }
     }
 
