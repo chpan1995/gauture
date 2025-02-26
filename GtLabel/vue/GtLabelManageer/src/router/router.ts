@@ -1,5 +1,6 @@
+import type { RouteRecordRaw } from "vue-router";
 // 对外暴露路由
-export const constantRoute = [
+export const constantRoute:RouteRecordRaw[] = [
     {
         // 登录路由
         path: "/login",

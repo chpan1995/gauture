@@ -3,12 +3,13 @@ version: '3.8'
 services:
   mysqldb:
     image: mysql:8.0
+    container_name: GzLabel-db
     restart: unless-stopped
     environment:
       - MYSQL_ROOT_PASSWORD=Gz-123456
       - MYSQL_DATABASE=GzLabel
     ports:
-      - 3318:3306
+      - 3316:3306
     volumes:
       - db:/var/lib/mysql
       - ./GzLabel.sql:/docker-entrypoint-initdb.d/init.sql #SQL 文件只在数据库首次初始化时生效，如果 db 卷里已经有数据，则不会重新执行。
@@ -25,6 +26,8 @@ services:
       mysqldb:
         condition: service_healthy
     build: .
+    container_name: GzLabel_server
+    image: gzlabel
     restart: unless-stopped
     ports:
       - 8080:8080
@@ -39,6 +42,20 @@ services:
     tty: true
     networks:
       - app-network
+      
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: GzLabel_frontend
+    image: gzlabel_frontend
+    restart: unless-stopped
+    ports:
+      - 3344:80
+    depends_on:
+      - app
+    networks:
+      - app-network
 
 networks:
   app-network:
@@ -46,3 +63,4 @@ networks:
 
 volumes: 
   db:     #Docker 自动管理 数据存储位置 /var/lib/docker/volumes/db/_data
+

@@ -5,6 +5,7 @@ import { loadEnv } from 'vite'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode  }) => {
+  command;
   let env = loadEnv(mode, process.cwd())
   return {
     plugins: [
@@ -12,7 +13,7 @@ export default defineConfig(({ command, mode  }) => {
     ],
     resolve: {
       alias: {
-        "@": path.resolve("./src") // 相对路径别名配置，使用 @ 代替 src
+        "@": path.resolve(__dirname,"./src") // 相对路径别名配置，使用 @ 代替 src
       },
     },
 

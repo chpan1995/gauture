@@ -56,18 +56,18 @@
           </div>
           <div
             class="first_tags"
-            v-for="(item, index) in item.items"
+            v-for="(itemsub1, index) in item.items"
             :key="index"
           >
             <span class="first_tags_span"> 一级标签 </span>
-            <span class="first_tags_value"> {{ item.value }} </span>
+            <span class="first_tags_value"> {{ itemsub1.value }} </span>
             <div
               class="second_tag"
-              v-for="(item, index) in item.items"
+              v-for="(itemsub2, index) in itemsub1.items"
               :key="index"
             >
               <span class="second_tags_span"> 二级标签 </span>
-              <span class="second_tags_value"> {{ item.value }} </span>
+              <span class="second_tags_value"> {{ itemsub2.value }} </span>
             </div>
           </div>
         </div>
@@ -125,18 +125,18 @@
             </div>
             <div
               class="first_tags"
-              v-for="(item, index) in item.items"
+              v-for="(itemsub1, index) in item.items"
               :key="index"
             >
               <span class="first_tags_span"> 一级标签 </span>
-              <span class="first_tags_value"> {{ item.value }} </span>
+              <span class="first_tags_value"> {{ itemsub1.value }} </span>
               <div
                 class="second_tag"
-                v-for="(item, index) in item.items"
+                v-for="(itemsub2, index) in itemsub1.items"
                 :key="index"
               >
                 <span class="second_tags_span"> 二级标签 </span>
-                <span class="second_tags_value"> {{ item.value }} </span>
+                <span class="second_tags_value"> {{ itemsub2.value }} </span>
               </div>
             </div>
           </div>

@@ -47,7 +47,7 @@
           </el-popconfirm>
         </div>
         <div class="first_tags">
-          <template v-for="(item, index) in item.items" :key="index">
+          <template v-for="(itemsub, index) in item.items" :key="index">
             <div
               style="
                 display: flex;
@@ -57,7 +57,7 @@
               "
             >
               <span class="first_tags_span"> 一级标签 </span>
-              <span class="first_tags_value"> {{ item.value }} </span>
+              <span class="first_tags_value"> {{ itemsub.value }} </span>
             </div>
           </template>
         </div>
@@ -106,7 +106,7 @@
             <span class="first_value_span"> {{ item.value }} </span>
           </div>
           <div class="first_tags" v-if="item.items">
-            <template v-for="(item, index) in item.items" :key="index">
+            <template v-for="(itemsub, index) in item.items" :key="index">
               <div
                 style="
                   display: flex;
@@ -116,7 +116,7 @@
                 "
               >
                 <span class="first_tags_span"> 一级标签 </span>
-                <span class="first_tags_value"> {{ item.value }} </span>
+                <span class="first_tags_value"> {{ itemsub.value }} </span>
               </div>
             </template>
           </div>

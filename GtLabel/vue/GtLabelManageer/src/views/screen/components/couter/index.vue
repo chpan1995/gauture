@@ -73,7 +73,7 @@ onMounted(() => {
   }
 
   .charts {
-    height: 100%;
+    height: calc(100% - 30px);
   }
 
 }

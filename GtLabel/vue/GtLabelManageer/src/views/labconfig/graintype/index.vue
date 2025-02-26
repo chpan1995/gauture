@@ -70,7 +70,6 @@
 import { ref, onMounted } from "vue";
 import { ElMessageBox } from "element-plus";
 import grainTypeApi from "@/api/graintype";
-import { animateScrollTo } from "element-plus/es/utils";
 
 const graintypeList = ref<any[]>([]);
 

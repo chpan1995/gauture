@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : chpan
+ Source Server         : 47.99.163.134
  Source Server Type    : MySQL
- Source Server Version : 80041
- Source Host           : 127.0.0.1:3306
+ Source Server Version : 80040
+ Source Host           : 47.99.163.134:3316
  Source Schema         : GzLabel
 
  Target Server Type    : MySQL
- Target Server Version : 80041
+ Target Server Version : 80040
  File Encoding         : 65001
 
- Date: 25/02/2025 15:17:36
+ Date: 25/02/2025 16:19:24
 */
 
 SET NAMES utf8mb4;
@@ -31,6 +31,12 @@ CREATE TABLE `graintags` (
 ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
+-- Records of graintags
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for graintype
 -- ----------------------------
 DROP TABLE IF EXISTS `graintype`;
@@ -40,6 +46,12 @@ CREATE TABLE `graintype` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Records of graintype
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for labtask
@@ -57,6 +69,12 @@ CREATE TABLE `labtask` (
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
+-- Records of labtask
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for labtaskhistory
 -- ----------------------------
 DROP TABLE IF EXISTS `labtaskhistory`;
@@ -68,6 +86,12 @@ CREATE TABLE `labtaskhistory` (
   `uploadtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Records of labtaskhistory
+-- ----------------------------
+BEGIN;
+COMMIT;
 
 -- ----------------------------
 -- Table structure for labtaskinfo
@@ -83,6 +107,12 @@ CREATE TABLE `labtaskinfo` (
 ) ENGINE=InnoDB AUTO_INCREMENT=5002 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
+-- Records of labtaskinfo
+-- ----------------------------
+BEGIN;
+COMMIT;
+
+-- ----------------------------
 -- Table structure for user
 -- ----------------------------
 DROP TABLE IF EXISTS `user`;
@@ -94,6 +124,13 @@ CREATE TABLE `user` (
   `createtime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- ----------------------------
+-- Records of user
+-- ----------------------------
+BEGIN;
+INSERT INTO `user` VALUES (13, 'admin', '123456', '管理员', '2025-02-25 08:19:09');
+COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;
