@@ -380,7 +380,7 @@ Item {
                         anchors.right:parent.right
                         anchors.rightMargin:32
                         anchors.verticalCenter:parent.verticalCenter
-                        width:114
+                        width:128
                         height:40
                         urlNormal:"qrc:/images/requireData.png"
                         hovercolor:"#E8F1FC"
