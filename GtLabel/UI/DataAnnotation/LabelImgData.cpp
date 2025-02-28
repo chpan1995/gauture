@@ -165,7 +165,7 @@ void LabelImgData::requestImgName(QString name)
                                 common::server1Port,
                                 "/api/labTask/addLabTask",
                                 boost::json::serialize(boost::json::object(
-                                    {{"userid", 1},
+                                    {{"userid", common::userid},
                                      {"taskname", m_currentTaskName.toStdString()},
                                      {"imgarry", objArry->get_array()}})),
                                 [this](const char *response, std::size_t lenth) {
