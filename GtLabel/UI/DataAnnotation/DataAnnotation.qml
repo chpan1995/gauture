@@ -492,6 +492,7 @@ Item {
                 if(v) {
                     popGetImg.content=s;
                     btnReuestInfo.visible=true;
+                    btnReuestLocalInfo.visible=true;
                     // 清除所有数据
                     qmlLabelImgData.clear();
                     rithPane.qmlDatatypeModelManage.reset();
