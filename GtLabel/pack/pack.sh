@@ -62,6 +62,7 @@ qmake_bin=/opt/qt/6.8.2/gcc_64/bin/qmake
 cd $repo_build_dir
 cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_PREFIX_PATH:PATH=/opt/qt/6.8.2/gcc_64 -DBUILD_SHARED_LIBS=OFF ../update;make -j${cpu_num}
 cp -rf $repo_build_dir/Gzupdate $bin_dir
+cp -rf $pack_src_dir/config.ini $bin_dir
 cp -rf $pack_src_dir/Gzupdate.sh $pack_label_dir
 rm -rf CMakeCache.txt
 

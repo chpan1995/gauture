@@ -26,7 +26,7 @@ const logger = winston.createLogger({
 
         // 普通信息日志文件
         new winston.transports.DailyRotateFile({
-            filename: 'logs/app-%DATE%.log',
+            filename:  __dirname + '/../logs/app-%DATE%.log',
             datePattern: 'YYYY-MM-DD',
             zippedArchive: true,
             maxSize: '20m',
