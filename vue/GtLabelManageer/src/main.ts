@@ -11,7 +11,8 @@ import gloalComponent from '@/components'
 import router from './router'
 // 引入仓库
 import pinia from './store'
-
+// 路由守卫
+import '../permission.ts'
 
 const app = createApp(App);
 // 注册模板路由
