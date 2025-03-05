@@ -10,6 +10,8 @@ const logFormat = winston.format.combine(
     winston.format.splat(),
     //   winston.format.json()
     winston.format.printf(({ level, message, timestamp }) => {
+        level = level || 'unknown'; // 预防 level 为 undefined
+        message = message || '[NO MESSAGE]'; // 防止 message 为空
         return `${timestamp} [${level.toUpperCase()}]: ${message}`;
     })
 )
