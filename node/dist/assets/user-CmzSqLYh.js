@@ -1,0 +1,1 @@
+import{j as s,s as t}from"./index-C7oGZG6Y.js";import{u as o}from"./index-BYMrysU6.js";const a=s("User",{state:()=>({token:"",menuRoutes:t,username:""}),actions:{async userLogin(e){const r=await o.reqLogin(e);return r.code==200?(this.token=r.message,this.username=e.username,"ok"):Promise.reject(new Error("账号或密码错误"))}},getters:{}});export{a as u};

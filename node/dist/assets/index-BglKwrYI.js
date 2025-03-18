@@ -1,0 +1,1 @@
+import{r as p}from"./request-Bboo2TiE.js";class t{constructor(){}reqTypeInfo(){return p.get("/api/type/typeInfo")}reqAddType(e){return p.post("/api/type/addtype",e)}reqDeleteType(e){return p.post("/api/type/deleteType",e)}}const n=new t;export{n as g};

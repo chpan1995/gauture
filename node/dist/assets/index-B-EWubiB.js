@@ -1,0 +1,1 @@
+import{r as t}from"./request-Bboo2TiE.js";class a{constructor(){}reqTagsInfo(s){return t.post("/api/tags/tagInfo",s)}reqAddTags(s){return t.post("/api/tags/addTas",s)}reqDeleteTags(s){return t.post("/api/tags/deleteTags",s)}}const o=new a;export{o as t};
