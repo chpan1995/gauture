@@ -43,6 +43,7 @@ void HttpClient::processNextRequest()
         req.set(boost::beast::http::field::host, request.host);
         req.set(boost::beast::http::field::user_agent, BOOST_BEAST_VERSION_STRING);
         req.set(boost::beast::http::field::content_type, "application/json");
+        // req.set("X-Custom-Header", "MyValue");            // 设置自定义请求头
         req.body() = request.body;
         req.prepare_payload(); // 必须调用这个来设置content-length
     }

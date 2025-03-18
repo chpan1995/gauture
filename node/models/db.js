@@ -16,4 +16,4 @@ pool.on('error', (err) => {
     logger.error('Database connection error:%s', err);
 });
 
-module.exports = pool.promise();;
+module.exports = pool.promise();

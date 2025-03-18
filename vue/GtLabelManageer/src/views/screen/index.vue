@@ -107,7 +107,7 @@ window.onresize = () => {
 
             .left {
                 flex: 1;
-                height: 1040px;
+                height: 1000px;
                 display: flex;
                 flex-direction: column;
 
@@ -131,13 +131,13 @@ window.onresize = () => {
                 flex-direction: column;
 
                 .map {
-                    // flex: 4;
-                    height: 74%;
+                    flex: 4; //占比
+                    // height: 78%;
                 }
 
                 .line {
-                    // flex: 1;
-                    height: 26%;
+                    flex: 1; //占比
+                    // height: 22%;
                 }
             }
         }
