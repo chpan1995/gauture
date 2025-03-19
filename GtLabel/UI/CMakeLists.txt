@@ -24,6 +24,10 @@ add_library(ui_main)
 # 都会生成一个单独的 qmldir 文件
 qt_policy(SET QTP0004 NEW)
 
+# Add QML import paths for IDE support
+set(QML_IMPORT_PATH ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR} CACHE STRING "" FORCE)
+set(QML_IMPORT_PATH_DEVELOPER ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR} CACHE STRING "" FORCE)
+
 qt_add_qml_module(ui_main
     URI ui_main
     VERSION 1.0
