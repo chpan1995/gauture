@@ -485,7 +485,7 @@ Item {
         sure:true
     }
 
-    QmlLabelImgData {
+    QmLabelImgData {
         id:qmlLabelImgData
         onRequest:(v,method,s)=> {
             if(method===LabelImgNamespace.RequestMethod.TasksPush) {

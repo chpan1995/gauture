@@ -6,17 +6,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 17)
 
-set(CMAKE_AUTOUIC ON)
-set(CMAKE_AUTOMOC ON)
-set(CMAKE_AUTORCC ON)
-
 find_package(Qt6 REQUIRED COMPONENTS Quick Gui Widgets)
 find_package(Boost REQUIRED json)
 
-add_library(ui_dataAnnotation)
-
 set(QML_IMPORT_PATH ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR} CACHE STRING "" FORCE)
 set(QML_IMPORT_PATH_DEVELOPER ${CMAKE_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR} CACHE STRING "" FORCE)
+
+add_library(ui_dataAnnotation)
 
 qt_add_qml_module(ui_dataAnnotation
     URI ui_dataAnnotation
@@ -29,7 +25,7 @@ qt_add_qml_module(ui_dataAnnotation
         TagPane.qml
         componentCreationTagPane.js
     OUTPUT_DIRECTORY
-        ui_dataAnnotation
+        ${CMAKE_BINARY_DIR}/ui_dataAnnotation # import 能找到
     SOURCES
     DatatypeModel.h
     DatatypeModel.cpp
