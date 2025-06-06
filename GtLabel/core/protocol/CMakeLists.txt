@@ -6,7 +6,9 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_package(Boost REQUIRED json)
+option(BCOROUTINE "Build library with COROUTINE" ON)
+
+find_package(Boost REQUIRED json system coroutine context)
 find_package(Threads REQUIRED)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
@@ -33,9 +35,18 @@ target_include_directories(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
-        PRIVATE Boost::json
-        Threads::Threads
-        logging
+    PRIVATE
+    Boost::json
+    Boost::system
+    Boost::coroutine
+    Boost::context
+    Threads::Threads
+    logging
+)
+
+target_compile_definitions(${PROJECT_NAME}
+  PRIVATE
+  $<$<BOOL:BCOROUTINE>:BCOROUTINE>
 )
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Windows")

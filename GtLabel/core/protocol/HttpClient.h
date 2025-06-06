@@ -5,6 +5,8 @@
 #include <boost/beast/http.hpp>
 #include <boost/beast/version.hpp>
 #include <boost/asio/strand.hpp>
+#include <boost/asio/spawn.hpp>
+#include <boost/asio/detached.hpp>
 #include <boost/function.hpp>
 #include <boost/json.hpp>
 #include <queue>
