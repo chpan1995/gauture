@@ -1,6 +1,7 @@
 pragma ComponentBehavior: Bound
 import QtQuick
 import ui_main 1.0
+import ui_dataAnnotation 1.0
 import QtQuick.Controls
 import QtQuick.Layouts
 import QtQuick.Effects

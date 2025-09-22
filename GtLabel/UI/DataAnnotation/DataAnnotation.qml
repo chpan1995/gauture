@@ -292,6 +292,7 @@ Item {
                         height:parent.height
                         width:childrenRect.width
                         anchors.centerIn:parent
+
                         Row {
                             height:parent.height
                             width:childrenRect.width
@@ -399,6 +400,15 @@ Item {
                             qmlLabelImgData.requestImgName();
                         }
                     }
+                    // focus: true
+                    // focusPolicy: Qt.StrongFocus
+                    // Keys.onPressed:(event)=> {
+                    //     if (event.key === Qt.Key_Left) {
+                    //         console.log("L");
+                    //     }else if(event.key === Qt.Key_Right) {
+                    //         console.log("R");
+                    //     }
+                    // }
                 }
             }
         }
@@ -511,6 +521,29 @@ Item {
             }else {
                 net_text.text="与主服务器连接异常!!!"
             }
+        }
+    }
+
+    function next() {
+        if(!qmlLabelImgData.gotoImgs(LabelImgNamespace.PageGo.Next)){
+            popQuestion.open();
+        }else {
+            rithPane.qmlDatatypeModelManage.reset();
+        }
+    }
+
+    function pre() {
+        if(!qmlLabelImgData.gotoImgs(LabelImgNamespace.PageGo.Front)){
+            popQuestion.open();
+        }else {
+            rithPane.qmlDatatypeModelManage.reset();
+        }
+    }
+
+    function save() {
+        if(qmlLabelImgData.lab()) {
+            // 右边种类数据重置
+            rithPane.qmlDatatypeModelManage.reset();
         }
     }
 

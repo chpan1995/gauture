@@ -3,6 +3,7 @@
 #include <QCursor>
 #include <QTimer>
 #include <QScreen>
+#include <QEvent>
 
 #ifdef Q_OS_WIN
 #include <dwmapi.h>
@@ -14,6 +15,10 @@
 #include <X11/Xatom.h>
 #include <xcb/xcb.h>
 #endif
+
+
+#undef KeyPress
+#undef KeyRelease
 
 FrameLessView::FrameLessView(QWindow *parent)
     : QQuickView(parent)
@@ -198,6 +203,26 @@ void FrameLessView::mouseMoveEvent(QMouseEvent *event)
             return;
         setGeometry(newGeometry);
     }
+}
+
+void FrameLessView::keyPressEvent(QKeyEvent *e) {
+    QQuickItem *rootobj = rootObject();
+    if (rootobj) {
+        QObject *obj = rootobj->findChild<QObject *>("dataAnnotation");
+        if (e->key() == Qt::Key_Left) {
+            qDebug() << "左键";
+            QMetaObject::invokeMethod(obj,"pre");
+        } else if(e->key() == Qt::Key_Right) {
+            qDebug() << "右键";
+            QMetaObject::invokeMethod(obj,"next");
+        } else if (e->key() == Qt::Key_S &&
+                   (e->modifiers() & Qt::ControlModifier)) {
+            qDebug() << "检测到 Ctrl+S";
+            QMetaObject::invokeMethod(obj,"save");
+        }
+    }
+
+    e->accept();
 }
 
 // void FrameLessView::mouseReleaseEvent(QMouseEvent *event)

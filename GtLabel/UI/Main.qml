@@ -7,7 +7,7 @@ Rectangle {
     id: root
 
     color: "#F6F6F6"
-    focusPolicy: Qt.StrongFocus
+    // focusPolicy: Qt.StrongFocus
     radius: 2
 
     Rectangle {
@@ -57,6 +57,7 @@ Rectangle {
         clip: true
 
         DataAnnotation {
+            objectName: "dataAnnotation"
         }
     }
 }
